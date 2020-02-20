@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
-import 'components/ImageMap.dart';
+//import 'package:problemator/components/ImageMap.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import "package:i18n_extension/i18n_widget.dart";
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:problemator/components/FancyFab.dart';
+import 'package:problemator/components/home/ShowGymMap.dart';
 
 void main() => runApp(Problemator());
 
@@ -12,8 +15,20 @@ class Problemator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [            
+               GlobalMaterialLocalizations.delegate,
+               GlobalWidgetsLocalizations.delegate,
+               GlobalCupertinoLocalizations.delegate,
+            ],
+             supportedLocales: [
+               const Locale('en', "US"), 
+               const Locale('fi', "FI"), 
+            ],
         title : _title,
-        home : ProblematorWidget(),
+        home : I18n(
+          initialLocale : Locale('fi'),
+          child : ProblematorWidget()
+          ),
     );
   }
 }
@@ -34,8 +49,8 @@ class _ProblematorWidget extends State<ProblematorWidget> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePageWidget(title : 'Home'),
     Text(
-      'My Profile',
-      style: optionStyle,
+      "My profile",
+      style:optionStyle,
     ),
     Text(
       'Circuits',
@@ -108,7 +123,19 @@ class HomePageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext ctx) {
-    return new Text('Hiphei');
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Floating Action Button'),
+      ),
+      body: Center(
+        child: ShowGymMap(),
+      ),
+      floatingActionButton: FancyFab(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+      ),
+    );
   }
 
 }
