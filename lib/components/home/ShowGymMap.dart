@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ShowGymMap extends StatefulWidget {
   final Image floorPlan;
@@ -12,8 +13,14 @@ class _ShowGymMapState extends State<ShowGymMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Image.network("https://www.problemator.fi/assets/images/floorplans/floorplan_11.png")
-    ]);
+    return Container(child: new PhotoView(
+        imageProvider: NetworkImage("https://www.problemator.fi/assets/images/floorplans/floorplan_11.png"),
+        minScale: PhotoViewComputedScale.contained * 0.9,
+        maxScale: PhotoViewComputedScale.covered * 1.8,
+        initialScale: PhotoViewComputedScale.contained * 0.9,
+        basePosition: Alignment.center,
+      )
+      
+ );
   }
 }
