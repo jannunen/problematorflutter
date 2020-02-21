@@ -78,12 +78,18 @@ class ProblemList extends StatelessWidget {
                 horizontal: 0.0,
                 vertical: 1.0,
               ),
-              child: InkWell(
+              child: /*
+              InkWell(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
                             ProblemDetails( problem : problemList[index] )));
                   },
+                  
+                  child :
+                  */
+                   makeListItem(context,problemList[index])
+                  /*
                   child: SizedBox(
                     height: 65,
                     child: Container(
@@ -102,10 +108,51 @@ class ProblemList extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )));
+                  )
+                  )
+                  */
+                  );
 
       } // itemBuilder
     ); // builder
 
   }
+
+  ListTile makeListItem(BuildContext context, Problem problem) => ListTile(
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          leading: Container(
+            padding: EdgeInsets.only(right: 12.0),
+            decoration: new BoxDecoration(
+                border: new Border(
+                    right: new BorderSide(width: 1.0, color: Colors.white24))),
+            child: Text(problem.gradename, style: TextStyle(color : Colors.white, fontWeight: FontWeight.bold, fontSize : 28 )),
+          ),
+          title: Text(
+            problem.tag,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+    
+
+          subtitle: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 4,
+                child: Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Text(problem.gradename,
+                        style: TextStyle(color: Colors.white))),
+              )
+            ],
+          ),
+          trailing:
+              Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+          onTap: () {
+
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => ProblemDetails( problem : problem )));
+          },
+        );
+
 }
+
