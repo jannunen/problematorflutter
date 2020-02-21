@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:problemator/components/api/ProblemRepository.dart';
+import 'package:problemator/models/Problem.dart';
 
 import 'ApiResponse.dart';
-import 'ProblemListResponse.dart';
 
 class ProblemBloc {
   ProblemRepository _problemRepository;

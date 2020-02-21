@@ -1,5 +1,6 @@
 import 'package:problemator/components/api/ApiBaseHelper.dart';
 import 'package:problemator/components/api/ProblemListResponse.dart';
+import 'package:problemator/models/Problem.dart';
 
 ///
 /// Class handles the actual data fetching from the API.

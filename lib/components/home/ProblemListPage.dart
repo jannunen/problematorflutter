@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:problemator/components/api/ApiResponse.dart';
-import 'package:problemator/components/api/ProblemListResponse.dart';
 import 'package:problemator/components/api/ProblematorBloc.dart';
 import 'package:problemator/components/api/ApiBaseHelper.dart';
 import 'package:problemator/components/home/ProblemDetails.dart';
+import 'package:problemator/models/Problem.dart';
 
 
 class ProblemListPage extends StatefulWidget {
