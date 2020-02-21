@@ -78,6 +78,7 @@ class _FancyFabState extends State<FancyFab>
   Widget add() {
     return Container(
       child: FloatingActionButton(
+        heroTag: "add",
         onPressed: null,
         tooltip: 'Add',
         child: Icon(Icons.add),
@@ -88,6 +89,7 @@ class _FancyFabState extends State<FancyFab>
   Widget image() {
     return Container(
       child: FloatingActionButton(
+        heroTag: "image",
         onPressed: null,
         tooltip: 'Image',
         child: Icon(Icons.image),
@@ -98,6 +100,7 @@ class _FancyFabState extends State<FancyFab>
   Widget tag() {
     return Container(
     child: FloatingActionButton(
+      heroTag: "tag",
         onPressed: null,
         tooltip: 'Enter tag',
         child: Icon(FontAwesomeIcons.tag),
@@ -108,6 +111,7 @@ class _FancyFabState extends State<FancyFab>
   Widget qrcode() {
     return Container(
     child: FloatingActionButton(
+      heroTag: "qrcode",
         onPressed: null,
         tooltip: 'Scan QR-Code',
         child: Icon(FontAwesomeIcons.qrcode),
@@ -118,6 +122,7 @@ class _FancyFabState extends State<FancyFab>
   Widget inbox() {
     return Container(
       child: FloatingActionButton(
+        heroTag: "inbox",
         onPressed: null,
         tooltip: 'Inbox',
         child: Icon(Icons.inbox),
@@ -128,6 +133,7 @@ class _FancyFabState extends State<FancyFab>
   Widget toggle() {
     return Container(
       child: FloatingActionButton(
+        heroTag: "toggle",
         backgroundColor: _buttonColor.value,
         onPressed: animate,
         tooltip: 'Toggle',

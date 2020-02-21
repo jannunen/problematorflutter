@@ -124,9 +124,6 @@ class HomePageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext ctx) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Floating Action Button'),
-      ),
       body: Center(
         child: ShowGymMap(),
       ),
