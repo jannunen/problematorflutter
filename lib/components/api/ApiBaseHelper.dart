@@ -1,3 +1,4 @@
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:problemator/components/api/ApiExceptions.dart';
@@ -5,16 +6,25 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
 
+import 'package:problemator/components/cache/MyCacheManager.dart';
+
 class ApiBaseHelper {
 
   final String _baseUrl = "https://www.problemator.fi/t/problematorapi/v02/";
 
   Future<dynamic> get(String url) async {
-    //print('Api GET, url $url');
+    print('Api GET, url $url');
     var responseJson;
     try {
-      final response = await http.get(_baseUrl + url);
-      responseJson = _returnResponse(response);
+      var file = await MyCacheManager().getSingleFile(_baseUrl + url);
+      if (file != null && await file.exists()) {
+        var res = await file.readAsString();
+        return _returnResponse(new http.Response(res, 200));
+      }
+      return _returnResponse(new http.Response(null, 404));
+
+      //final response = await http.get(_baseUrl + url);
+      //responseJson = _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
     }

@@ -9,7 +9,10 @@ class ProblemDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('kukka');
+    return Scaffold(
+      appBar: AppBar(title : Text('Problem '+this.problem.tag)),
+      body : Text('Kirakka')
+      );
   }
 
   
