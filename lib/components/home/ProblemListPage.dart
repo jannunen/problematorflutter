@@ -4,6 +4,7 @@ import 'package:problemator/components/api/ApiResponse.dart';
 import 'package:problemator/components/api/ProblemListResponse.dart';
 import 'package:problemator/components/api/ProblematorBloc.dart';
 import 'package:problemator/components/api/ApiBaseHelper.dart';
+import 'package:problemator/components/home/ProblemDetails.dart';
 
 
 class ProblemListPage extends StatefulWidget {
@@ -70,26 +71,41 @@ class ProblemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      itemCount: problemList.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 1.5 / 1.8,
-      ),
+    return ListView.builder(
       itemBuilder: (context, index) {
         return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Image.network(
-                'https://image.tmdb.org/t/p/w342${problemList[index].id}',
-                fit: BoxFit.fill,
+              padding: EdgeInsets.symmetric(
+                horizontal: 0.0,
+                vertical: 1.0,
               ),
-            ),
-          ),
-        );
-      },
-    );
+              child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            ProblemDetails( problem : problemList[index] )));
+                  },
+                  child: SizedBox(
+                    height: 65,
+                    child: Container(
+                      color: Color(0xFF333333),
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(4, 0, 0, 0),
+                        child: Text(
+                          problemList[index].tag,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w100,
+                              fontFamily: 'Roboto'),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                  )));
+
+      } // itemBuilder
+    ); // builder
+
   }
 }
