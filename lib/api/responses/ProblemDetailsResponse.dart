@@ -6,8 +6,9 @@ class ProblemDetailsResponse {
   Problem problem;
 
   ProblemDetailsResponse.fromJson(Map<String, dynamic> json) {
-    if (json['problem'] != null) {
-      problem = new Problem.fromJson(json['problem']);
+
+    if (json != null) {
+      problem = new Problem.fromJson(json);
     }
   }
 }

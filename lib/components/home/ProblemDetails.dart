@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:problemator/api/ApiBaseHelper.dart';
 import 'package:problemator/api/ApiResponse.dart';
 import 'package:problemator/api/blocs/ProblemDetailsBloc.dart';
-import 'package:problemator/api/blocs/bloc_provider.dart';
 import 'package:problemator/models/Problem.dart';
 import 'package:spinner_input/spinner_input.dart';
 
@@ -50,11 +47,36 @@ class _ProblemDetailsState extends State<ProblemDetails> {
         children : [
           gradeCell(),likesCell(),
           triesCell(),gradeOpinionCell(),
-          ascentsCell(),opinionsCell(),
+          StreamBuilder<ApiResponse<Problem>>(
+            stream : _bloc.problemDetailsStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                switch (snapshot.data.status) {
+                  case Status.LOADING:
+                    return Text("Loading...");
+                  case Status.COMPLETED:
+                    return _buildLoadedDetails(snapshot.data.data);
+                  break;
+                  case Status.ERROR:
+                    return Text("Oi ei");
+
+                }
+              } 
+              return Container();
+        }),
           doLikeCell(),toolsCell()
           // Do betavideo adding later
         ])
         );
+  }
+  Container _buildLoadedDetails(Problem p) {
+
+    return Container(
+      child : GridView.count(
+        crossAxisCount: 2,
+      children: <Widget>[
+          ascentsCell(p),opinionsCell(p),
+    ]));
   }
 
   gradeCell() {
@@ -141,24 +163,24 @@ class _ProblemDetailsState extends State<ProblemDetails> {
     ));
   }
 
-  ascentsCell() {
+  ascentsCell(Problem p) {
     return Padding(
       padding: EdgeInsets.all(8.0), 
       child :  Column(
         mainAxisSize : MainAxisSize.min,
         mainAxisAlignment : MainAxisAlignment.center,
         children : [
-          Text("100",
+          Text(p.ascentcount,
                     style: TextStyle(fontSize: this.fontSizeLarge, fontWeight: FontWeight.bold),
           ),
-          Text(this.problem.tag,
+          Text("Global ascents",
                     style: TextStyle(fontSize: this.fontSizeTiny, fontWeight: FontWeight.bold, color : Colors.grey[600]),
           )
         ])
       );
   }
 
-  opinionsCell() {
+  opinionsCell(Problem p) {
     return Padding(
       padding: EdgeInsets.all(8.0), 
     child: Text('Opinions'));
@@ -188,7 +210,7 @@ class _ProblemDetailsState extends State<ProblemDetails> {
 
   thumbsUp() {
     return Row(children: <Widget>[
-      Text(this.problem.c_like,
+      Text(this.problem.cLike,
       style:  TextStyle(fontSize: 26)),
       Icon(FontAwesomeIcons.thumbsUp)
     ],
@@ -196,7 +218,7 @@ class _ProblemDetailsState extends State<ProblemDetails> {
   }
   loves() {
     return Row(children: <Widget>[
-      Text(this.problem.c_love,
+      Text(this.problem.cLove,
       style:  TextStyle(fontSize: 26)),
       Icon(FontAwesomeIcons.heart,
       color:  Colors.red[500],)
@@ -205,7 +227,7 @@ class _ProblemDetailsState extends State<ProblemDetails> {
   }
   thumbsDown() {
     return Row(children: <Widget>[
-      Text(this.problem.c_dislike,
+      Text(this.problem.cDislike,
       style:  TextStyle(fontSize: 26)),
       Icon(FontAwesomeIcons.thumbsDown)
     ],

@@ -19,7 +19,6 @@ class ProblemDetailsBloc implements Bloc {
   ProblemDetailsBloc() {
     _problemDetailsController = StreamController<ApiResponse<Problem>>();
     _problemRepository = ProblemRepository();
-    //fetchProblemDetails(problemid);
   }
 
   fetchProblemDetails(String problemid) async {

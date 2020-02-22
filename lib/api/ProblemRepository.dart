@@ -18,7 +18,8 @@ class ProblemRepository {
 
   Future<Problem> fetchProblemDetails(String problemid) async {
     final response = await _helper.get("problem/"+problemid+"?react=true&api-auth-token=$_apiKey");
-    return ProblemDetailsResponse.fromJson(response['problem']).problem;
+    Problem p =  ProblemDetailsResponse.fromJson(response['problem']).problem;
+    return p;
   }
 
 }

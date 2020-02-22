@@ -1,159 +1,131 @@
 class Problem {
-  // These come from problemlist
-  String id;
   String gradeid;
-  String author;
   String problemid;
+  String id;
   String gradename;
+  String locationId;
   String wallchar;
   String walldesc;
-  String sort;
-  String gymid;
-  String wallid;
   String colour;
-  String colourid;
-  String visible;
+  String added;
   String tag;
-  String stars;
+  String author;
   String routetype;
   String startdefinition;
   String enddefinition;
   String addt;
-  String c_like;
-  String c_love;
-  String c_dislike;
-  String c_dirty;
-  String c_dangerous;
-  String soontoberemoved;
-  String hidedate;
-  String attr_technical;
-  String attr_powerful;
-  String attr_complex;
-  String attr_mantle;
-  String attr_slopers;
-  String attr_sensitive;
-  String attr_hooks;
-  String attr_crimpers;
-  String attr_pockets;
-  String attr_volumes;
-  String attr_pinches;
-  String attr_jugs;
-  String attr_dyno;
-  String attr_fingery;
-  String attr_compression;
-  String attr_bodytension;
-  String attr_coordination;
-  String attr_mini;
-  String ext_id;
-  String attr_endurance;
-  String slider_risk;
-  String slider_complexity;
-  String slider_intensity;
-  String crag_route_id;
-  String name;
-  String tapecolour;
+  String cLike;
+  String cLove;
+  String cDislike;
   String vscale;
   String score;
-  String chartcolor;
-  String south_africa;
-  String yds;
-  String uiaa;
-  String australian;
-  String font;
-  String color;
-  String code;
-  String textcolor;
-  String htmlcode;
+  String ascentcount;
+  //List<Gradedist> gradedist;
+  String tagshort;
   String addedformatted;
   String addedrelative;
-  String tagshort;
-  String colourcode;
-  String lastWall;
-  String tick;
+  int mytickcount;
+  //Opinions opinions;
 
-  // These come from problemdetails
-//String "betavideos"
-  String ascentcount;
-//GradeDist[] gradedist //:[{"gradeamount":"1","gradename":"6B+"},{"gradeamount":"3","gradename":"6C"}]
-  String attributes;
-  String mytickcount;
-//String[] myticklist
-//Opinion[] opinions; //:{"6B+":1,"6C":3}
-//Tick[] tick;
+  Problem(
+      {this.gradeid,
+      this.problemid,
+      this.id,
+      this.gradename,
+      this.locationId,
+      this.wallchar,
+      this.walldesc,
+      this.colour,
+      this.added,
+      this.tag,
+      this.author,
+      this.routetype,
+      this.startdefinition,
+      this.enddefinition,
+      this.addt,
+      this.cLike,
+      this.cLove,
+      this.cDislike,
+      this.vscale,
+      this.score,
+      this.ascentcount,
+      //this.gradedist,
+      this.tagshort,
+      this.addedformatted,
+      this.addedrelative,
+      this.mytickcount,
+      //this.opinions,
+      });
 
   Problem.fromJson(Map<String, dynamic> json) {
-    id = (json['id']);
-    gradeid = (json['gradeid']);
-    author = json['author'];
-    problemid = (json['problemid']);
+    gradeid = json['gradeid'];
+    problemid = json['problemid'];
+    id = json['id'];
     gradename = json['gradename'];
+    locationId = json['location_id'];
     wallchar = json['wallchar'];
     walldesc = json['walldesc'];
-    sort = (json['sort']);
-    gymid = (json['gymid']);
-    wallid = (json['wallid']);
     colour = json['colour'];
-    colourid = (json['colourid']);
-    visible = (json['visible']);
+    added = json['added'];
     tag = json['tag'];
-    stars = json['stars'];
+    author = json['author'];
     routetype = json['routetype'];
     startdefinition = json['startdefinition'];
     enddefinition = json['enddefinition'];
     addt = json['addt'];
-    c_like = json['c_like'];
-    c_love = json['c_love'];
-    c_dislike = json['c_dislike'];
-    c_dirty = json['c_dirty'];
-    c_dangerous = json['c_dangerous'];
-    soontoberemoved = json['soontoberemoved'];
-    hidedate = json['hidedate'];
-    attr_technical = json['attr_technical'];
-    attr_powerful = json['attr_powerful'];
-    attr_complex = json['attr_complex'];
-    attr_mantle = json['attr_mantle'];
-    attr_slopers = json['attr_slopers'];
-    attr_sensitive = json['attr_sensitive'];
-    attr_hooks = json['attr_hooks'];
-    attr_crimpers = json['attr_crimpers'];
-    attr_pockets = json['attr_pockets'];
-    attr_volumes = json['attr_volumes'];
-    attr_pinches = json['attr_pinches'];
-    attr_jugs = json['attr_jugs'];
-    attr_dyno = json['attr_dyno'];
-    attr_fingery = json['attr_fingery'];
-    attr_compression = json['attr_compression'];
-    attr_bodytension = json['attr_bodytension'];
-    attr_coordination = json['attr_coordination'];
-    attr_mini = json['attr_mini'];
-    ext_id = json['ext_id'];
-    attr_endurance = json['attr_endurance'];
-    slider_risk = json['slider_risk'];
-    slider_complexity = json['slider_complexity'];
-    slider_intensity = json['slider_intensity'];
-    crag_route_id = json['crag_route_id'];
-    name = json['name'];
-    tapecolour = json['tapecolour'];
+    cLike = json['c_like'];
+    cLove = json['c_love'];
+    cDislike = json['c_dislike'];
     vscale = json['vscale'];
     score = json['score'];
-    chartcolor = json['chartcolor'];
-    south_africa = json['south_africa'];
-    yds = json['yds'];
-    uiaa = json['uiaa'];
-    australian = json['australian'];
-    font = json['font'];
-    color = json['color'];
-    code = json['code'];
-    textcolor = json['textcolor'];
-    htmlcode = json['htmlcode'];
+    ascentcount = json['ascentcount'];
+    /*
+    if (json['gradedist'] != null) {
+      gradedist = new List<Gradedist>();
+      json['gradedist'].forEach((v) {
+        gradedist.add(new Gradedist.fromJson(v));
+      });
+    }
+    tagshort = json['tagshort'];
     addedformatted = json['addedformatted'];
     addedrelative = json['addedrelative'];
-    tagshort = json['tagshort'];
-    colourcode = json['colourcode'];
-    lastWall = json['lastWall'];
-    tick = json['tick'];
-
-    ascentcount = json['ascentcount'];
-
+    mytickcount = json['mytickcount'];
+    opinions = json['opinions'] != null
+        ? new Opinions.fromJson(json['opinions'])
+        : null;
+        */
   }
+
+
 }
+
+/*
+
+class Gradedist {
+  String gradeamount;
+  String gradename;
+
+  Gradedist({this.gradeamount, this.gradename});
+
+  Gradedist.fromJson(Map<String, dynamic> json) {
+    gradeamount = json['gradeamount'];
+    gradename = json['gradename'];
+  }
+
+}
+
+class Opinions {
+  int i6B;
+  int i6C;
+
+  Opinions({this.i6B, this.i6C});
+
+  Opinions.fromJson(Map<String, dynamic> json) {
+    i6B = json['6B+'];
+    i6C = json['6C'];
+  }
+
+}
+
+
+*/
