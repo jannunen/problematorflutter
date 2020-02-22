@@ -1,7 +1,7 @@
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:problemator/components/api/ApiExceptions.dart';
+import 'package:problemator/api/ApiExceptions.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';

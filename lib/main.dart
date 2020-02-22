@@ -5,16 +5,27 @@ import "package:i18n_extension/i18n_widget.dart";
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:problemator/components/FancyFab.dart';
 import 'package:problemator/components/home/ShowGymMap.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'store/reducer.dart';
 
-void main() => runApp(Problemator());
+void main() {
+  final Store<int> store = Store<int>(reducer, initialState: 0);
+  runApp(Problemator(store));
+}
 
 class Problemator extends StatelessWidget {
   static const String _title = 'Problemator';
 
+  final Store<int> store; 
+  Problemator(this.store);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return StoreProvider(
+      store : store,
+      child : MaterialApp(
       localizationsDelegates: [            
                GlobalMaterialLocalizations.delegate,
                GlobalWidgetsLocalizations.delegate,
@@ -29,7 +40,7 @@ class Problemator extends StatelessWidget {
           initialLocale : Locale('fi'),
           child : ProblematorWidget()
           ),
-    );
+    ));
   }
 }
 

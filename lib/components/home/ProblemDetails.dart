@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:problemator/api/ApiBaseHelper.dart';
+import 'package:problemator/api/ApiResponse.dart';
+import 'package:problemator/api/blocs/ProblemDetailsBloc.dart';
+import 'package:problemator/api/blocs/bloc_provider.dart';
 import 'package:problemator/models/Problem.dart';
 import 'package:spinner_input/spinner_input.dart';
 
@@ -12,6 +17,8 @@ class ProblemDetails extends StatefulWidget {
 }
 
 class _ProblemDetailsState extends State<ProblemDetails> {
+
+  ProblemDetailsBloc _bloc;
 
   final Problem problem;
   final int padding = 8;
@@ -37,17 +44,17 @@ class _ProblemDetailsState extends State<ProblemDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title : Text('Problem '+this.problem.tag)),
-      body : GridView.count(
-            crossAxisCount: 2,
-            children : [
-              gradeCell(),likesCell(),
-              triesCell(),gradeOpinionCell(),
-              ascentsCell(),opinionsCell(),
-              doLikeCell(),toolsCell()
-              // Do betavideo adding later
-            ])
-      );
+        appBar: AppBar(title : Text('Problem '+this.problem.tag)),
+        body : GridView.count(
+        crossAxisCount: 2,
+        children : [
+          gradeCell(),likesCell(),
+          triesCell(),gradeOpinionCell(),
+          ascentsCell(),opinionsCell(),
+          doLikeCell(),toolsCell()
+          // Do betavideo adding later
+        ])
+        );
   }
 
   gradeCell() {
@@ -137,7 +144,18 @@ class _ProblemDetailsState extends State<ProblemDetails> {
   ascentsCell() {
     return Padding(
       padding: EdgeInsets.all(8.0), 
-    child: Text('Ascents'));
+      child :  Column(
+        mainAxisSize : MainAxisSize.min,
+        mainAxisAlignment : MainAxisAlignment.center,
+        children : [
+          Text("100",
+                    style: TextStyle(fontSize: this.fontSizeLarge, fontWeight: FontWeight.bold),
+          ),
+          Text(this.problem.tag,
+                    style: TextStyle(fontSize: this.fontSizeTiny, fontWeight: FontWeight.bold, color : Colors.grey[600]),
+          )
+        ])
+      );
   }
 
   opinionsCell() {
@@ -195,4 +213,12 @@ class _ProblemDetailsState extends State<ProblemDetails> {
 
   }
 
+  @override
+  void initState() {
+    super.initState();
+    // Find problem details
+    _bloc = ProblemDetailsBloc();
+    _bloc.fetchProblemDetails(this.problem.id);
+
+  }
 }

@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:problemator/components/api/ProblemRepository.dart';
+import 'package:problemator/api/ProblemRepository.dart';
 import 'package:problemator/models/Problem.dart';
 
-import 'ApiResponse.dart';
+import 'package:problemator/api/ApiResponse.dart';
 
-class ProblemBloc {
+class ProblemListBloc {
   ProblemRepository _problemRepository;
 
   StreamController _problemListController;
@@ -16,7 +16,7 @@ class ProblemBloc {
   Stream<ApiResponse<List<Problem>>> get problemListStream =>
       _problemListController.stream;
 
-  ProblemBloc() {
+  ProblemListBloc() {
     _problemListController = StreamController<ApiResponse<List<Problem>>>();
     _problemRepository = ProblemRepository();
     fetchProblemList();

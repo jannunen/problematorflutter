@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:problemator/components/api/ApiResponse.dart';
-import 'package:problemator/components/api/ProblematorBloc.dart';
-import 'package:problemator/components/api/ApiBaseHelper.dart';
+import 'package:problemator/api/ApiResponse.dart';
+import 'package:problemator/api/blocs/ProblemListBloc.dart';
+import 'package:problemator/api/ApiBaseHelper.dart';
 import 'package:problemator/components/home/ProblemDetails.dart';
 import 'package:problemator/models/Problem.dart';
 
@@ -14,12 +14,12 @@ class ProblemListPage extends StatefulWidget {
 
 class _ProblemListPageState  extends State<ProblemListPage> {
 
-  ProblemBloc _bloc;
+  ProblemListBloc _bloc;
 
  @override
   void initState() {
     super.initState();
-    _bloc = ProblemBloc();
+    _bloc = ProblemListBloc();
   }
 
 @override
