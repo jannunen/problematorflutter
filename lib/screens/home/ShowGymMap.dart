@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:problemator/components/home/ProblemListPage.dart';
+import 'package:problemator/screens/home/ProblemListPage.dart';
 
 class ShowGymMap extends StatefulWidget {
   final Image floorPlan;

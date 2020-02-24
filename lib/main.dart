@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import "package:i18n_extension/i18n_widget.dart";
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:problemator/components/FancyFab.dart';
-import 'package:problemator/components/home/ShowGymMap.dart';
+import 'package:problemator/screens/home/ShowGymMap.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'store/reducer.dart';

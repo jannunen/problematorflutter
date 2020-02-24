@@ -86,10 +86,10 @@ class _ProblemDetailsState extends State<ProblemDetails> {
         mainAxisSize : MainAxisSize.min,
         mainAxisAlignment : MainAxisAlignment.center,
         children : [
-          Text(this.problem.gradename,
+          Text(this.problem.gradename ?? "",
                     style: TextStyle(fontSize: this.fontSizeHuge, fontWeight: FontWeight.bold),
           ),
-          Text(this.problem.tag,
+          Text(this.problem.tag ?? "",
                     style: TextStyle(fontSize: this.fontSizeTiny, fontWeight: FontWeight.bold, color : Colors.grey[600]),
           )
         ])
@@ -103,9 +103,9 @@ class _ProblemDetailsState extends State<ProblemDetails> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
       thumbsUbDownRow(),
-      Text('by '+this.problem.author,
+      Text('by '+this.problem.author ?? "",
       style : TextStyle(fontSize: this.fontSizeSmall)),
-      Text(this.problem.addedrelative,
+      Text(this.problem.addedrelative ?? "",
       style : TextStyle(fontSize: this.fontSizeSmall)),
     ])
     );
@@ -154,7 +154,7 @@ class _ProblemDetailsState extends State<ProblemDetails> {
       .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(value),
+          child: Text(value ?? ""),
         );
       })
       .toList(),
@@ -170,7 +170,7 @@ class _ProblemDetailsState extends State<ProblemDetails> {
         mainAxisSize : MainAxisSize.min,
         mainAxisAlignment : MainAxisAlignment.center,
         children : [
-          Text(p.ascentcount,
+          Text(p.ascentcount ?? "",
                     style: TextStyle(fontSize: this.fontSizeLarge, fontWeight: FontWeight.bold),
           ),
           Text("Global ascents",
@@ -210,7 +210,7 @@ class _ProblemDetailsState extends State<ProblemDetails> {
 
   thumbsUp() {
     return Row(children: <Widget>[
-      Text(this.problem.cLike,
+      Text(this.problem.cLike ?? "",
       style:  TextStyle(fontSize: 26)),
       Icon(FontAwesomeIcons.thumbsUp)
     ],
@@ -218,7 +218,7 @@ class _ProblemDetailsState extends State<ProblemDetails> {
   }
   loves() {
     return Row(children: <Widget>[
-      Text(this.problem.cLove,
+      Text(this.problem.cLove ?? "",
       style:  TextStyle(fontSize: 26)),
       Icon(FontAwesomeIcons.heart,
       color:  Colors.red[500],)
@@ -227,7 +227,7 @@ class _ProblemDetailsState extends State<ProblemDetails> {
   }
   thumbsDown() {
     return Row(children: <Widget>[
-      Text(this.problem.cDislike,
+      Text(this.problem.cDislike ?? "",
       style:  TextStyle(fontSize: 26)),
       Icon(FontAwesomeIcons.thumbsDown)
     ],

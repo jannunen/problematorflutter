@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:problemator/api/ApiResponse.dart';
 import 'package:problemator/api/blocs/ProblemListBloc.dart';
 import 'package:problemator/api/ApiBaseHelper.dart';
-import 'package:problemator/components/home/ProblemDetails.dart';
+import 'package:problemator/screens/home/ProblemDetails.dart';
 import 'package:problemator/models/Problem.dart';
 
 
