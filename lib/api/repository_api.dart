@@ -23,7 +23,6 @@ class ProblemsRepositoryFlutter implements ProblemListRepository , ProblemReposi
   }
   Future<DashboardEntity> fetchDashboard() async {
     final response = await _helper.get("dashinfo/?react=true&api-auth-token=$_apiKey");
-    print("Ourrait, got "+response.toString());
     DashboardEntity d =  DashboardResponse.fromJson(response).dashboard;
     return d;
   }

@@ -20,6 +20,7 @@ class DashboardEntity {
       });
 
   DashboardEntity.fromJson(Map<String, dynamic> json) {
+    print("HERE"+json.toString());
     mysettings = json['mysettings'] != null
         ? new Mysettings.fromJson(json['mysettings'])
         : null;
@@ -148,8 +149,8 @@ class Mysettings {
 class Locations {
   String id;
   String name;
-  Null latitude;
-  Null longitude;
+  String latitude;
+  String longitude;
   String country;
   String continent;
   String city;
@@ -191,17 +192,15 @@ class Climber {
   String sukunimi;
   String etunimi;
   String email;
-  Null heiaheiatoken;
 
   Climber(
-      {this.id, this.sukunimi, this.etunimi, this.email, this.heiaheiatoken});
+      {this.id, this.sukunimi, this.etunimi, this.email});
 
   Climber.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     sukunimi = json['sukunimi'];
     etunimi = json['etunimi'];
     email = json['email'];
-    heiaheiatoken = json['heiaheiatoken'];
   }
 
   Map<String, dynamic> toJson() {
@@ -210,7 +209,6 @@ class Climber {
     data['sukunimi'] = this.sukunimi;
     data['etunimi'] = this.etunimi;
     data['email'] = this.email;
-    data['heiaheiatoken'] = this.heiaheiatoken;
     return data;
   }
 }
@@ -219,7 +217,7 @@ class Locinfo {
   String id;
   String name;
   String country;
-  List<Null> problemcount;
+  List<String> problemcount;
 
   Locinfo({this.id, this.name, this.country, this.problemcount});
 
@@ -649,5 +647,4 @@ class Ascentsingyms {
     return data;
   }
 }
-
 */

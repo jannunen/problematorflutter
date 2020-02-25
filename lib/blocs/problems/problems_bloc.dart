@@ -28,6 +28,7 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
   }
 
   Stream<ProblemsState> _mapLoadProblemsToState() async* {
+
     try {
       final problems = await this.problemsRepository.fetchProblems();
       yield ProblemsLoaded(

@@ -26,6 +26,7 @@ class DashboardDataBloc extends Bloc<DashboardDataEvent, DashboardDataState> {
 
 
   Stream<DashboardDataState> _mapLoadDashboardDataToState()  async* {
+    yield DashboardDataLoading();
     try {
       final data = await this.problemsRepository.fetchDashboard();
       yield DashboardDataLoaded( dashboard : Dashboard.fromEntity(data));
