@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/core/core.dart';
 import 'package:problemator/blocs/stats/stats.dart';
 import 'package:problemator/widgets/widgets.dart';
-import 'package:problemator/flutter_todos_keys.dart';
+import 'package:problemator/flutter_problems_keys.dart';
 
 class Stats extends StatelessWidget {
   Stats({Key key}) : super(key: key);

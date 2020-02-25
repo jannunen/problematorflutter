@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/tab/tab.dart';
 import 'package:problemator/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'home_screen.i18n.dart';
 class HomeScreen extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
+
       return BlocBuilder<TabBloc, AppTab>(
         builder: (context, activeTab) {
           return Scaffold(
@@ -47,6 +49,9 @@ class HomeScreen extends StatelessWidget {
         case AppTab.circuits:
           return Stats();
         break;
+
+        case AppTab.profile:
+        return Profile();
 
         default:
         print("Missing tab "+ activeTab.toString());

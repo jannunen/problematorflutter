@@ -1,9 +1,8 @@
 import 'package:problemator/api/ApiBaseHelper.dart';
-import 'package:problemator/api/responses/ProblemListResponse.dart';
-import 'package:problemator/api/responses/ProblemDetailsResponse.dart';
-import 'package:problemator/models/Problem.dart';
+import 'package:problemator/api/responses/responses.dart';
 
 import 'package:problemator/repository/repository.dart';
+
 ///
 /// Class handles the actual data fetching from the API.
 /// 
@@ -22,5 +21,13 @@ class ProblemsRepositoryFlutter implements ProblemListRepository , ProblemReposi
     ProblemEntity p =  ProblemDetailsResponse.fromJson(response['problem']).problem;
     return p;
   }
+  Future<DashboardEntity> fetchDashboard() async {
+    final response = await _helper.get("dashinfo/?react=true&api-auth-token=$_apiKey");
+    print("Ourrait, got "+response.toString());
+    DashboardEntity d =  DashboardResponse.fromJson(response).dashboard;
+    return d;
+  }
+
+
 
 }
