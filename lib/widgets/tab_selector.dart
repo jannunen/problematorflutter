@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:problemator/core/core.dart';
 import 'package:problemator/models/models.dart';
 
@@ -22,17 +23,52 @@ class TabSelector extends StatelessWidget {
       onTap: (index) => onTabSelected(AppTab.values[index]),
       items: AppTab.values.map((tab) {
         return BottomNavigationBarItem(
-          icon: Icon(
-            tab == AppTab.home ? Icons.list : Icons.show_chart,
-            key: tab == AppTab.home
-                ? ArchSampleKeys.problemTab
-                : ArchSampleKeys.statsTab,
-          ),
-          title: Text(tab == AppTab.stats
-              ? ArchSampleLocalizations.of(context).stats
-              : ArchSampleLocalizations.of(context).problems),
+          icon: _resolveIcon(context,tab),
+          title: _resolveText(context,tab),
         );
       }).toList(),
     );
   }
+
+    Icon _resolveIcon(BuildContext context, AppTab tab) {
+      switch (tab) {
+        case AppTab.home:
+        return Icon(
+          FontAwesomeIcons.home,
+          key: ArchSampleKeys.homeTab
+          );
+          break;
+
+          case AppTab.circuits:
+        return Icon(
+          FontAwesomeIcons.bicycle,
+          key: ArchSampleKeys.circuitsTab
+          );
+          break;
+
+          default:
+          print("Missing icon");
+          return Icon(FontAwesomeIcons.question);
+          break;
+      }
+    }
+
+
+    Text _resolveText(BuildContext context, AppTab tab) {
+      switch (tab) {
+        case AppTab.home:
+          return Text(ArchSampleLocalizations.of(context).addProblem);
+        break;
+
+        default:
+        print("Missing i18n for icon");
+        return Text("Missing stuffsies");
+        break;
+      }
+
+    }
+
+
+
+
 }

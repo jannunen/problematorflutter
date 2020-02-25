@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
                 ExtraActions(),
               ],
             ),
-            body: activeTab == AppTab.home ? FilteredProblems() : Stats(),
+            body: _buildBody(activeTab),              //activeTab == AppTab.home ? FilteredProblems() : Stats(),
             floatingActionButton: FloatingActionButton(
               key: ArchSampleKeys.addProblemFab,
               onPressed: () {
@@ -36,5 +36,22 @@ class HomeScreen extends StatelessWidget {
           );
         },
       );
+    }
+
+    Widget _buildBody(AppTab activeTab) {
+      switch (activeTab) {
+        case AppTab.home:
+          return FilteredProblems();
+        break;
+
+        case AppTab.stats:
+          return Stats();
+        break;
+
+        default:
+        print("Missing tab "+ activeTab.toString());
+        break;
+      }
+      return Container();
     }
   }

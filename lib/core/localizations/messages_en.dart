@@ -27,6 +27,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static _notInlinedMessages(_) => {
         "activeTodos": MessageLookupByLibrary.simpleMessage("Active Todos"),
+        "tabCircuits": MessageLookupByLibrary.simpleMessage("Circuits"),
+        "tabHome": MessageLookupByLibrary.simpleMessage("Home"),
         "addTodo": MessageLookupByLibrary.simpleMessage("Add Todo"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "clearCompleted":

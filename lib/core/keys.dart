@@ -22,8 +22,12 @@ class ArchSampleKeys {
 
   // Tabs
   static final tabs = const Key('__tabs__');
+  static final homeTab = const Key('__homeTab__');
   static final problemTab = const Key('__problemTab__');
   static final statsTab = const Key('__statsTab__');
+  static final circuitsTab = const Key('__circuitsTab__');
+  static final calendarTab = const Key('__calendarTab__');
+  static final groupsTab = const Key('__groupsTab__');
 
   // Extra Actions
   static final extraActionsButton = const Key('__extraActionsButton__');
