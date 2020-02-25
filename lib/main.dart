@@ -60,7 +60,9 @@ class Problemator extends StatelessWidget {
                 ),
               ),
             ],
-            child: I18n( child: HomeScreen()),
+            child: I18n( 
+              initialLocale: Locale("fi"),
+              child: HomeScreen()),
           );
         },
           /*
