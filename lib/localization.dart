@@ -11,6 +11,7 @@ import 'dart:async';
     }
  
     String get appTitle => "Problemator";
+    
   }
  
   class FlutterBlocLocalizationsDelegate

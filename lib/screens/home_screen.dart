@@ -3,8 +3,8 @@ import 'package:problemator/blocs/tab/tab.dart';
 import 'package:problemator/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/widgets/widgets.dart';
-import 'package:problemator/localization.dart';
 import 'package:problemator/models/models.dart';
+import 'home_screen.i18n.dart';
 
 class HomeScreen extends StatelessWidget {
     @override
@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
         builder: (context, activeTab) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(FlutterBlocLocalizations.of(context).appTitle),
+              title: Text("Problemator".i18n),
               actions: [
                 FilterButton(visible: activeTab == AppTab.home),
                 ExtraActions(),
@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
                 Navigator.pushNamed(context, ArchSampleRoutes.addProblem);
               },
               child: Icon(Icons.add),
-              tooltip: ArchSampleLocalizations.of(context).addProblem,
+              tooltip: "Add problem".i18n,
             ),
             bottomNavigationBar: TabSelector(
               activeTab: activeTab,
@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
           return FilteredProblems();
         break;
 
-        case AppTab.stats:
+        case AppTab.circuits:
           return Stats();
         break;
 

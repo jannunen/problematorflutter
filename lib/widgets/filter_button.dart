@@ -4,6 +4,8 @@ import 'package:problemator/core/core.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems.dart';
 import 'package:problemator/models/models.dart';
 
+import "widgets.i18n.dart";
+
 class FilterButton extends StatelessWidget {
   final bool visible;
 
@@ -55,7 +57,7 @@ class _Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<VisibilityFilter>(
       key: ArchSampleKeys.filterButton,
-      tooltip: ArchSampleLocalizations.of(context).filterProblems,
+      tooltip: "Filter problems".i18n,
       onSelected: onSelected,
       itemBuilder: (BuildContext context) => <PopupMenuItem<VisibilityFilter>>[
         PopupMenuItem<VisibilityFilter>(

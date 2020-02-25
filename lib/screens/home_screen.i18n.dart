@@ -8,11 +8,15 @@ extension Localization on String {
   static var t = Translations("en_us") +
       {
         "en_us": "Problemator",
-        "fi_fi": "Problemator",
+        "fi_fi": "Roplis",
       } +
       {
-        "en_us": "Home",
-        "fi_fi": "Koti",
+        "en_us": "Change Language",
+        "pt_br": "Mude Idioma",
+      } +
+      {
+        "en_us": "Add problem",
+        "fi_fi": "Lisää rata",
       } +
       {
         "en_us": "You clicked the button %d times:"

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:problemator/components/ImageMap.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import "package:i18n_extension/i18n_widget.dart";
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:problemator/components/FancyFab.dart';
 import 'package:problemator/core/core.dart';
-import 'package:problemator/localization.dart';
+import 'package:i18n_extension/i18n_widget.dart';
+
 
 import 'api/repository_api.dart';
 import 'blocs/blocs.dart';
@@ -14,6 +11,7 @@ import 'blocs/simple_bloc_delegate.dart';
 import 'blocs/stats/stats.dart';
 import 'blocs/tab/tab.dart';
 import 'screens/screens.dart';
+import './main.i18n.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -33,12 +31,17 @@ class Problemator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: FlutterBlocLocalizations().appTitle,
+      title: "Problemator".i18n,
       theme: ArchSampleTheme.theme,
       localizationsDelegates: [
-        ArchSampleLocalizationsDelegate(),
-        FlutterBlocLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
       ],
+      supportedLocales: [
+          const Locale('en', "US"),
+          const Locale('fi', "FI"),
+        ],
       routes: {
         ArchSampleRoutes.home: (context) {
           return MultiBlocProvider(
@@ -57,7 +60,7 @@ class Problemator extends StatelessWidget {
                 ),
               ),
             ],
-            child: HomeScreen(),
+            child: I18n( child: HomeScreen()),
           );
         },
           /*

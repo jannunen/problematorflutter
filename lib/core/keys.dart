@@ -9,6 +9,7 @@ class ArchSampleKeys {
   static final homeScreen = const Key('__homeScreen__');
   static final addProblemFab = const Key('__addProblemFab__');
   static final snackbar = const Key('__snackbar__');
+
   static Key snackbarAction(String id) => Key('__snackbar_action_${id}__');
 
   // Problems
@@ -23,6 +24,7 @@ class ArchSampleKeys {
   // Tabs
   static final tabs = const Key('__tabs__');
   static final homeTab = const Key('__homeTab__');
+  static final competitionsTab = const Key('__competitionsTab');
   static final problemTab = const Key('__problemTab__');
   static final statsTab = const Key('__statsTab__');
   static final circuitsTab = const Key('__circuitsTab__');
