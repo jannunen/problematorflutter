@@ -1,15 +1,15 @@
-import 'package:problemator/models/Problem.dart';
+import 'package:problemator/repository/repository.dart';
 
 class ProblemListResponse {
   int totalProblems;
-  List<Problem> problems;
+  List<ProblemEntity> problems;
 
   ProblemListResponse.fromJson(Map<String, dynamic> json) {
 
     if (json['problems'] != null) {
-      problems = new List<Problem>();
+      problems = new List<ProblemEntity>();
       json['problems'].forEach((v) {
-        problems.add(new Problem.fromJson(v));
+        problems.add(new ProblemEntity.fromJson(v));
       });
     }
   }

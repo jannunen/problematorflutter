@@ -1,14 +1,14 @@
 import 'dart:collection';
 
-import 'package:problemator/models/Problem.dart';
+import 'package:problemator/repository/problem_entity.dart';
 
 class ProblemDetailsResponse {
-  Problem problem;
+  ProblemEntity problem;
 
   ProblemDetailsResponse.fromJson(Map<String, dynamic> json) {
 
     if (json != null) {
-      problem = new Problem.fromJson(json);
+      problem = new ProblemEntity.fromJson(json);
     }
   }
 }
