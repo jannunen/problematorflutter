@@ -26,8 +26,31 @@ void main() {
       expect(dashboardEntity.locations[0].id,'121');
       expect(dashboardEntity.climber.id, '246');
       expect(dashboardEntity.locinfo.id, '11');
-      //expect(dashboardEntity.climbinfo.today.boulder.ascents, '0');
-      expect(dashboardEntity.climbinfo,isNull() );
+      expect(dashboardEntity.climbinfo.today.boulder.ascents, 0);
+      expect(dashboardEntity.climbinfo.today.boulder.points, 0);
+      expect(dashboardEntity.climbinfo.today.boulder.avgrade, 'N/A');
+      expect(dashboardEntity.climbinfo.today.ascentscombined, 0);
+      expect(dashboardEntity.climbinfo.alltime.boulder.ascents, 1213);
+      expect(dashboardEntity.climbinfo.alltime.boulder.points, 8650);
+      expect(dashboardEntity.climbinfo.alltime.boulder.avgrade, '7c');
+      expect(dashboardEntity.climbinfo.alltime.sport.ascents, 20);
+      expect(dashboardEntity.climbinfo.alltime.sport.points, 6595);
+      expect(dashboardEntity.climbinfo.alltime.sport.avgrade, '7a');
+      expect(dashboardEntity.climbinfo.alltime.ascentscombined, 1233);
+
+      expect(dashboardEntity.climbinfo.ascentsingyms.boulder.ascentAmountsPerGym.length,4);
+      expect(dashboardEntity.climbinfo.ascentsingyms.boulder.ascentAmountsPerGym["17"],'2');
+      expect(dashboardEntity.climbinfo.ascentsingyms.sport.ascentAmountsPerGym.length,1);
+      expect(dashboardEntity.climbinfo.ascentsingyms.sport.ascentAmountsPerGym["11"],'0');
+
+      expect(  dashboardEntity.grades["4"].vscale,'V2');
+
+      expect(  dashboardEntity.upcoming[0].compid,'162');
+      expect(  dashboardEntity.ongoing.length,0);
+
+      expect(  dashboardEntity.pointModifiers.boulder["1"],100);
+      expect(  dashboardEntity.pointModifiers.sport["toprope"],-100);
+
 
     });
   });

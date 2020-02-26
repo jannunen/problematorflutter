@@ -1,26 +1,29 @@
+import 'dart:collection';
+
 class DashboardEntity {
   Mysettings mysettings;
   List<Locations> locations;
   Climber climber;
   Locinfo locinfo;
-  //Climbinfo climbinfo;
-  Grades grades;
-  //List<Upcoming> upcoming;
-  //Ascentsingyms pointModifiers;
+  Climbinfo climbinfo;
+  HashMap<String,Grade> grades;
+  List<CompetitionInfo> upcoming;
+  List<CompetitionInfo> ongoing;
+  PointModifiers pointModifiers;
 
   DashboardEntity(
       {this.mysettings,
       this.locations,
       this.climber,
       this.locinfo,
-     // this.climbinfo,
+      this.climbinfo,
       this.grades,
-      //this.upcoming,
-      //this.pointModifiers
+      this.upcoming,
+      this.ongoing,
+      this.pointModifiers
       });
 
   DashboardEntity.fromJson(Map<String, dynamic> json) {
-    print("HERE"+json.toString());
     mysettings = json['mysettings'] != null
         ? new Mysettings.fromJson(json['mysettings'])
         : null;
@@ -34,18 +37,37 @@ class DashboardEntity {
         json['climber'] != null ? new Climber.fromJson(json['climber']) : null;
     locinfo =
         json['locinfo'] != null ? new Locinfo.fromJson(json['locinfo']) : null;
-    //climbinfo = json['climbinfo'] != null ? new Climbinfo.fromJson(json['climbinfo']) : null;
-    grades =
-        json['grades'] != null ? new Grades.fromJson(json['grades']) : null;
-    /*
+    climbinfo = json['climbinfo'] != null ? new Climbinfo.fromJson(json['climbinfo']) : null;
+    grades =new HashMap<String,Grade>();
+    json['grades'].forEach((key, value) {
+      grades[value['id']] = Grade(
+          id : value['id'],
+          name : value['name'],
+          sort : value['sort'],
+          tapecolour : value['tapecolour'],
+          vscale : value['vscale'],
+          score : value['score'],
+          chartcolor : value['chartcolor'],
+          southAfrica : value['south_africa'],
+          yds : value['yds'],
+          uiaa : value['uiaa'],
+          australian : value['australian'],
+          font : value['font'],
+          );
+    });
+
+        //json['grades'] != null ? new Grades.fromJson(json['grades']) : null;
+			upcoming = new List<CompetitionInfo>();
 		if (json['upcoming'] != null) {
-			upcoming = new List<Upcoming>();
-			json['upcoming'].forEach((v) { upcoming.add(new Upcoming.fromJson(v)); });
+			json['upcoming'].forEach((v) { upcoming.add(new CompetitionInfo.fromJson(v)); });
+		}
+			ongoing = new List<CompetitionInfo>();
+		if (json['ongoing'] != null) {
+			json['ongoing'].forEach((v) { ongoing.add(new CompetitionInfo.fromJson(v)); });
 		}
     pointModifiers = json['pointModifiers'] != null
-        ? new Ascentsingyms.fromJson(json['pointModifiers'])
+        ? new PointModifiers.fromJson(json['pointModifiers'])
         : null;
-    */
   }
 
   Map<String, dynamic> toJson() {
@@ -62,15 +84,13 @@ class DashboardEntity {
     if (this.locinfo != null) {
       data['locinfo'] = this.locinfo.toJson();
     }
-    /*
     if (this.climbinfo != null) {
       data['climbinfo'] = this.climbinfo.toJson();
     }
-    */ 
+    /*
     if (this.grades != null) {
       data['grades'] = this.grades.toJson();
     }
-    /*
     if (this.upcoming != null) {
       data['upcoming'] = this.upcoming.map((v) => v.toJson()).toList();
     }
@@ -80,6 +100,38 @@ class DashboardEntity {
     */
     return data;
   }
+}
+
+
+class CompetitionInfo {
+  String compname;
+  String compid;
+  String name;
+  String compdate;
+
+  CompetitionInfo({
+  this.compname,
+  this.compid,
+  this.name,
+  this.compdate,
+  });
+
+  CompetitionInfo.fromJson(Map<String, dynamic> json) {
+    compname = json['compname'];
+    compid = json['compid'];
+    name = json['name'];
+    compdate = json['compdate'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['compid'] = this.compid;
+    data['compname'] = this.compname;
+    data['compdate'] = this.compdate;
+    data['name'] = this.name;
+    return data;
+  }
+
 }
 
 class Mysettings {
@@ -249,19 +301,18 @@ class Locinfo {
   }
 }
 
-/*
 class Climbinfo {
-	Today today;
-	Today month;
-	Today alltime;
+	ClimbStats today;
+	ClimbStats month;
+	ClimbStats alltime;
 	Ascentsingyms ascentsingyms;
 
 	Climbinfo({this.today, this.month, this.alltime, this.ascentsingyms});
 
 	Climbinfo.fromJson(Map<String, dynamic> json) {
-		today = json['today'] != null ? new Today.fromJson(json['today']) : null;
-		month = json['month'] != null ? new Today.fromJson(json['month']) : null;
-		alltime = json['alltime'] != null ? new Today.fromJson(json['alltime']) : null;
+		today = json['today'] != null ? new ClimbStats.fromJson(json['today']) : null;
+		month = json['month'] != null ? new ClimbStats.fromJson(json['month']) : null;
+		alltime = json['alltime'] != null ? new ClimbStats.fromJson(json['alltime']) : null;
 		ascentsingyms = json['ascentsingyms'] != null ? new Ascentsingyms.fromJson(json['ascentsingyms']) : null;
 	}
 
@@ -282,19 +333,18 @@ class Climbinfo {
 		return data;
 	}
 }
-*/
 
-class Today {
-  Boulder boulder;
-  Boulder sport;
+class ClimbStats {
+  ClimbStatsPoints boulder;
+  ClimbStatsPoints sport;
   int ascentscombined;
 
-  Today({this.boulder, this.sport, this.ascentscombined});
+  ClimbStats({this.boulder, this.sport, this.ascentscombined});
 
-  Today.fromJson(Map<String, dynamic> json) {
+  ClimbStats.fromJson(Map<String, dynamic> json) {
     boulder =
-        json['boulder'] != null ? new Boulder.fromJson(json['boulder']) : null;
-    sport = json['sport'] != null ? new Boulder.fromJson(json['sport']) : null;
+        json['boulder'] != null ? new ClimbStatsPoints.fromJson(json['boulder']) : null;
+    sport = json['sport'] != null ? new ClimbStatsPoints.fromJson(json['sport']) : null;
     ascentscombined = json['ascentscombined'];
   }
 
@@ -311,16 +361,16 @@ class Today {
   }
 }
 
-class Boulder {
+class ClimbStatsPoints {
   int ascents;
   int points;
   String avgrade;
 
-  Boulder({this.ascents, this.points, this.avgrade});
+  ClimbStatsPoints({this.ascents, this.points, this.avgrade});
 
-  Boulder.fromJson(Map<String, dynamic> json) {
-    ascents = json['ascents'];
-    points = json['points'];
+  ClimbStatsPoints.fromJson(Map<String, dynamic> json) {
+    ascents = int.tryParse(json['ascents'].toString() ?? 0) ?? 0;
+    points =  int.tryParse(json['points'].toString() ?? 0) ?? 0;
     avgrade = json['avgrade'];
   }
 
@@ -358,17 +408,17 @@ class Boulder {
 */
 
 class Ascentsingyms {
-  BoulderAscents boulder;
-  SportAscents sport;
+  GymAscents boulder;
+  GymAscents sport;
 
   Ascentsingyms({this.boulder, this.sport});
 
   Ascentsingyms.fromJson(Map<String, dynamic> json) {
     boulder = json['boulder'] != null
-        ? new BoulderAscents.fromJson(json['boulder'])
+        ? new GymAscents.fromJson(json['boulder'])
         : null;
     sport =
-        json['sport'] != null ? new SportAscents.fromJson(json['sport']) : null;
+        json['sport'] != null ? new GymAscents.fromJson(json['sport']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -383,14 +433,24 @@ class Ascentsingyms {
   }
 }
 
-class BoulderAscents {
-  String numAscents;
-  String gymid;
+class AscentAmountsPerGym {
+  final String gymid;
+  final String ascents;
 
-  BoulderAscents({this.gymid, this.numAscents});
+  AscentAmountsPerGym({this.gymid, this.ascents});
+}
 
-  BoulderAscents.fromJson(Map<String, dynamic> json) {
-    print("asketntti" + json.toString());
+class GymAscents {
+  //List<AscentAmountsPerGym> ascentAmountsPerGym;
+  HashMap ascentAmountsPerGym = new HashMap<String, String>();
+
+  GymAscents({ this.ascentAmountsPerGym });
+
+  GymAscents.fromJson(Map<String, dynamic> json) {
+    ascentAmountsPerGym = new HashMap<String, String>();
+    json.forEach((key, value) {
+      ascentAmountsPerGym[key] = value;
+    });
   }
 
   Map<String, dynamic> toJson() {
@@ -399,29 +459,54 @@ class BoulderAscents {
   }
 }
 
-class SportAscents{
 
-  SportAscents();
 
-  SportAscents.fromJson(Map<String, dynamic> json) {
-  }
+class Grade {
+  String id;
+  String name;
+  String sort;
+  String tapecolour;
+  String vscale;
+  String score;
+  String chartcolor;
+  String southAfrica;
+  String yds;
+  String uiaa;
+  String australian;
+  String font;
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    return data;
+  Grade ({
+    this.id,
+    this.name,
+    this.sort,
+    this.tapecolour,
+    this.vscale,
+    this.score,
+    this.chartcolor,
+    this.southAfrica,
+    this.yds,
+    this.uiaa,
+    this.australian,
+    this.font,
+  });
+
+  Grade.fromJson(Map<String, dynamic> json) {
+    id=json['id'];
+    name=json['name'];
+    sort=json['sort'];
+    tapecolour=json['tapecolour'];
+    vscale=json['vscale'];
+    score=json['score'];
+    chartcolor=json['chartcolor'];
+    southAfrica=json['south_africa'];
+    yds=json['yds'];
+    uiaa=json['uiaa'];
+    australian=json['australian'];
+    font=json['font'];
   }
 }
 
-class Grades {
-  Grades();
 
-  Grades.fromJson(Map<String, dynamic> json) {}
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    return data;
-  }
-}
 
 class SingleGrade {
   String id;
@@ -560,91 +645,26 @@ class SportModifiers {
   }
 }
 
-class Climbinfo {
-  Today today;
-  Today month;
-  Today alltime;
-  Ascentsingyms ascentsingyms;
 
-  Climbinfo({this.today, this.month, this.alltime, this.ascentsingyms});
 
-  Climbinfo.fromJson(Map<String, dynamic> json) {
-    today = json['today'] != null ? new Today.fromJson(json['today']) : null;
-    month = json['month'] != null ? new Today.fromJson(json['month']) : null;
-    alltime =
-        json['alltime'] != null ? new Today.fromJson(json['alltime']) : null;
-    ascentsingyms = json['ascentsingyms'] != null
-        ? new Ascentsingyms.fromJson(json['ascentsingyms'])
-        : null;
-  }
+class PointModifiers {
+  HashMap<String, double> boulder;
+  HashMap<String, double> sport;
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.today != null) {
-      data['today'] = this.today.toJson();
+  PointModifiers({this.boulder,this.sport});
+
+  PointModifiers.fromJson(Map<String, dynamic> json) {
+    boulder = new HashMap<String,double>();
+    sport = new HashMap<String,double>();
+    if (json['boulder']!=null) {
+      json['boulder'].forEach( (key,value) {
+          boulder[key] = double.tryParse(value);
+      });
     }
-    if (this.month != null) {
-      data['month'] = this.month.toJson();
+    if (json['sport']!=null) {
+      json['sport'].forEach( (key,value) {
+          sport[key] = double.tryParse(value);
+      });
     }
-    if (this.alltime != null) {
-      data['alltime'] = this.alltime.toJson();
-    }
-    if (this.ascentsingyms != null) {
-      data['ascentsingyms'] = this.ascentsingyms.toJson();
-    }
-    return data;
   }
 }
-
-/*
-class Today {
-
-	Boulder boulder;
-	Sport sport;
-	int ascentscombined;
-
-	Today({this.boulder, this.sport, this.ascentscombined});
-
-	Today.fromJson(Map<String, dynamic> json) {
-		boulder = json['boulder'] != null ? new Boulder.fromJson(json['boulder']) : null;
-		sport = json['sport'] != null ? new Sport.fromJson(json['sport']) : null;
-		ascentscombined = json['ascentscombined'];
-	}
-
-	Map<String, dynamic> toJson() {
-		final Map<String, dynamic> data = new Map<String, dynamic>();
-		if (this.boulder != null) {
-      data['boulder'] = this.boulder.toJson();
-    }
-		if (this.sport != null) {
-      data['sport'] = this.sport.toJson();
-    }
-		data['ascentscombined'] = this.ascentscombined;
-		return data;
-	}
-}
-
-class Ascentsingyms {
-  BoulderAscents boulder;
-  SportAscents sport;
-
-  Ascentsingyms({this.boulder, this.sport});
-
-  Ascentsingyms.fromJson(Map<String, dynamic> json) {
-    boulder =
-        json['boulder'] != null ? new Boulder.fromJson(json['boulder']) : null;
-    sport = json['sport'] != null ? new Sport.fromJson(json['sport']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.boulder != null) {
-      data['boulder'] = this.boulder.toJson();
-    }
-    if (this.sport != null) {
-      data['sport'] = this.sport.toJson();
-    }
-    return data;
-  }
-}
-*/
