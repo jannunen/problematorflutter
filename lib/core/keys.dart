@@ -30,6 +30,7 @@ class ArchSampleKeys {
   static final circuitsTab = const Key('__circuitsTab__');
   static final calendarTab = const Key('__calendarTab__');
   static final groupsTab = const Key('__groupsTab__');
+  static final scannerTab = const Key('__scannerTab__');
 
   // Extra Actions
   static final extraActionsButton = const Key('__extraActionsButton__');

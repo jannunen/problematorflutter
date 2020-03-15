@@ -24,6 +24,8 @@ extension Localization on String {
         "fi_fi": "Koti", } +
       { "en_us": "Competitions",
         "fi_fi": "Kisahommat", } +
+      { "en_us": "QR-Scanner",
+        "fi_fi": "QR-Scanneri", } +
       {
         "en_us": "Change Language",
         "pt_br": "Mude Idioma",
