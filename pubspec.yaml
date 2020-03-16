@@ -40,6 +40,7 @@ dependencies:
   http: ^0.12.0+1
   font_awesome_flutter: ^8.6.0
   qrscan: ^0.2.17
+  barcode_scan:
 
 dev_dependencies:
   mockito: ^4.1.0
@@ -61,8 +62,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/mountain.jpg
+    - assets/images/tomi.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
