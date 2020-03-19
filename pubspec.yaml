@@ -22,8 +22,8 @@ environment:
 
 dependencies:
   meta: ">=1.1.0 <2.0.0"
-  equatable: ^1.0.0
-  flutter_bloc: ^3.1.0
+  equatable: ^1.1.0
+  flutter_bloc: ^3.2.0
   i18n_extension:
   flutter:
       sdk: flutter
@@ -40,10 +40,14 @@ dependencies:
   http: ^0.12.0+1
   font_awesome_flutter: ^8.6.0
   qrscan: ^0.2.17
+  barcode_scan: 
 
 dev_dependencies:
+  mockito: ^4.1.0
   flutter_test:
     sdk: flutter
+
+  build_runner: ^1.6.1
 
 
 # For information on the generic Dart part of this file, see the
@@ -58,8 +62,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/mountain.jpg
+    - assets/images/tomi.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

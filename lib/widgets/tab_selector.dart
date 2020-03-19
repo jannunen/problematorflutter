@@ -57,6 +57,10 @@ class TabSelector extends StatelessWidget {
         return Icon(FontAwesomeIcons.trophy, key: ArchSampleKeys.competitionsTab);
         break;
 
+      case AppTab.scanner:
+        return Icon(FontAwesomeIcons.qrcode, key:ArchSampleKeys.scannerTab);
+        break;
+
       default:
         print("Missing icon "+tab.toString());
         return Icon(FontAwesomeIcons.question);
@@ -83,6 +87,9 @@ class TabSelector extends StatelessWidget {
         break;
       case AppTab.competitions:
         return Text("Competitions".i18n);
+        break;
+      case AppTab.scanner:
+        return Text("QR-Scanner".i18n);
         break;
 
       default:

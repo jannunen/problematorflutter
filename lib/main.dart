@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:problemator/blocs/dashboard_data/dashboard_data_bloc.dart';
 import 'package:problemator/core/core.dart';
 import 'package:i18n_extension/i18n_widget.dart';
 
 
 import 'api/repository_api.dart';
 import 'blocs/blocs.dart';
+import 'blocs/dashboard_data/dashboard_data.dart';
 import 'blocs/simple_bloc_delegate.dart';
 import 'blocs/stats/stats.dart';
 import 'blocs/tab/tab.dart';
@@ -49,7 +51,13 @@ class Problemator extends StatelessWidget {
               BlocProvider<TabBloc>(
                 create: (context) => TabBloc(),
               ),
-              BlocProvider<FilteredProblemsBloc>(
+              BlocProvider<DashboardDataBloc>(
+                create: (context) {
+                  return DashboardDataBloc(
+                    problemsRepository: ProblemsRepositoryFlutter(),
+                  )..add(LoadDashboardData());
+                }),
+                BlocProvider<FilteredProblemsBloc>(
                 create: (context) => FilteredProblemsBloc(
                   problemsBloc: BlocProvider.of<ProblemsBloc>(context),
                 ),

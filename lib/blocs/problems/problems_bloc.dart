@@ -17,8 +17,7 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
   Stream<ProblemsState> mapEventToState(ProblemsEvent event) async* {
     if (event is LoadProblems) {
       yield* _mapLoadProblemsToState();
-    }
-    /* else if (event is UpdateProblem) {
+    }     /* else if (event is UpdateProblem) {
       yield* _mapUpdateTodoToState(currentState, event);
     } else if (event is ToggleAll) {
       yield* _mapToggleAllToState(currentState);
@@ -29,6 +28,7 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
   }
 
   Stream<ProblemsState> _mapLoadProblemsToState() async* {
+
     try {
       final problems = await this.problemsRepository.fetchProblems();
       yield ProblemsLoaded(
@@ -38,6 +38,7 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
       yield ProblemsNotLoaded();
     }
   }
+
 
 /*
 
