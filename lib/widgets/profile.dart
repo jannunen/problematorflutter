@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/blocs/dashboard_data/dashboard_data.dart';
 import 'package:problemator/models/models.dart';
+import 'package:problemator/repository/dashboard_entity.dart';
 import 'package:problemator/widgets/widgets.dart';
 import 'package:problemator/flutter_problems_keys.dart';
 import 'package:problemator/widgets/widgets.i18n.dart';
@@ -20,11 +21,11 @@ class Profile extends StatelessWidget {
         if (state is DashboardDataLoading) {
           return LoadingIndicator(key: FlutterProblemsKeys.statsLoadingIndicator);
         } else if (state is DashboardDataLoaded) {
-          final Dashboard dashboard= state.dashboard;
+          final Dashboard dashboard = (state.dashboard);
           return UserProfilePage(dashboard);
         } else if (state is DashboardDataNotLoaded) {
           return new Padding (
-            padding : EdgeInsets.all(16.0),
+            padding : EdgeInsets.all(80.0),
             child : 
               Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -60,7 +61,7 @@ class Profile extends StatelessWidget {
 
  class UserProfilePage extends StatelessWidget {
 
-   final String _fullName = "Tomi Salo";
+   final String _fullName = '';
    final String _status = "Software Developer";
    final String _story = "Hey, I aspire towards a career that will allow me to channel my creativity through crafting fancy websites and engaging experiences.";
    final String _avgGrade = '8b';
@@ -70,11 +71,12 @@ class Profile extends StatelessWidget {
 
   UserProfilePage(Dashboard _dash) {
     this.dashboard = _dash;
+    
   }
 
    Widget _buildCoverImage(Size screenSize) {
      return Container(
-       height: screenSize.height / 2.8,
+       height: screenSize.height / 3.1,
        decoration: BoxDecoration(
          image: DecorationImage(
            image: AssetImage('assets/images/mountain.jpg'),
@@ -96,7 +98,7 @@ class Profile extends StatelessWidget {
           borderRadius: BorderRadius.circular(80.0),
           border: Border.all(
             color: Colors.white,
-            width: 10.0,
+            width: 5.0,
           )
         ),
       )
@@ -109,10 +111,12 @@ class Profile extends StatelessWidget {
       color: Colors.black,
       fontSize: 30.0,
       fontWeight: FontWeight.bold,
+
     );
 
     return Text(
-      _fullName,
+      '${dashboard}',
+      
       style: _nameTextStyle
     );
   }
@@ -175,7 +179,7 @@ class Profile extends StatelessWidget {
     );
 
     return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      //color: Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.all(15.0),
       child: Text(
       _story,
@@ -232,6 +236,7 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white10,
       body: Stack(
         children: <Widget>[
           _buildCoverImage(screenSize),

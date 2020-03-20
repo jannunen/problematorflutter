@@ -30,7 +30,7 @@ class DashboardDataBloc extends Bloc<DashboardDataEvent, DashboardDataState> {
     try {
       final data = await this.problemsRepository.fetchDashboard();
       yield DashboardDataLoaded( dashboard : Dashboard.fromEntity(data));
-      print(data);
+      
       
     }
     catch(_) {
