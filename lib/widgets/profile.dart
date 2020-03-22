@@ -61,13 +61,14 @@ class Profile extends StatelessWidget {
 
  class UserProfilePage extends StatelessWidget {
 
-   final String _fullName = '';
-   final String _status = "Software Developer";
-   final String _story = "Hey, I aspire towards a career that will allow me to channel my creativity through crafting fancy websites and engaging experiences.";
-   final String _avgGrade = '8b';
-   final String _followers = "150";
-   final String _problemsTicked = "1500";
+   
+   //final String _status = "";
+   //final String _story = 'Today Ticked Boulders: ${dashboard.boulderToday}';
+   //final String _avgGrade = "";
+   //final String _followers = "150";
+   //final String _problemsTicked = "";
    Dashboard dashboard;
+   //final String _fullName = "";
 
   UserProfilePage(Dashboard _dash) {
     this.dashboard = _dash;
@@ -115,12 +116,12 @@ class Profile extends StatelessWidget {
     );
 
     return Text(
-      '${dashboard}',
+      '${dashboard.etunimi}${dashboard.sukunimi}',
       
       style: _nameTextStyle
     );
   }
-
+/*
   Widget _buildStatus(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
@@ -138,7 +139,7 @@ class Profile extends StatelessWidget {
         )
       ),
     );
-  }
+  }*/
 
   Widget _buildStatItem(String label, String count) {
     TextStyle _statLabelTextStyle = TextStyle(
@@ -182,7 +183,10 @@ class Profile extends StatelessWidget {
       //color: Theme.of(context).scaffoldBackgroundColor,
       padding: EdgeInsets.all(15.0),
       child: Text(
-      _story,
+      'Today Ticked Boulders: ${dashboard.boulderToday} \n'
+      'This Month Ticked Boulders: ${dashboard.boulderMonth} \n'
+      'Today Ticked Sport: ${dashboard.sportToday} \n'
+      'This Month Ticked Sport: ${dashboard.sportMonth}',
       style: _storyStyle,
       textAlign: TextAlign.center,
       
@@ -215,7 +219,7 @@ class Profile extends StatelessWidget {
   Widget _buildStatContainer() {
 
     return Container(
-      height: 60.0,
+      height: 65.0,
       margin: EdgeInsets.only(top: 10.0),
       decoration: BoxDecoration(
         color: Color(0XFFEFF4F7),
@@ -223,9 +227,9 @@ class Profile extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          _buildStatItem("Avarage Grade", _avgGrade),
-          _buildStatItem("Problems Ticked", _problemsTicked),
-          _buildStatItem("Followers", _followers)
+          _buildStatItem("Avarage Grade", '${dashboard.avgrade}'),
+          _buildStatItem("Boulder Ticked", '${dashboard.ascents}'),
+          _buildStatItem("Sport Ticked", '${dashboard.sportAscents}')
             ],
       ),
     );
@@ -247,7 +251,7 @@ class Profile extends StatelessWidget {
                   SizedBox(height: screenSize.height / 6.4),
                   _buildProfileImage(),
                   _buildFullName(),
-                  _buildStatus(context),
+                  //_buildStatus(context),
                   _buildStatContainer(),
                   _buildStory(context),
                   _buildLine(screenSize),

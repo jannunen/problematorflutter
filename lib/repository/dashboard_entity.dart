@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:problemator/repository/repository.dart';
+
 class DashboardEntity {
   Mysettings mysettings;
   List<Locations> locations;
@@ -22,6 +24,7 @@ class DashboardEntity {
       this.ongoing,
       this.pointModifiers
       });
+
 
   DashboardEntity.fromJson(Map<String, dynamic> json) {
     mysettings = json['mysettings'] != null
@@ -383,7 +386,7 @@ class ClimbStatsPoints {
   }
 }
 
-/*
+
 class Boulder {
   String ascents;
   int points;
@@ -405,7 +408,7 @@ class Boulder {
     return data;
   }
 }
-*/
+
 
 class Ascentsingyms {
   GymAscents boulder;
