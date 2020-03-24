@@ -176,20 +176,26 @@ class Profile extends StatelessWidget {
       fontSize: 18.0,
       fontStyle: FontStyle.italic,
       color: Colors.black87,
+      height: 2,
       fontWeight: FontWeight.w500
     );
 
     return Container(
       //color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.all(15.0),
-      child: Text(
-      'Today Ticked Boulders: ${dashboard.boulderToday} \n'
-      'This Month Ticked Boulders: ${dashboard.boulderMonth} \n'
-      'Today Ticked Sport: ${dashboard.sportToday} \n'
-      'This Month Ticked Sport: ${dashboard.sportMonth}',
-      style: _storyStyle,
-      textAlign: TextAlign.center,
-      
+      padding: EdgeInsets.all(20.0),
+      child: Column(children: <Widget>[
+        SizedBox(height: 30.0,),
+        Text('TODAY MONTH', style: _storyStyle,),
+        Row(
+          children: <Widget>[
+          Text('BOULDER ${dashboard.boulderToday}${dashboard.boulderMonth}', 
+          style: _storyStyle,),
+        ]),
+        Row(
+          children: <Widget>[
+          Text('SPORT ${dashboard.sportToday}${dashboard.sportMonth}', style: _storyStyle,)
+        ],)   
+      ]
       ),
     );
   }
@@ -201,7 +207,7 @@ class Profile extends StatelessWidget {
       margin: EdgeInsets.only(top: 4.0)
     );
   } 
-
+/*
   Widget _buildButton(){
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 40.0),
@@ -214,7 +220,7 @@ class Profile extends StatelessWidget {
     
     );
   }
-
+*/
 
   Widget _buildStatContainer() {
 
@@ -222,7 +228,7 @@ class Profile extends StatelessWidget {
       height: 65.0,
       margin: EdgeInsets.only(top: 10.0),
       decoration: BoxDecoration(
-        color: Color(0XFFEFF4F7),
+        color: Colors.cyan[100],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -240,7 +246,7 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.white10,
+      backgroundColor: Colors.grey[100],
       body: Stack(
         children: <Widget>[
           _buildCoverImage(screenSize),
@@ -255,7 +261,7 @@ class Profile extends StatelessWidget {
                   _buildStatContainer(),
                   _buildStory(context),
                   _buildLine(screenSize),
-                  _buildButton()
+                  //_buildButton()
                 ],
                 ),
             ),
