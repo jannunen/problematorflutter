@@ -15,11 +15,11 @@ class DashboardResponse {
 }
 
 class ChartDataResponse {
-  ChartDataPoint chartDataPoint;
+  ChartData chartData;
 
   ChartDataResponse.fromJson(Map<String, dynamic> json) {
     if (json != null) {
-      chartDataPoint = new ChartDataPoint.fromJson(json);
+      chartData = new ChartData.fromJson(json);
     }
   }
 }

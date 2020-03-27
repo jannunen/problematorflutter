@@ -1,7 +1,7 @@
 
 import 'package:equatable/equatable.dart';
-import 'package:problemator/blocs/dashboard_data/dashboard_data.dart';
 import 'package:problemator/models/models.dart';
+
 
 abstract class DashboardDataState extends Equatable {
   const DashboardDataState();
@@ -19,14 +19,15 @@ class DashboardDataLoading extends DashboardDataState {
 
 class DashboardDataLoaded extends DashboardDataState {
   final Dashboard dashboard;
+  final ChartData runningChart;
 
-  DashboardDataLoaded({ this.dashboard}) : super();
+  DashboardDataLoaded({ this.dashboard, this.runningChart}) : super();
 
   @override
   String toString() => 'DashboardLoaded { dashboard: $dashboard }';
 
   @override
-  List<Object> get props => [dashboard]; 
+  List<Object> get props => [dashboard,runningChart]; 
 }
 
 class DashboardDataNotLoaded extends DashboardDataState {
@@ -43,15 +44,15 @@ class RunningSixMonthLoading extends DashboardDataState {
 
 //Onnistunut datan lataus
 class RunningSixMonthLoaded extends DashboardDataState {
-  final Dashboard dashboard;
+  final ChartData chartData;
 
-  RunningSixMonthLoaded({ this.dashboard}) : super();
+  RunningSixMonthLoaded({ this.chartData}) : super();
 
   @override 
-  String toString() => 'SixMonthLoaded { dashboard: $dashboard }';
+  String toString() => 'SixMonthLoaded { chartData: $chartData }';
 
   @override
-  List<Object> get props => [dashboard];
+  List<Object> get props => [chartData];
 }
 
 //Kun datan lataus epäonnistuu

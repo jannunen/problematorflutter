@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/blocs/dashboard_data/dashboard_data.dart';
 import 'package:problemator/models/models.dart';
-import 'package:problemator/repository/dashboard_entity.dart';
 import 'package:problemator/widgets/widgets.dart';
 import 'package:problemator/flutter_problems_keys.dart';
 import 'package:problemator/widgets/widgets.i18n.dart';
@@ -23,6 +22,7 @@ class Profile extends StatelessWidget {
           return LoadingIndicator(key: FlutterProblemsKeys.statsLoadingIndicator);
         } else if (state is DashboardDataLoaded) {
           final Dashboard dashboard = (state.dashboard);
+          final ChartData chartData = state.runningChart;
           return UserProfilePage(dashboard);
         } else if (state is DashboardDataNotLoaded) {
           return new Padding (
