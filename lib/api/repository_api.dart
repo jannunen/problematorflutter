@@ -1,5 +1,6 @@
 import 'package:problemator/api/ApiBaseHelper.dart';
 import 'package:problemator/api/responses/responses.dart';
+import 'package:problemator/models/chart_data.dart';
 
 import 'package:problemator/repository/repository.dart';
 
@@ -26,6 +27,12 @@ class ProblemsRepositoryFlutter implements ProblemListRepository , ProblemReposi
   Future<DashboardEntity> fetchDashboard() async {
     final response = await _helper.get("dashinfo/?react=true&api-auth-token=$_apiKey");
     DashboardEntity d =  DashboardResponse.fromJson(response).dashboard;
+    return d;
+  }
+
+  Future<ChartDataPoint> fetchRunningChartData() async {
+    final response = await _helper.get("json_running6mo_both/?react=true&api-auth-token=$_apiKey");
+    ChartDataPoint d = ChartDataResponse.fromJson(response).chartDataPoint;
     return d;
   }
 

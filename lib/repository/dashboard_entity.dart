@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:problemator/models/chart_data.dart';
 import 'package:problemator/repository/repository.dart';
 
 class DashboardEntity {
@@ -12,6 +13,7 @@ class DashboardEntity {
   List<CompetitionInfo> upcoming;
   List<CompetitionInfo> ongoing;
   PointModifiers pointModifiers;
+  
 
   DashboardEntity(
       {this.mysettings,

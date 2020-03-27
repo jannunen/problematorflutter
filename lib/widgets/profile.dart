@@ -1,3 +1,4 @@
+import 'package:bezier_chart/bezier_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -171,31 +172,57 @@ class Profile extends StatelessWidget {
             );
   }
 
-  Widget _buildStory(BuildContext context) {
-    TextStyle _storyStyle = TextStyle(
-      fontSize: 18.0,
-      fontStyle: FontStyle.italic,
-      color: Colors.black87,
-      height: 2,
-      fontWeight: FontWeight.w500
-    );
+  Widget _buildMonthChart(BuildContext context) {
+    final fromDate = DateTime(2019, 11, 22);
+    final toDate = DateTime.now();
 
-    return Container(
-      //color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.all(20.0),
-      child: Column(children: <Widget>[
-        SizedBox(height: 30.0,),
-        Text('TODAY MONTH', style: _storyStyle,),
-        Row(
-          children: <Widget>[
-          Text('BOULDER ${dashboard.boulderToday}${dashboard.boulderMonth}', 
-          style: _storyStyle,),
-        ]),
-        Row(
-          children: <Widget>[
-          Text('SPORT ${dashboard.sportToday}${dashboard.sportMonth}', style: _storyStyle,)
-        ],)   
-      ]
+    final date1 = DateTime.now().subtract(Duration(days: 2));
+    final date2 = DateTime.now().subtract(Duration(days: 3));
+
+    final date3 = DateTime.now().subtract(Duration(days: 35));
+    final date4 = DateTime.now().subtract(Duration(days: 36));
+
+    final date5 = DateTime.now().subtract(Duration(days: 65));
+    final date6 = DateTime.now().subtract(Duration(days: 64));
+
+    return Center(
+      child: Container(
+        color: Colors.black26,
+        height: MediaQuery.of(context).size.height / 2.9,
+        width: MediaQuery.of(context).size.width,
+        child: BezierChart(
+          bezierChartScale: BezierChartScale.MONTHLY,
+          fromDate: fromDate,
+          toDate: toDate,
+          selectedDate: toDate,
+          series: [
+            BezierLine(
+              label: "Duty",
+              onMissingValue: (dateTime) {
+                if (dateTime.month.isEven) {
+                  return 10.0;
+                }
+                return 5.0;
+              },
+              data: [
+                DataPoint<DateTime>(value: 10, xAxis: date1),
+                DataPoint<DateTime>(value: 50, xAxis: date2),
+                DataPoint<DateTime>(value: 20, xAxis: date3),
+                DataPoint<DateTime>(value: 80, xAxis: date4),
+                DataPoint<DateTime>(value: 14, xAxis: date5),
+                DataPoint<DateTime>(value: 30, xAxis: date6),
+              ],
+            ),
+          ],
+          config: BezierChartConfig(
+            verticalIndicatorStrokeWidth: 2.0,
+            verticalIndicatorColor: Colors.black26,
+            showVerticalIndicator: true,
+            verticalIndicatorFixedPosition: false,
+            backgroundColor: Colors.grey[800],
+            footerHeight: 35.0
+          ),
+        ),
       ),
     );
   }
@@ -259,8 +286,8 @@ class Profile extends StatelessWidget {
                   _buildFullName(),
                   //_buildStatus(context),
                   _buildStatContainer(),
-                  _buildStory(context),
-                  _buildLine(screenSize),
+                  _buildMonthChart(context),
+                 // _buildLine(screenSize),
                   //_buildButton()
                 ],
                 ),
