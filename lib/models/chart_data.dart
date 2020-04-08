@@ -13,18 +13,18 @@ class ChartData {
   ChartData.fromJson(Map<String, dynamic> json) {
     dataPoints = new List<ChartDataPoint>();
     json.forEach((key, value) {
-      dataPoints.add( ChartDataPoint(x: value['x'], a: value['a'], b: value['b']));
+      dataPoints.add( ChartDataPoint(y: value['y'], a: value['a'], b: value['b']));
     });
   }
 }
 
 class ChartDataPoint {
-  String x;
+  String y;
   String a; // should be double
   String b; // should be double
 
   ChartDataPoint({
-    this.x,
+    this.y,
     this.a,
     this.b,
   });

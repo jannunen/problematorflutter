@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,7 +25,7 @@ class Profile extends StatelessWidget {
         } else if (state is DashboardDataLoaded) {
           final Dashboard dashboard = (state.dashboard);
           final ChartData chartData = state.runningChart;
-          return UserProfilePage(dashboard);
+          return UserProfilePage(dashboard, chartData);
         } else if (state is DashboardDataNotLoaded) {
           return new Padding (
             padding : EdgeInsets.all(80.0),
@@ -62,18 +64,13 @@ class Profile extends StatelessWidget {
 
  class UserProfilePage extends StatelessWidget {
 
-   
-   //final String _status = "";
-   //final String _story = 'Today Ticked Boulders: ${dashboard.boulderToday}';
-   //final String _avgGrade = "";
-   //final String _followers = "150";
-   //final String _problemsTicked = "";
    Dashboard dashboard;
-   //final String _fullName = "";
+   ChartData chartData;
+   ChartDataPoint chartDataPoint;
 
-  UserProfilePage(Dashboard _dash) {
+  UserProfilePage(Dashboard _dash, ChartData _chart) {
     this.dashboard = _dash;
-    
+    this.chartData = _chart;
   }
 
    Widget _buildCoverImage(Size screenSize) {
@@ -171,19 +168,35 @@ class Profile extends StatelessWidget {
             ],
             );
   }
+  DateTime parseDate(String yearWeek) {
+    String yearStr = yearWeek.substring(0,4);
+    String weekStr = yearWeek.substring(6);
+    int year = int.tryParse(yearStr);
+    int week = int.tryParse(weekStr);
 
+    DateTime parsedDate = new DateTime(year, 1, 1);
+    parsedDate = parsedDate.add(new Duration(days: week * 7));
+    return parsedDate;
+  }
+  
   Widget _buildMonthChart(BuildContext context) {
-    final fromDate = DateTime(2019, 11, 22);
+
+    List <DataPoint> convertedDataPoints = new List <DataPoint>();
+
+    DataPoint point = null;
+    for(ChartDataPoint srcPoint in chartData.dataPoints) {
+      if(srcPoint.y != null) {
+      point = new DataPoint<DateTime>(value: double.tryParse(srcPoint.a),
+      xAxis: parseDate(srcPoint.y));
+        convertedDataPoints.add(point);
+      }
+    }
+    
+    data: [DataPoint];
+    final fromDate = DateTime(2019, 11, 1);
     final toDate = DateTime.now();
 
-    final date1 = DateTime.now().subtract(Duration(days: 2));
-    final date2 = DateTime.now().subtract(Duration(days: 3));
-
-    final date3 = DateTime.now().subtract(Duration(days: 35));
-    final date4 = DateTime.now().subtract(Duration(days: 36));
-
-    final date5 = DateTime.now().subtract(Duration(days: 65));
-    final date6 = DateTime.now().subtract(Duration(days: 64));
+    
 
     return Center(
       child: Container(
@@ -204,14 +217,7 @@ class Profile extends StatelessWidget {
                 }
                 return 5.0;
               },
-              data: [
-                DataPoint<DateTime>(value: 10, xAxis: date1),
-                DataPoint<DateTime>(value: 50, xAxis: date2),
-                DataPoint<DateTime>(value: 20, xAxis: date3),
-                DataPoint<DateTime>(value: 80, xAxis: date4),
-                DataPoint<DateTime>(value: 14, xAxis: date5),
-                DataPoint<DateTime>(value: 30, xAxis: date6),
-              ],
+              data: convertedDataPoints,
             ),
           ],
           config: BezierChartConfig(
@@ -268,7 +274,7 @@ class Profile extends StatelessWidget {
     );
     
   }
-
+  
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
