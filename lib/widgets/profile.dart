@@ -182,35 +182,36 @@ class Profile extends StatelessWidget {
   Widget _buildMonthChart(BuildContext context) {
 
     List <DataPoint> convertedDataPoints = new List <DataPoint>();
-
+    
     DataPoint point = null;
     for(ChartDataPoint srcPoint in chartData.dataPoints) {
       if(srcPoint.y != null) {
-      point = new DataPoint<DateTime>(value: double.tryParse(srcPoint.a),
-      xAxis: parseDate(srcPoint.y));
+      point = new DataPoint<DateTime>(value: double.tryParse(srcPoint.a), xAxis: parseDate(srcPoint.y));
         convertedDataPoints.add(point);
       }
     }
     
     data: [DataPoint];
-    final fromDate = DateTime(2019, 11, 1);
     final toDate = DateTime.now();
+    final fromDate = DateTime(toDate.year, toDate.month - 5);
 
-    
 
     return Center(
       child: Container(
         color: Colors.black26,
-        height: MediaQuery.of(context).size.height / 2.9,
+        height: MediaQuery.of(context).size.height / 2.87,
         width: MediaQuery.of(context).size.width,
         child: BezierChart(
           bezierChartScale: BezierChartScale.MONTHLY,
           fromDate: fromDate,
           toDate: toDate,
           selectedDate: toDate,
+          footerDateTimeBuilder: (DateTime value, BezierChartScale scaleType) {
+              return "test";
+          },
           series: [
             BezierLine(
-              label: "Duty",
+              label: "${convertedDataPoints.last.value.toString()}",
               onMissingValue: (dateTime) {
                 if (dateTime.month.isEven) {
                   return 10.0;
@@ -220,13 +221,19 @@ class Profile extends StatelessWidget {
               data: convertedDataPoints,
             ),
           ],
+          
           config: BezierChartConfig(
-            verticalIndicatorStrokeWidth: 2.0,
+            bubbleIndicatorTitleStyle: TextStyle(color: Colors.black, fontSize: 20),
+            bubbleIndicatorLabelStyle: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w700),
+            bubbleIndicatorValueStyle: TextStyle(fontSize: 20, color: Colors.black),
+            snap: true,
+            xAxisTextStyle: TextStyle(fontSize: 16),
+            verticalIndicatorStrokeWidth: 3.9,
             verticalIndicatorColor: Colors.black26,
             showVerticalIndicator: true,
-            verticalIndicatorFixedPosition: false,
+            verticalIndicatorFixedPosition: true,
             backgroundColor: Colors.grey[800],
-            footerHeight: 35.0
+            footerHeight: 65.0
           ),
         ),
       ),
