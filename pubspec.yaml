@@ -43,6 +43,7 @@ dependencies:
   qrscan: ^0.2.17
   barcode_scan: 
   date_util:
+  flutter_radar_chart: ^0.1.3
 
 dev_dependencies:
   mockito: ^4.1.0
