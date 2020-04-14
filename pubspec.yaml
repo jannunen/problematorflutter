@@ -42,6 +42,7 @@ dependencies:
   font_awesome_flutter: ^8.6.0
   qrscan: ^0.2.17
   barcode_scan: 
+  date_util:
 
 dev_dependencies:
   mockito: ^4.1.0

@@ -9,6 +9,7 @@ import 'package:problemator/models/models.dart';
 import 'package:problemator/widgets/widgets.dart';
 import 'package:problemator/flutter_problems_keys.dart';
 import 'package:problemator/widgets/widgets.i18n.dart';
+import 'package:date_util/src/dateUtil_base.dart';
 
 import 'package:flutter/rendering.dart';
 
@@ -191,9 +192,9 @@ class Profile extends StatelessWidget {
       }
     }
     
-    data: [DataPoint];
     final toDate = DateTime.now();
     final fromDate = DateTime(toDate.year, toDate.month - 5);
+    final dateUtility = new DateUtil();
 
 
     return Center(
@@ -207,7 +208,10 @@ class Profile extends StatelessWidget {
           toDate: toDate,
           selectedDate: toDate,
           footerDateTimeBuilder: (DateTime value, BezierChartScale scaleType) {
-              return "test";
+          
+            double week = (dateUtility.daysPastInYear(value.month,value.day, value.year) / 7) + 1;
+            int weekRound = week.round();
+            return "W"+weekRound.toString();
           },
           series: [
             BezierLine(
@@ -227,7 +231,7 @@ class Profile extends StatelessWidget {
             bubbleIndicatorLabelStyle: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w700),
             bubbleIndicatorValueStyle: TextStyle(fontSize: 20, color: Colors.black),
             snap: true,
-            xAxisTextStyle: TextStyle(fontSize: 16),
+            xAxisTextStyle : TextStyle(fontSize : 10),
             verticalIndicatorStrokeWidth: 3.9,
             verticalIndicatorColor: Colors.black26,
             showVerticalIndicator: true,
