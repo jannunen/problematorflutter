@@ -1,6 +1,8 @@
+import 'package:flutter_radar_chart/flutter_radar_chart.dart';
 import 'package:problemator/api/ApiBaseHelper.dart';
 import 'package:problemator/api/responses/responses.dart';
 import 'package:problemator/models/chart_data.dart';
+import 'package:problemator/models/radarChart_data.dart';
 
 import 'package:problemator/repository/repository.dart';
 
@@ -36,6 +38,12 @@ class ProblemsRepositoryFlutter implements ProblemListRepository , ProblemReposi
     return d;
   }
 
+  Future<RadarChartData> fetchRunningRadarData() async {
+    final response = await _helper.get("radarchart/?react=true&api-auth-token=$_apiKey");
+    RadarChartData d = RadarChartResponse.fromJson(response).radarChartData;
+    return d;
+
+  }
 
 
 }
