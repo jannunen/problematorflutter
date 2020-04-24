@@ -8,27 +8,94 @@ import 'package:problemator/repository/dashboard_entity.dart';
 
 
 class RadarChartData {
-  List<RadarDataPoint> radarDataPoints;
+  List<String> labels;
+  List<RadarChartDataSet> datasets;
 
-  RadarChartData(radarDataPoints);
+  RadarChartData(datasets, labels);
 
   RadarChartData.fromJson(Map<String, dynamic> json) {
-    radarDataPoints = new List<RadarDataPoint>();
+    labels = new List();
+    datasets = new List<RadarChartDataSet>();
+    
+
     json.forEach((key, value) {
-      radarDataPoints.add( RadarDataPoint(days: value['days'], months: value['months'], allTime: value['allTime'] ));
-    });
+      if (key == 'labels') {
+        value.forEach((value) {
+          labels.add((value));          
+        });
+      } 
+    }); 
+  
+    json.forEach((key, value) {
+      if(key == 'datasets') {
+        for(var item in value) {
+         item.forEach((item) {
+           datasets.add(RadarChartDataSet.fromJson(item));
+           
+                       
+          });
+        }
+    }});     
   }
 }
-
-class RadarDataPoint {
-  String days;
-  String months;
-  String allTime;
-
-
-  RadarDataPoint({
-    this.days,
-    this.months,
-    this.allTime
+           
+           
+           
+class RadarChartDataSet {
+  String label;
+  String backgroundColor;
+  String borderColor;
+  String borderWidth;
+  String pointBackgroundColor;
+  String pointBorderColor;
+  String pointHoverBackgroundColor;
+  String pointHoverBorderColor;
+  List <int> data;
+           
+  RadarChartDataSet({
+    this.label,
+    this.backgroundColor,
+    this.borderColor,
+    this.borderWidth,
+    this.pointBackgroundColor,
+    this.pointBorderColor,
+    this.pointHoverBackgroundColor,
+    this.pointHoverBorderColor,
+    this.data,
   });
+           
+  RadarChartDataSet.fromJson(Map<String, dynamic> json) {
+
+            }
 }
+/*
+  @override
+    List<Object> get props => [label, backgroundColor, borderWidth, data];
+
+
+  RadarChartDataSet copyWith({
+    label, 
+    backgroundColor, 
+    borderWidth,
+    data
+  }) {
+    return RadarChartDataSet(
+      label: label,
+      backgroundColor: backgroundColor,
+      borderWidth: borderWidth,
+      data: data
+      ); 
+  }
+}
+label: value['label'],
+           backgroundColor: value['backgroundcolor'], borderColor: value['borderColor'], borderWidth: value['borderwidth'],
+           pointBackgroundColor: value['pointBackgroundColor'], pointBorderColor: value['pointBorderColor'], 
+           pointHoverBackgroundColor: value['pointHoverBackgroundColor:'], pointHoverBorderColor: value['pointHoverBorderColor'], data: value['data']));
+      
+
+      for(var listat in value) {
+          for(var item in listat) {
+            
+          } 
+        } 
+*/
