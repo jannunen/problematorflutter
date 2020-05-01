@@ -29,11 +29,11 @@ class RadarChartData {
     json.forEach((key, value) {
       if(key == 'datasets') {
         for(var item in value) {
-         item.forEach((item) {
+         //item.forEach((item) {
            datasets.add(RadarChartDataSet.fromJson(item));
            
                        
-          });
+          //});
         }
     }});     
   }
@@ -65,8 +65,10 @@ class RadarChartDataSet {
   });
            
   RadarChartDataSet.fromJson(Map<String, dynamic> json) {
-
-            }
+    int i = 1;
+    this.label = json['label'];
+    this.borderColor = json['borderColor'];
+  }
 }
 /*
   @override
