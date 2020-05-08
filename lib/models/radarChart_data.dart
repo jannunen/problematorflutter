@@ -16,8 +16,7 @@ class RadarChartData {
   RadarChartData.fromJson(Map<String, dynamic> json) {
     labels = new List();
     datasets = new List<RadarChartDataSet>();
-    
-
+  
     json.forEach((key, value) {
       if (key == 'labels') {
         value.forEach((value) {
@@ -27,19 +26,16 @@ class RadarChartData {
     }); 
   
     json.forEach((key, value) {
-      if(key == 'datasets') {
-        for(var item in value) {
-         item.forEach((item) {
-           datasets.add(RadarChartDataSet.fromJson(item));
-           
-                       
-          });
-        }
-    }});     
+        if(key == 'datasets') {       
+          for(var item in value) {
+            datasets.add(RadarChartDataSet.fromJson(item));
+            
+          }
+        
+      }});     
   }
-}
-           
-           
+  
+}         
            
 class RadarChartDataSet {
   String label;
@@ -50,7 +46,7 @@ class RadarChartDataSet {
   String pointBorderColor;
   String pointHoverBackgroundColor;
   String pointHoverBorderColor;
-  List <int> data;
+  List data;
            
   RadarChartDataSet({
     this.label,
@@ -63,10 +59,19 @@ class RadarChartDataSet {
     this.pointHoverBorderColor,
     this.data,
   });
-           
-  RadarChartDataSet.fromJson(Map<String, dynamic> json) {
 
-            }
+  RadarChartDataSet.fromJson(Map<String, dynamic> json) {
+      this.label = json['label'];
+      this.backgroundColor = json['backgroundColor'];
+      this.borderWidth = json['borderWidth'];
+      this.pointBackgroundColor = json['pointBackgroundColor'];
+      this.borderColor = json['borderColor'];
+      this.pointBorderColor = json['pointBorderColor'];
+      this.pointHoverBackgroundColor = json['pointHoverBackgroundColor'];
+      this.pointHoverBorderColor = json['pointHoverBorderColor'];
+      this.data = json['data'];
+    }
+           
 }
 /*
   @override

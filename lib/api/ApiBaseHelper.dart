@@ -13,7 +13,7 @@ class ApiBaseHelper {
   final String _baseUrl = "https://www.problemator.fi/t/problematorapi/v02/";
 
   Future<dynamic> get(String url) async {
-    print('Api GET, url $url');
+    print('Api GET, url '+_baseUrl+url);
     var responseJson;
     try {
       var file = await MyCacheManager().getSingleFile(_baseUrl + url);

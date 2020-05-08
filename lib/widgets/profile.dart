@@ -16,69 +16,7 @@ import 'package:problemator/models/radarChart_data.dart';
 import 'package:flutter/rendering.dart';
 
 
-  /*
-Widget _buildRadar(BuildContext context) {
-  return CustomPaint(
-    size: Size(double.infinity, double.infinity),
-    painter: RadarChartPainter(),
-  );
-}
-
-class RadarChartPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {}
-
-  @override
-  bool shouldRepaint(RadarChartPainter oldDelegate) {
-    return false;
-  }
-} 
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    var centerX = size.width / 2.0;
-    var centerY = size.height / 2.0;
-    var centerOffset = Offset(centerX, centerY);
-    var radius = centerX * 0.8;
-
-    var outlinePaint = Paint()
-    ..color = Colors.black
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 2.0
-    ..isAntiAlias = true;
-
-    canvas.drawCircle(centerOffset, radius, outlinePaint);
-
-
-    var ticks = [10, 20, 30];
-    var tickDistance = radius / (ticks.length);
-    const double tickLabelFontSize = 12;
-
-    var tickPaint = Paint()
-    ..color = Colors.black
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 1.0
-    ..isAntiAlias = true;
-
-    ticks.sublist(0, ticks.length - 1).asMap().forEach((index, tick) {
-      var tickRadius = tickDistance * (index + 1);
-
-      canvas.drawCircle(centerOffset, tickRadius, tickPaint);
-
-      TextPainter(
-        text: TextSpan(
-          text: tick.toString(),
-          style: TextStyle(color: Colors.grey, fontSize: tickLabelFontSize),
-        ),
-        textDirection: TextDirection.ltr,
-      )
-      ..layout(minWidth: 0, maxWidth: size.width)
-      ..paint(
-        canvas, Offset(centerX, centerY - tickRadius - tickLabelFontSize));
-    });
-  }
-*/
-
+  
 
 class Profile extends StatelessWidget {
 
@@ -127,6 +65,7 @@ class Profile extends StatelessWidget {
    Dashboard dashboard;
    ChartData chartData;
    ChartDataPoint chartDataPoint;
+   RadarChartDataSet radarChartDataSet;
 
   UserProfilePage(Dashboard _dash, ChartData _chart, RadarChartData _radar) {
     this.dashboard = _dash;
@@ -295,6 +234,69 @@ class Profile extends StatelessWidget {
         ),
       );
   }
+
+  Widget _buildRadar(BuildContext context) {
+    double numberOfFeatures = 3;
+    List<int> parsedData1 = new List();
+    List<int> parsedData2 = new List();
+    List<int> parsedData3 = new List();
+    
+
+    for(var point in radarChartData.datasets) {
+      if(point.label == 'Last 30 days') {
+        for(var data in point.data){
+          if(data != null && data.length >= 0) {
+            data = int.tryParse(data);
+            parsedData1.add(data);
+          }
+        }
+      } else if(point.label == 'Last 6 months'){
+        for(var data in point.data){
+          if(data != null) {
+            data = int.tryParse(data);
+            parsedData2.add(data);
+          }
+        }
+      }else {
+        for(var data in point.data){
+          if(data != null) {
+            data = int.tryParse(data);
+            parsedData3.add(data);
+          }
+      }
+    } 
+  }
+    
+    const ticks = [0, 1, 2, 3];
+    var features = radarChartData.labels;
+    var data = [parsedData2, parsedData3];
+/*
+    if(parsedData1.length > 0){
+      data.add(parsedData1);
+    }if(parsedData2.length > 0){
+      data.add(parsedData2);
+    }if(parsedData3.length > 0) {
+      data.add(parsedData3);
+    }*/
+  
+    //features = features.sublist(0, numberOfFeatures.floor());
+    data = data.map((graph) => graph.sublist(0, numberOfFeatures.floor())).toList();
+
+    return Container(
+        color: Colors.grey[150],
+        height: MediaQuery.of(context).size.height / 3,
+
+        width: MediaQuery.of(context).size.width / 1.7,
+          child: RadarChart.light(
+            ticks: ticks,
+            features: features,
+            data: data,
+            reverseAxis: true,
+            
+          )
+    );  
+    
+  }
   Widget _buildLine(Size screenSize) {
     return Container(
       width: screenSize.width / 1.6,
@@ -360,7 +362,7 @@ class Profile extends StatelessWidget {
                   //_buildStatus(context),
                   _buildStatContainer(),
                   _buildMonthChart(context),
-                  //_buildRadar(context)
+                  _buildRadar(context)
                  // _buildLine(screenSize),
                   //_buildButton()
                 ],

@@ -28,10 +28,12 @@ class ChartDataResponse {
 
 class RadarChartResponse {
   RadarChartData radarChartData;
-
+ 
   RadarChartResponse.fromJson(Map<String, dynamic> json) {
   if (json != null) {
     radarChartData = new RadarChartData.fromJson(json);
+   
     }
   }
 }
+
