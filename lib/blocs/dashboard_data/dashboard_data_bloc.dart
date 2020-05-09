@@ -39,6 +39,6 @@ class DashboardDataBloc extends Bloc<DashboardDataEvent, DashboardDataState> {
       yield DashboardDataNotLoaded();
     }
   }
-  
+
 }
 

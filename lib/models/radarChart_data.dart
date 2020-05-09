@@ -33,6 +33,7 @@ class RadarChartData {
           }
         
       }});     
+
   }
   
 }         
@@ -71,36 +72,5 @@ class RadarChartDataSet {
       this.pointHoverBorderColor = json['pointHoverBorderColor'];
       this.data = json['data'];
     }
-           
-}
-/*
-  @override
-    List<Object> get props => [label, backgroundColor, borderWidth, data];
+}          
 
-
-  RadarChartDataSet copyWith({
-    label, 
-    backgroundColor, 
-    borderWidth,
-    data
-  }) {
-    return RadarChartDataSet(
-      label: label,
-      backgroundColor: backgroundColor,
-      borderWidth: borderWidth,
-      data: data
-      ); 
-  }
-}
-label: value['label'],
-           backgroundColor: value['backgroundcolor'], borderColor: value['borderColor'], borderWidth: value['borderwidth'],
-           pointBackgroundColor: value['pointBackgroundColor'], pointBorderColor: value['pointBorderColor'], 
-           pointHoverBackgroundColor: value['pointHoverBackgroundColor:'], pointHoverBorderColor: value['pointHoverBorderColor'], data: value['data']));
-      
-
-      for(var listat in value) {
-          for(var item in listat) {
-            
-          } 
-        } 
-*/
