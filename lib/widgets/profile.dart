@@ -1,5 +1,5 @@
 import 'dart:core';
-
+import 'dart:math';
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -246,6 +246,10 @@ class Profile extends StatelessWidget {
     List<int> parsedData1 = new List();
     List<int> parsedData2 = new List();
     List<int> parsedData3 = new List();
+    List<int> ticks = [];
+    List<int> testList = [];
+    var amountOfSteps = 5;
+    
     
 
     for(var point in radarChartData.datasets) {
@@ -272,11 +276,19 @@ class Profile extends StatelessWidget {
       }
     } 
   }
-    
-    const ticks = [0, 1, 2, 3];
+
+  int maxValue = parsedData3.reduce(max);
+  int step = (maxValue / amountOfSteps).round();
+
+  for(var i = 0; i < amountOfSteps; i++) {
+    int tick = (((1 + i * step) / maxValue) * 100).round();
+    testList.add(tick);
+  }
+    ticks = new List.from(testList.reversed);
     var features = radarChartData.labels;
-    var data = [parsedData2, parsedData3];
+    var data = [parsedData1, parsedData2, parsedData3];
 /*
+
     if(parsedData1.length > 0){
       data.add(parsedData1);
     }if(parsedData2.length > 0){
