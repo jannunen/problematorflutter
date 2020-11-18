@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:problemator/blocs/tab/tab.dart';
 import 'package:problemator/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:problemator/widgets/drawer.dart';
 import 'package:problemator/widgets/widgets.dart';
 import 'package:problemator/models/models.dart';
 import '../blocs/blocs.dart';
@@ -14,8 +15,9 @@ class HomeScreen extends StatelessWidget {
     return BlocBuilder<TabBloc, AppTab>(
       builder: (context, activeTab) {
         return Scaffold(
+          drawer: DrawerMenu(),
           appBar: AppBar(
-            title: Text("Problemator".i18n),
+            title: Center(child: Text("Problemator".i18n)),
             actions: [
               FilterButton(visible: activeTab == AppTab.home),
               ExtraActions(),
