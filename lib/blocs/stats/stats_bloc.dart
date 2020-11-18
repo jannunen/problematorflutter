@@ -8,7 +8,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   final ProblemsBloc problemsBloc;
   StreamSubscription problemsSubscription;
 
-  StatsBloc({@required this.problemsBloc}) {
+  StatsBloc({@required this.problemsBloc}) : super(StatsInitial()) {
     problemsSubscription = problemsBloc.listen((state) {
       if (state is ProblemsLoaded) {
         add(UpdateStats(state.problems));
@@ -22,10 +22,8 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   @override
   Stream<StatsState> mapEventToState(StatsEvent event) async* {
     if (event is UpdateStats) {
-      int numActive =
-          event.problems.where((problem) => problem.ticked ==null).toList().length;
-      int numCompleted =
-          event.problems.where((problem) => problem.ticked != null).toList().length;
+      int numActive = event.problems.where((problem) => problem.ticked == null).toList().length;
+      int numCompleted = event.problems.where((problem) => problem.ticked != null).toList().length;
       yield StatsLoaded(numActive, numCompleted);
     }
   }

@@ -18,7 +18,13 @@ class FilteredProblems extends StatelessWidget {
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(
       builder: (context, state) {
         if (state is FilteredProblemsLoading) {
-          return LoadingIndicator(key: ArchSampleKeys.problemsLoading);
+          return LoadingIndicator(
+            key: ArchSampleKeys.problemsLoading,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Loading problems..."),
+            ),
+          );
         } else if (state is FilteredProblemsLoaded) {
           final problems = state.filteredProblems;
           return ListView.builder(
@@ -68,6 +74,8 @@ class FilteredProblems extends StatelessWidget {
               );
             },
           );
+        } else if (state is ProblemsErrorLoading) {
+          return Container(child: Text("Error Loading problems, probably login outdated"));
         } else {
           return Container(key: FlutterProblemsKeys.filteredProblemsEmptyContainer);
         }

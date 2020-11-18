@@ -25,7 +25,7 @@ class TabSelector extends StatelessWidget {
       items: AppTab.values.map((tab) {
         return BottomNavigationBarItem(
           icon: _resolveIcon(context, tab),
-          title: _resolveText(context, tab),
+          label: _resolveText(context, tab),
         );
       }).toList(),
     );
@@ -57,44 +57,37 @@ class TabSelector extends StatelessWidget {
         return Icon(FontAwesomeIcons.trophy, key: ArchSampleKeys.competitionsTab);
         break;
 
-      case AppTab.scanner:
-        return Icon(FontAwesomeIcons.qrcode, key:ArchSampleKeys.scannerTab);
-        break;
-
       default:
-        print("Missing icon "+tab.toString());
+        print("Missing icon " + tab.toString());
         return Icon(FontAwesomeIcons.question);
         break;
     }
   }
 
-  Text _resolveText(BuildContext context, AppTab tab) {
+  String _resolveText(BuildContext context, AppTab tab) {
     switch (tab) {
       case AppTab.home:
-        return Text("Home".i18n);
+        return "Home".i18n;
         break;
       case AppTab.profile:
-        return Text("Profile".i18n);
+        return "Profile".i18n;
         break;
       case AppTab.circuits:
-        return Text("Circuits".i18n);
+        return "Circuits".i18n;
         break;
       case AppTab.groups:
-        return Text("Groups".i18n);
+        return "Groups".i18n;
         break;
       case AppTab.archive:
-        return Text("Archive".i18n);
+        return "Archive".i18n;
         break;
       case AppTab.competitions:
-        return Text("Competitions".i18n);
-        break;
-      case AppTab.scanner:
-        return Text("QR-Scanner".i18n);
+        return "Competitions".i18n;
         break;
 
       default:
-        print("Missing i18n for icon "+tab.toString());
-        return Text("Missing stuffsies");
+        print("Missing i18n for icon " + tab.toString());
+        return ("Missing stuffsies");
         break;
     }
   }

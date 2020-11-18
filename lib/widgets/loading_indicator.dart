@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
 class LoadingIndicator extends StatelessWidget {
-  LoadingIndicator({Key key}) : super(key: key);
+  final Widget child;
+  LoadingIndicator({Key key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CircularProgressIndicator(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          this.child ?? Container(),
+        ],
+      ),
     );
   }
 }

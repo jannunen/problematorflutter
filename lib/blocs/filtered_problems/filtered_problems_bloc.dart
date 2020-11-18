@@ -10,12 +10,17 @@ import 'package:problemator/models/visibility_filter.dart';
 import 'filtered_problems_event.dart';
 import 'filtered_problems_state.dart';
 
-class FilteredProblemsBloc
-    extends Bloc<FilteredProblemsEvent, FilteredProblemsState> {
+class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsState> {
   final ProblemsBloc problemsBloc;
   StreamSubscription problemsSubscription;
 
-  FilteredProblemsBloc({@required this.problemsBloc}) {
+  FilteredProblemsBloc({@required this.problemsBloc})
+      : super(problemsBloc.state is ProblemsLoaded
+            ? FilteredProblemsLoaded(
+                (problemsBloc.state as ProblemsLoaded).problems,
+                VisibilityFilter.all,
+              )
+            : FilteredProblemsLoading()) {
     problemsSubscription = problemsBloc.listen((state) {
       if (state is ProblemsLoaded) {
         add(UpdateProblems((problemsBloc.state as ProblemsLoaded).problems));
@@ -24,17 +29,7 @@ class FilteredProblemsBloc
   }
 
   @override
-  FilteredProblemsState get initialState {
-    return problemsBloc.state is ProblemsLoaded
-        ? FilteredProblemsLoaded(
-            (problemsBloc.state as ProblemsLoaded).problems,
-            VisibilityFilter.all,
-          )
-        : FilteredProblemsLoading();
-  }
-
-  @override
-  Stream<FilteredProblemsState> mapEventToState( FilteredProblemsEvent event) async* {
+  Stream<FilteredProblemsState> mapEventToState(FilteredProblemsEvent event) async* {
     if (event is UpdateFilter) {
       yield* _mapUpdateFilterToState(event);
     } else if (event is UpdateProblems) {
@@ -42,8 +37,7 @@ class FilteredProblemsBloc
     }
   }
 
-  Stream<FilteredProblemsState> _mapUpdateFilterToState(
-      UpdateFilter event) async* {
+  Stream<FilteredProblemsState> _mapUpdateFilterToState(UpdateFilter event) async* {
     if (problemsBloc.state is ProblemsLoaded) {
       yield FilteredProblemsLoaded(
         _mapProblemsToFilteredProblems(
@@ -70,15 +64,14 @@ class FilteredProblemsBloc
     );
   }
 
-  List<Problem> _mapProblemsToFilteredProblems(
-      List<Problem> problems, VisibilityFilter filter) {
+  List<Problem> _mapProblemsToFilteredProblems(List<Problem> problems, VisibilityFilter filter) {
     return problems.where((problem) {
       if (filter == VisibilityFilter.all) {
         return true;
       } else if (filter == VisibilityFilter.project) {
         return problem.ticked == null;
       } else {
-        return problem.ticked == null ;
+        return problem.ticked == null;
       }
     }).toList();
   }
@@ -88,5 +81,4 @@ class FilteredProblemsBloc
     problemsSubscription.cancel();
     return super.close();
   }
-
 }

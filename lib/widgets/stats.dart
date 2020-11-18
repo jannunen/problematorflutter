@@ -33,14 +33,14 @@ class Stats extends StatelessWidget {
                   child: Text(
                     '${state.numCompleted}',
                     key: ArchSampleKeys.statsNumCompleted,
-                    style: Theme.of(context).textTheme.subhead,
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 8.0),
                   child: Text(
                     ArchSampleLocalizations.of(context).activeProblems,
-                    style: Theme.of(context).textTheme.title,
+                    style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
                 Padding(
@@ -48,7 +48,7 @@ class Stats extends StatelessWidget {
                   child: Text(
                     "${state.numActive}",
                     key: ArchSampleKeys.statsNumActive,
-                    style: Theme.of(context).textTheme.subhead,
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                 )
               ],

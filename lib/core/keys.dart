@@ -16,8 +16,7 @@ class ArchSampleKeys {
   static final problemList = const Key('__problemList__');
   static final problemsLoading = const Key('__problemsLoading__');
   static final problemItem = (String id) => Key('ProblemItem__${id}');
-  static final problemItemCheckbox =
-      (String id) => Key('ProblemItem__${id}__Checkbox');
+  static final problemItemCheckbox = (String id) => Key('ProblemItem__${id}__Checkbox');
   static final problemItemTask = (String id) => Key('ProblemItem__${id}__Task');
   static final problemItemNote = (String id) => Key('ProblemItem__${id}__Note');
 
@@ -30,7 +29,6 @@ class ArchSampleKeys {
   static final circuitsTab = const Key('__circuitsTab__');
   static final calendarTab = const Key('__calendarTab__');
   static final groupsTab = const Key('__groupsTab__');
-  static final scannerTab = const Key('__scannerTab__');
 
   // Extra Actions
   static final extraActionsButton = const Key('__extraActionsButton__');

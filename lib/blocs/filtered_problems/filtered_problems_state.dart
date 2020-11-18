@@ -15,14 +15,12 @@ class FilteredProblemsLoaded extends FilteredProblemsState {
   final List<Problem> filteredProblems;
   final VisibilityFilter activeFilter;
 
-  const FilteredProblemsLoaded(
-    this.filteredProblems,
-    this.activeFilter
-  );
+  const FilteredProblemsLoaded(this.filteredProblems, this.activeFilter);
 
   @override
   List<Object> get props => [filteredProblems, activeFilter];
 
   @override
-  String toString() => 'FilteredProblemsLoaded { filteredProblems: $filteredProblems, activeFilter: $activeFilter }';
+  String toString() =>
+      'FilteredProblemsLoaded { filteredProblems: $filteredProblems, activeFilter: $activeFilter }';
 }

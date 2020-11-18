@@ -1,7 +1,4 @@
-import 'dart:collection';
-
 import 'package:problemator/repository/dashboard_entity.dart';
-import 'package:problemator/repository/problem_entity.dart';
 
 class DashboardResponse {
   DashboardEntity dashboard;
@@ -12,4 +9,3 @@ class DashboardResponse {
     }
   }
 }
-

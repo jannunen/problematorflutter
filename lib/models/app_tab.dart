@@ -1,1 +1,1 @@
-enum AppTab { home, profile, circuits, groups,  archive, competitions, scanner}
+enum AppTab { home, profile, circuits, groups, archive, competitions }

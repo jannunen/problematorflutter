@@ -8,16 +8,14 @@ import 'package:problemator/api/repository_api.dart';
 class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
   final ProblemsRepositoryFlutter problemsRepository;
 
-  ProblemsBloc({@required this.problemsRepository});
-
-  @override
-  ProblemsState get initialState => ProblemsLoading();
+  ProblemsBloc({@required this.problemsRepository}) : super(ProblemsNotLoaded());
 
   @override
   Stream<ProblemsState> mapEventToState(ProblemsEvent event) async* {
     if (event is LoadProblems) {
       yield* _mapLoadProblemsToState();
-    }     /* else if (event is UpdateProblem) {
+    }
+    /* else if (event is UpdateProblem) {
       yield* _mapUpdateTodoToState(currentState, event);
     } else if (event is ToggleAll) {
       yield* _mapToggleAllToState(currentState);
@@ -28,17 +26,18 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
   }
 
   Stream<ProblemsState> _mapLoadProblemsToState() async* {
-
     try {
       final problems = await this.problemsRepository.fetchProblems();
-      yield ProblemsLoaded(
-        problems.map(Problem.fromEntity).toList(),
-      );
+      if (problems != null) {
+        List<Problem> problemList = problems.map(Problem.fromEntity).toList();
+        yield ProblemsLoaded(problemList);
+      } else {
+        yield ProblemsErrorLoading("Probably not logged in");
+      }
     } catch (_) {
       yield ProblemsNotLoaded();
     }
   }
-
 
 /*
 

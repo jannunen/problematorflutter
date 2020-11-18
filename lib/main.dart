@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:problemator/blocs/dashboard_data/dashboard_data_bloc.dart';
 import 'package:problemator/core/core.dart';
 import 'package:i18n_extension/i18n_widget.dart';
-
 
 import 'api/repository_api.dart';
 import 'blocs/blocs.dart';
@@ -16,7 +16,7 @@ import 'screens/screens.dart';
 import './main.i18n.dart';
 
 void main() {
-  BlocSupervisor.delegate = SimpleBlocDelegate();
+  Bloc.observer = SimpleBlocDelegate();
   runApp(
     BlocProvider(
       create: (context) {
@@ -37,13 +37,13 @@ class Problemator extends StatelessWidget {
       theme: ArchSampleTheme.theme,
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-          const Locale('en', "US"),
-          const Locale('fi', "FI"),
-        ],
+        const Locale('en', "US"),
+        const Locale('fi', "FI"),
+      ],
       routes: {
         ArchSampleRoutes.home: (context) {
           return MultiBlocProvider(
@@ -51,13 +51,12 @@ class Problemator extends StatelessWidget {
               BlocProvider<TabBloc>(
                 create: (context) => TabBloc(),
               ),
-              BlocProvider<DashboardDataBloc>(
-                create: (context) {
-                  return DashboardDataBloc(
-                    problemsRepository: ProblemsRepositoryFlutter(),
-                  )..add(LoadDashboardData());
-                }),
-                BlocProvider<FilteredProblemsBloc>(
+              BlocProvider<DashboardDataBloc>(create: (context) {
+                return DashboardDataBloc(
+                  problemsRepository: ProblemsRepositoryFlutter(),
+                )..add(LoadDashboardData());
+              }),
+              BlocProvider<FilteredProblemsBloc>(
                 create: (context) => FilteredProblemsBloc(
                   problemsBloc: BlocProvider.of<ProblemsBloc>(context),
                 ),
@@ -68,12 +67,10 @@ class Problemator extends StatelessWidget {
                 ),
               ),
             ],
-            child: I18n( 
-              initialLocale: Locale("fi"),
-              child: HomeScreen()),
+            child: I18n(initialLocale: Locale("fi"), child: HomeScreen()),
           );
         },
-          /*
+        /*
         ArchSampleRoutes.addProblem: (context) {
           return AddEditScreen(
             key: ArchSampleKeys.addProblemScreen,

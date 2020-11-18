@@ -36,7 +36,7 @@ class ProblemItem extends StatelessWidget {
             child: Text(
               problem.tag,
               key: ArchSampleKeys.problemItemTask(problem.id),
-              style: Theme.of(context).textTheme.title,
+              style: Theme.of(context).textTheme.headline6,
             ),
           ),
         ),

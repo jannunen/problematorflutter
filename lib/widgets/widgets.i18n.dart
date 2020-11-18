@@ -9,23 +9,30 @@ extension Localization on String {
         "en_us": "Filter problems",
         "fi_fi": "Suodata ratoja",
       } +
-      { "en_us": "Archive",
-        "fi_fi": "Arkisto", } +
-      { "en_us": "Circuits",
-        "fi_fi": "Ympyrät", } +
-
-      { "en_us": "Groups",
-        "fi_fi": "Ryhmät", } +
+      {
+        "en_us": "Archive",
+        "fi_fi": "Arkisto",
+      } +
+      {
+        "en_us": "Circuits",
+        "fi_fi": "Ympyrät",
+      } +
+      {
+        "en_us": "Groups",
+        "fi_fi": "Ryhmät",
+      } +
       {
         "en_us": "Profile",
         "fi_fi": "Profiili",
       } +
-      { "en_us": "Home",
-        "fi_fi": "Koti", } +
-      { "en_us": "Competitions",
-        "fi_fi": "Kisahommat", } +
-      { "en_us": "QR-Scanner",
-        "fi_fi": "QR-Scanneri", } +
+      {
+        "en_us": "Home",
+        "fi_fi": "Koti",
+      } +
+      {
+        "en_us": "Competitions",
+        "fi_fi": "Kisahommat",
+      } +
       {
         "en_us": "Change Language",
         "pt_br": "Mude Idioma",
