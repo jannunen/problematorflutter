@@ -1,116 +1,36 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-/// Thrown if during the sign up process if a failure occurs.
-class SignUpFailure implements Exception {}
-
-/// Thrown during the login process if a failure occurs.
-class LogInWithEmailAndPasswordFailure implements Exception {}
-
-/// Thrown during the sign in with google process if a failure occurs.
-class LogInWithGoogleFailure implements Exception {}
-
-/// Thrown during the logout process if a failure occurs.
-class LogOutFailure implements Exception {}
-
-/// {@template authentication_repository}
-/// Repository which manages user authentication.
+/// {@template user}
+/// User model
+///
+/// [User.empty] represents an unauthenticated user.
 /// {@endtemplate}
-class AuthenticationRepository {
-  /// {@macro authentication_repository}
-  AuthenticationRepository({
-    firebase_auth.FirebaseAuth firebaseAuth,
-    GoogleSignIn googleSignIn,
-  })  : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
+class User extends Equatable {
+  /// {@macro user}
+  const User({
+    @required this.email,
+    @required this.id,
+    @required this.name,
+    @required this.photo,
+  })  : assert(email != null),
+        assert(id != null);
 
-  final firebase_auth.FirebaseAuth _firebaseAuth;
-  final GoogleSignIn _googleSignIn;
+  /// The current user's email address.
+  final String email;
 
-  /// Stream of [User] which will emit the current user when
-  /// the authentication state changes.
-  ///
-  /// Emits [User.empty] if the user is not authenticated.
-  Stream<User> get user {
-    return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      return firebaseUser == null ? User.empty : firebaseUser.toUser;
-    });
-  }
+  /// The current user's id.
+  final String id;
 
-  /// Creates a new user with the provided [email] and [password].
-  ///
-  /// Throws a [SignUpFailure] if an exception occurs.
-  Future<void> signUp({
-    @required String email,
-    @required String password,
-  }) async {
-    assert(email != null && password != null);
-    try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on Exception {
-      throw SignUpFailure();
-    }
-  }
+  /// The current user's name (display name).
+  final String name;
 
-  /// Starts the Sign In with Google Flow.
-  ///
-  /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithGoogle() async {
-    try {
-      final googleUser = await _googleSignIn.signIn();
-      final googleAuth = await googleUser.authentication;
-      final credential = firebase_auth.GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      await _firebaseAuth.signInWithCredential(credential);
-    } on Exception {
-      throw LogInWithGoogleFailure();
-    }
-  }
+  /// Url for the current user's photo.
+  final String photo;
 
-  /// Signs in with the provided [email] and [password].
-  ///
-  /// Throws a [LogInWithEmailAndPasswordFailure] if an exception occurs.
-  Future<void> logInWithEmailAndPassword({
-    @required String email,
-    @required String password,
-  }) async {
-    assert(email != null && password != null);
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on Exception {
-      throw LogInWithEmailAndPasswordFailure();
-    }
-  }
+  /// Empty user which represents an unauthenticated user.
+  static const empty = User(email: '', id: '', name: null, photo: null);
 
-  /// Signs out the current user which will emit
-  /// [User.empty] from the [user] Stream.
-  ///
-  /// Throws a [LogOutFailure] if an exception occurs.
-  Future<void> logOut() async {
-    try {
-      await Future.wait([
-        _firebaseAuth.signOut(),
-        _googleSignIn.signOut(),
-      ]);
-    } on Exception {
-      throw LogOutFailure();
-    }
-  }
-}
-
-extension on firebase_auth.User {
-  User get toUser {
-    return User(id: uid, email: email, name: displayName, photo: photoURL);
-  }
+  @override
+  List<Object> get props => [email, id, name, photo];
 }

@@ -6,3 +6,5 @@ export 'visibility_filter.dart';
 export 'dashboard.dart';
 export 'user.dart';
 export 'password.dart';
+export 'confirmed_password.dart';
+export 'email.dart';

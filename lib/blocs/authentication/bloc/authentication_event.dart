@@ -15,6 +15,4 @@ class AuthenticationUserChanged extends AuthenticationEvent {
   List<Object> get props => [user];
 }
 
-class AuthenticationLogoutRequested extends AuthenticationEvent {
-
-};
+class AuthenticationLogoutRequested extends AuthenticationEvent {}

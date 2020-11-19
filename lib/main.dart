@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/core/core.dart';
+import 'package:problemator/repository/authentication_repository.dart';
+import 'package:problemator/screens/home/home.dart';
+import 'package:problemator/screens/login/view/login_page.dart';
+import 'package:problemator/screens/splash.dart';
+import 'package:problemator/ui/theme/theme.dart';
 
 import 'api/repository_api.dart';
 import 'blocs/blocs.dart';
 import 'blocs/simple_bloc_delegate.dart';
 import './main.i18n.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_firebase_login/app.dart';
-import 'package:flutter_firebase_login/simple_bloc_observer.dart';
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
-  Bloc.observer = SimpleBlocDelegate();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  Bloc.observer = SimpleBlocObserver();
   runApp(
     BlocProvider(
       create: (context) {
@@ -49,42 +52,43 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
-  final _navigatorKey = GlobalKey<NavigatorState>(;)
-
+  // The widget is stateful because we need to store the navigatorkey
+  final _navigatorKey = GlobalKey<NavigatorState>();
   NavigatorState get _navigator => _navigatorKey.currentState;
 
+  ThemeData activeTheme = appThemeData[AppTheme.Dark];
+  /*
+  if (!state.config.darkMode) {
+    activeTheme = appThemeData[AppTheme.Light];
+  }
+  */
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Problemator".i18n,
-      theme: ArchSampleTheme.theme,
+      theme: activeTheme,
       navigatorKey: _navigatorKey,
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
       supportedLocales: [
         const Locale('en', "US"),
         const Locale('fi', "FI"),
       ],
-      builder: (context , child) {
-        return BlocListener<AuthenticationBloc, AuthenticationState>(listener: 
-        (context, state) {
-          switch (state.status) {
+      builder: (context, child) {
+        return BlocListener<AuthenticationBloc, AuthenticationState>(
+          listener: (context, state) {
+            switch (state.status) {
               case AuthenticationStatus.authenticated:
-              _navigator.pushNamedAndRemoveUntil<void>(HomeePage.route(), (route) => false);
-              break;
+                _navigator.pushAndRemoveUntil<void>(HomePage.route(), (route) => false);
+                break;
 
               case AuthenticationStatus.unauthenticated:
-              _navigator.pushNamedAndRemoveUntil<void>(LoginPage.route(), (route) => false);
-              break;
+                _navigator.pushAndRemoveUntil<void>(LoginPage.route(), (route) => false);
+                break;
 
               default:
-              break;
-          }
-        },
-        child: child,
+                break;
+            }
+          },
+          child: child,
         );
       },
       onGenerateRoute: (_) => SplashPage.route(),
