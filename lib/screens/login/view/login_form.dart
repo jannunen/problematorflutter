@@ -124,7 +124,7 @@ class _GoogleLoginButton extends StatelessWidget {
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
       icon: const Icon(FontAwesomeIcons.google, color: Colors.white),
-      color: theme.accentColor,
+      color: Color.fromRGBO(66, 133, 244, 1.0),
       onPressed: () => context.read<LoginCubit>().logInWithGoogle(),
     );
   }

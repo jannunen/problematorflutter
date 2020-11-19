@@ -8,6 +8,7 @@ enum AppTheme {
 final appThemeData = {
   AppTheme.Dark: ThemeData(
       fontFamily: 'Nunito',
+      primaryColor: Colors.white,
       backgroundColor: Colors.grey[800],
       brightness: Brightness.dark,
       textTheme: TextTheme(
@@ -24,6 +25,7 @@ final appThemeData = {
       )),
   AppTheme.Light: ThemeData(
     fontFamily: 'Nunito',
+    primaryColor: Colors.black87,
     backgroundColor: Color.fromRGBO(229, 229, 229, 0.9),
     brightness: Brightness.light,
     scaffoldBackgroundColor: Color.fromRGBO(229, 229, 229, 0.9),
