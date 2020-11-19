@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 /// {@template user}
 /// User model
@@ -9,15 +10,14 @@ import 'package:meta/meta.dart';
 class User extends Equatable {
   /// {@macro user}
   const User({
-    @required this.email,
+    this.email,
     this.id,
     this.name,
     this.photo,
     this.uid,
     this.jwt,
     this.message,
-  })  : assert(email != null),
-        assert(id != null);
+  });
 
   /// The current user's email address.
   final String email;
@@ -48,5 +48,17 @@ class User extends Equatable {
       message: json['message'] ?? null,
       jwt: json['JWT'] ?? null,
     );
+  }
+
+  String toJson() => jsonEncode(toMap());
+
+  Map<String, dynamic> toMap() {
+    return {
+      'email': email,
+      'id': id,
+      'uid': uid,
+      'message': message,
+      'jwt': jwt,
+    };
   }
 }

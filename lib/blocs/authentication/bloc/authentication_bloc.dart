@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:problemator/blocs/user/bloc/user_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/repository/authentication_repository.dart';
 
@@ -12,14 +13,17 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthenticationRepository _authenticationRepository;
-  StreamSubscription<User> _userSubscription;
+  final UserBloc _userBloc;
 
-  AuthenticationBloc({@required AuthenticationRepository authenticationRepository})
+  AuthenticationBloc(
+      {@required AuthenticationRepository authenticationRepository, @required UserBloc userBloc})
       : assert(authenticationRepository != null),
         _authenticationRepository = authenticationRepository,
+        _userBloc = userBloc,
         super(const AuthenticationState.unknown()) {
-    _userSubscription =
-        _authenticationRepository.user.listen((user) => add(AuthenticationUserChanged(user)));
+    _userBloc.listen((user) {
+      add(AuthenticationUserChanged(user));
+    });
   }
 
   @override
@@ -35,7 +39,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   @override
   Future<void> close() {
-    _userSubscription?.cancel();
     return super.close();
   }
 

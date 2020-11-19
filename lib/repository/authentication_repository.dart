@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:problemator/api/api_client.dart';
+import 'package:problemator/blocs/user/bloc/user_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
+import 'package:problemator/repository/user_repository.dart';
 
 /// Thrown if during the sign up process if a failure occurs.
 class SignUpFailure implements Exception {}
@@ -30,33 +32,16 @@ class AuthenticationRepository {
     firebase_auth.FirebaseAuth firebaseAuth,
     GoogleSignIn googleSignIn,
     ApiClient apiClient,
+    UserBloc userBloc,
   })  : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
-        _apiClient = apiClient ?? ApiClient() {
-    // TODO CLOSE
-    streamController = StreamController<User>();
-    streamController.add(User.empty);
-  }
+        _apiClient = apiClient ?? ApiClient(),
+        _userBloc = userBloc {}
 
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
   final ApiClient _apiClient;
-  User authUser;
-
-  StreamController<User> streamController;
-
-  /// Stream of [User] which will emit the current user when
-  /// the authentication state changes.
-  ///
-  /// Emits [User.empty] if the user is not authenticated.
-  Stream<User> get user {
-    return streamController.stream;
-    /*
-    return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      return firebaseUser == null ? User.empty : firebaseUser.toUser;
-    });
-    */
-  }
+  UserBloc _userBloc;
 
   /// Creates a new user with the provided [email] and [password].
   ///
@@ -103,12 +88,16 @@ class AuthenticationRepository {
     assert(email != null && password != null);
     try {
       final User user = await _apiClient.login(email, password);
-      streamController.add(user);
+      _userBloc.add(UserEvent(user));
     } on LogInWithEmailAndPasswordFailure catch (err) {
       throw LogInWithEmailAndPasswordFailure(err.message ?? '');
     } on Exception catch (err) {
       throw LogInWithEmailAndPasswordFailure(err.toString());
     }
+  }
+
+  void setUserBloc(UserBloc bloc) {
+    this._userBloc = bloc;
   }
 
   /// Signs out the current user which will emit
