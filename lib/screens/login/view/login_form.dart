@@ -14,7 +14,7 @@ class LoginForm extends StatelessWidget {
           Scaffold.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(content: Text('Authentication Failure')),
+              SnackBar(content: Text('Authentication Failure: ' + state.message)),
             );
         }
       },

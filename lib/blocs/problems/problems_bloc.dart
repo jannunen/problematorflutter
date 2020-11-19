@@ -6,7 +6,7 @@ import 'package:problemator/models/models.dart';
 import 'package:problemator/api/repository_api.dart';
 
 class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
-  final ProblemsRepositoryFlutter problemsRepository;
+  final ProblemsRepository problemsRepository;
 
   ProblemsBloc({@required this.problemsRepository}) : super(ProblemsNotLoaded());
 
@@ -27,10 +27,9 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
 
   Stream<ProblemsState> _mapLoadProblemsToState() async* {
     try {
-      final problems = await this.problemsRepository.fetchProblems();
-      if (problems != null) {
-        List<Problem> problemList = problems.map(Problem.fromEntity).toList();
-        yield ProblemsLoaded(problemList);
+      final problemList = await this.problemsRepository.fetchProblems();
+      if (problemList != null) {
+        yield ProblemsLoaded(problemList.problems);
       } else {
         yield ProblemsErrorLoading("Probably not logged in");
       }

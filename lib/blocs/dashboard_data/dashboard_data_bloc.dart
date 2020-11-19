@@ -9,7 +9,7 @@ import 'dashboard_data.dart';
 
 class DashboardDataBloc extends Bloc<DashboardDataEvent, DashboardDataState> {
   // This is needed to communicate with the API
-  final ProblemsRepositoryFlutter problemsRepository;
+  final ProblemsRepository problemsRepository;
 
   DashboardDataBloc({@required this.problemsRepository}) : super(DashboardDataInitial());
 
@@ -23,8 +23,8 @@ class DashboardDataBloc extends Bloc<DashboardDataEvent, DashboardDataState> {
   Stream<DashboardDataState> _mapLoadDashboardDataToState() async* {
     yield DashboardDataLoading();
     try {
-      final data = await this.problemsRepository.fetchDashboard();
-      yield DashboardDataLoaded(dashboard: Dashboard.fromEntity(data));
+      final dashboard = await this.problemsRepository.fetchDashboard();
+      yield DashboardDataLoaded(dashboard: dashboard);
     } catch (_) {
       yield DashboardDataNotLoaded();
     }

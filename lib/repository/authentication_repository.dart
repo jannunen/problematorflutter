@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:problemator/api/api_client.dart';
 import 'package:problemator/models/models.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,7 +10,10 @@ import 'package:meta/meta.dart';
 class SignUpFailure implements Exception {}
 
 /// Thrown during the login process if a failure occurs.
-class LogInWithEmailAndPasswordFailure implements Exception {}
+class LogInWithEmailAndPasswordFailure implements Exception {
+  final String message;
+  LogInWithEmailAndPasswordFailure(this.message);
+}
 
 /// Thrown during the sign in with google process if a failure occurs.
 class LogInWithGoogleFailure implements Exception {}
@@ -25,20 +29,33 @@ class AuthenticationRepository {
   AuthenticationRepository({
     firebase_auth.FirebaseAuth firebaseAuth,
     GoogleSignIn googleSignIn,
+    ApiClient apiClient,
   })  : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
+        _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
+        _apiClient = apiClient ?? ApiClient() {
+    // TODO CLOSE
+    streamController = StreamController<User>();
+    streamController.add(User.empty);
+  }
 
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
+  final ApiClient _apiClient;
+  User authUser;
+
+  StreamController<User> streamController;
 
   /// Stream of [User] which will emit the current user when
   /// the authentication state changes.
   ///
   /// Emits [User.empty] if the user is not authenticated.
   Stream<User> get user {
+    return streamController.stream;
+    /*
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
       return firebaseUser == null ? User.empty : firebaseUser.toUser;
     });
+    */
   }
 
   /// Creates a new user with the provided [email] and [password].
@@ -85,12 +102,12 @@ class AuthenticationRepository {
   }) async {
     assert(email != null && password != null);
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on Exception {
-      throw LogInWithEmailAndPasswordFailure();
+      final User user = await _apiClient.login(email, password);
+      streamController.add(user);
+    } on LogInWithEmailAndPasswordFailure catch (err) {
+      throw LogInWithEmailAndPasswordFailure(err.message ?? '');
+    } on Exception catch (err) {
+      throw LogInWithEmailAndPasswordFailure(err.toString());
     }
   }
 

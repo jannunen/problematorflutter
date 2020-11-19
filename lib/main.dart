@@ -22,7 +22,7 @@ void main() async {
     BlocProvider(
       create: (context) {
         return ProblemsBloc(
-          problemsRepository: ProblemsRepositoryFlutter(),
+          problemsRepository: ProblemsRepository(),
         )..add(LoadProblems());
       },
       child: Problemator(authenticationRepository: AuthenticationRepository()),

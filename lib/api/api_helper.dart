@@ -8,10 +8,10 @@ import 'dart:async';
 import 'package:problemator/components/cache/MyCacheManager.dart';
 import 'package:problemator/core/utils.dart';
 
-class ApiBaseHelper {
+class ApiHelper {
   final String _baseUrl = "https://www.problemator.fi/t/problematorapi/v02/";
 
-  Future<dynamic> get(String url) async {
+  Future<dynamic> get(String url, {Map<String, dynamic> params}) async {
     print('Api GET, url $_baseUrl' + '$url');
     try {
       var file = await MyCacheManager().getSingleFile(_baseUrl + url);
