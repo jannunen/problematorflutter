@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
+import 'package:problemator/blocs/user/bloc/user_bloc.dart';
 import 'package:problemator/models/config.dart';
 import 'package:problemator/models/user.dart';
 import 'package:problemator/utils/shared_objects.dart';
@@ -12,13 +13,14 @@ part 'config_event.dart';
 part 'config_state.dart';
 
 class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
-  StreamSubscription _authenticationSubscription;
-
+  final UserBloc userBloc;
   final AuthenticationBloc authenticationBloc;
-  ConfigBloc({this.authenticationBloc}) : super(null) {
-    _authenticationSubscription = authenticationBloc.asBroadcastStream().listen((state) {
-      int i = 1;
-      //add(ConfigValueChanged(state.user)));
+
+  ConfigBloc({this.authenticationBloc, this.userBloc}) : super(ConfigStateInitial()) {
+    userBloc.listen((user) {
+      if (user != User.empty) {
+        add(ConfigValueChanged(state.config.copyWith(user: user)));
+      }
     });
   }
 
@@ -70,20 +72,5 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     }
     SharedObjects.prefs.setString('auth_token', config.token);
     SharedObjects.prefs.setBool('darkMode', config.darkMode);
-  }
-
-/*
-ConfigStateChanged fromJson(Map<String, dynamic> json) {
-
-}
-Map<String, dynamic> toJson(ConfigStateChanged state) {
-
-}
-*/
-
-  @override
-  Future<void> close() {
-    this._authenticationSubscription.cancel();
-    return super.close();
   }
 }

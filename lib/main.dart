@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
+import 'package:problemator/blocs/config/bloc/config_bloc.dart';
 import 'package:problemator/repository/authentication_repository.dart';
 import 'package:problemator/repository/user_repository.dart';
 import 'package:problemator/screens/home/home.dart';
 import 'package:problemator/screens/login/view/login_page.dart';
 import 'package:problemator/screens/splash.dart';
 import 'package:problemator/ui/theme/theme.dart';
+import 'package:problemator/utils/shared_objects.dart';
 
 import 'blocs/blocs.dart';
-import 'blocs/config/config_bloc.dart';
 import 'blocs/simple_bloc_delegate.dart';
 import './main.i18n.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,6 +22,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Bloc.observer = SimpleBlocObserver();
+  SharedObjects.prefs = await CachedSharedPreferences.getInstance();
   final UserRepository userRepository = UserRepository();
   UserBloc userBloc = UserBloc();
   final AuthenticationRepository authenticationRepository =
@@ -43,15 +45,13 @@ class Problemator extends StatelessWidget {
     this.userBloc,
   })  : assert(authenticationRepository != null),
         assert(userRepository != null),
-        super(key: key) {
-    userBloc.listen((user) {
-      // Invoke config state change
-      int i = 1;
-    });
-  }
+        super(key: key) {}
 
   @override
   Widget build(BuildContext context) {
+    AuthenticationBloc authenticationBloc =
+        AuthenticationBloc(authenticationRepository: authenticationRepository, userBloc: userBloc);
+    ConfigBloc configBloc = ConfigBloc(authenticationBloc: authenticationBloc, userBloc: userBloc);
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider<AuthenticationRepository>(
@@ -60,16 +60,11 @@ class Problemator extends StatelessWidget {
         ],
         child: MultiBlocProvider(
           providers: [
-            BlocProvider<UserBloc>(create: (_) => userBloc..add(UserEvent(User.empty))),
+            BlocProvider<ConfigBloc>(create: (_) => configBloc),
             BlocProvider<AuthenticationBloc>(
-                create: (BuildContext context) => AuthenticationBloc(
-                      authenticationRepository: authenticationRepository,
-                      userBloc: BlocProvider.of<UserBloc>(context),
-                    )),
-            BlocProvider<ConfigBloc>(
-                create: (BuildContext context) =>
-                    ConfigBloc(authenticationBloc: BlocProvider.of<AuthenticationBloc>(context))
-                      ..add(RestartAppEvent())),
+                create: (_) => authenticationBloc..add(AuthenticationUserChanged(User.empty))),
+            BlocProvider<UserBloc>(create: (_) => userBloc..add(UserEvent(User.empty))),
+            //..add(RestartAppEvent())),
             /*
             BlocProvider<ProblemsBloc>(
                 create: (BuildContext context) =>

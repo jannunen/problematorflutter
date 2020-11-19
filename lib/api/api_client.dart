@@ -38,4 +38,12 @@ class ApiClient {
     User login = User.fromJson(response);
     return login;
   }
+
+  Future<User> logout() async {
+    final response = await _helper.get("logout/&react=true&api-auth-token=$_apiKey");
+    if (response.containsKey('error') && response['error'] == 'true') {
+      throw new Exception(response['message']);
+    }
+    return User.empty;
+  }
 }

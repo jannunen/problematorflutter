@@ -109,7 +109,9 @@ class AuthenticationRepository {
       await Future.wait([
         _firebaseAuth.signOut(),
         _googleSignIn.signOut(),
+        _apiClient.logout(),
       ]);
+      _userBloc.add(UserEvent(User.empty));
     } on Exception {
       throw LogOutFailure();
     }
