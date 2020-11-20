@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
-import 'package:problemator/blocs/user/bloc/user_bloc.dart';
 
 class HomePage extends StatelessWidget {
   static Route route() {
@@ -14,6 +13,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
+    ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
+    _problemsRepository.setApiKey(user.jwt);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),

@@ -41,6 +41,7 @@ class _AppState extends State<App> {
   AuthenticationRepository authenticationRepository;
   AuthenticationBloc _authenticationBloc;
   ConfigBloc configBloc;
+
   @override
   void initState() {
     super.initState();
@@ -54,8 +55,16 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationBloc authenticationBloc =
-        AuthenticationBloc(authenticationRepository: authenticationRepository, userBloc: userBloc);
+    return _buildAppView(context);
+  }
+
+  Widget _buildAppView(BuildContext context) {
+    ThemeData activeTheme = appThemeData[AppTheme.Dark];
+    /*
+  if (!state.config.darkMode) {
+    activeTheme = appThemeData[AppTheme.Light];
+  }
+  */
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider<AuthenticationRepository>(
@@ -68,49 +77,36 @@ class _AppState extends State<App> {
           providers: [
             BlocProvider<ConfigBloc>(create: (_) => configBloc),
             BlocProvider<AuthenticationBloc>(
-                create: (_) => authenticationBloc..add(AuthenticationUserChanged(User.empty))),
+                create: (_) => _authenticationBloc..add(AuthenticationUserChanged(User.empty))),
             BlocProvider<UserBloc>(create: (_) => userBloc),
           ],
-          child: _buildAppView(context),
+          child: MaterialApp(
+            title: "Problemator".i18n,
+            theme: activeTheme,
+            supportedLocales: [
+              const Locale('en', "US"),
+              const Locale('fi', "FI"),
+            ],
+            home: BlocBuilder<AuthenticationBloc, AuthenticationState>(builder: (context, state) {
+              if (state.status == AuthenticationStatus.unauthenticated) {
+                return LoginPage();
+              } else if (state.status == AuthenticationStatus.authenticated) {
+                return BlocProvider(
+                    create: (context) => HomeBloc(
+                        problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
+                        userBloc: BlocProvider.of<UserBloc>(context))
+                      ..add(InitializeHomeScreenEvent()),
+                    child: HomePage());
+              } else {
+                // Make splash screen stay around at least 2 secs
+                Future.delayed(Duration(seconds: 2)).then((value) {
+                  //_authenticationBloc.add(AuthenticationUserChanged(User.empty));
+                  //context.read<ConfigBloc>().add(RestartAppEvent());
+                });
+                return SplashPage();
+              }
+            }),
+          ),
         ));
-  }
-
-  Widget _buildAppView(BuildContext context) {
-    ThemeData activeTheme = appThemeData[AppTheme.Dark];
-    /*
-  if (!state.config.darkMode) {
-    activeTheme = appThemeData[AppTheme.Light];
-  }
-  */
-    return BlocProvider(
-      create: (_) => _authenticationBloc,
-      child: MaterialApp(
-        title: "Problemator".i18n,
-        theme: activeTheme,
-        supportedLocales: [
-          const Locale('en', "US"),
-          const Locale('fi', "FI"),
-        ],
-        home: BlocBuilder<AuthenticationBloc, AuthenticationState>(builder: (context, state) {
-          if (state.status == AuthenticationStatus.unauthenticated) {
-            return LoginPage();
-          } else if (state.status == AuthenticationStatus.authenticated) {
-            return BlocProvider(
-                create: (context) => HomeBloc(
-                    problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
-                    userBloc: BlocProvider.of<UserBloc>(context))
-                  ..add(InitializeHomeScreenEvent()),
-                child: HomePage());
-          } else {
-            // Make splash screen stay around at least 2 secs
-            Future.delayed(Duration(seconds: 2)).then((value) {
-              //_authenticationBloc.add(AuthenticationUserChanged(User.empty));
-              //context.read<ConfigBloc>().add(RestartAppEvent());
-            });
-            return SplashPage();
-          }
-        }),
-      ),
-    );
   }
 }

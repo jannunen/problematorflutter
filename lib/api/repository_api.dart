@@ -18,6 +18,10 @@ class ProblemsRepository {
       }
     });
   }
+  void setApiKey(String key) {
+    this.apiKey = key;
+    this._apiClient.setApiKey(key);
+  }
 
   Future<ProblemList> fetchProblems() async {
     return await _apiClient.getProblemList();
