@@ -11,3 +11,4 @@ export 'password.dart';
 export 'confirmed_password.dart';
 export 'email.dart';
 export 'config.dart';
+export 'new_dashboard.dart';

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:problemator/api/api_client.dart';
+import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/config/bloc/config_bloc.dart';
+import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/repository/authentication_repository.dart';
 import 'package:problemator/repository/user_repository.dart';
 import 'package:problemator/screens/home/home.dart';
@@ -10,6 +13,7 @@ import 'package:problemator/screens/splash.dart';
 import 'package:problemator/ui/theme/theme.dart';
 import 'package:problemator/utils/shared_objects.dart';
 
+import 'blocs/authentication/bloc/authentication_bloc.dart';
 import 'blocs/blocs.dart';
 import 'blocs/simple_bloc_delegate.dart';
 import './main.i18n.dart';
@@ -23,105 +27,90 @@ void main() async {
   await Firebase.initializeApp();
   Bloc.observer = SimpleBlocObserver();
   SharedObjects.prefs = await CachedSharedPreferences.getInstance();
-  final UserRepository userRepository = UserRepository();
-  UserBloc userBloc = UserBloc();
-  final AuthenticationRepository authenticationRepository =
-      AuthenticationRepository(userBloc: userBloc);
-  runApp(Problemator(
-    authenticationRepository: authenticationRepository,
-    userRepository: userRepository,
-    userBloc: userBloc,
-  ));
+  runApp(App());
 }
 
-class Problemator extends StatelessWidget {
-  final UserRepository userRepository;
-  final AuthenticationRepository authenticationRepository;
-  final UserBloc userBloc;
-  Problemator({
-    Key key,
-    @required this.authenticationRepository,
-    @required this.userRepository,
-    this.userBloc,
-  })  : assert(authenticationRepository != null),
-        assert(userRepository != null),
-        super(key: key) {}
+class App extends StatefulWidget {
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final UserRepository userRepository = UserRepository();
+  UserBloc userBloc = UserBloc();
+  final ApiClient apiClient = ApiClient();
+  AuthenticationRepository authenticationRepository;
+  AuthenticationBloc _authenticationBloc;
+  ConfigBloc configBloc;
+  @override
+  void initState() {
+    super.initState();
+    authenticationRepository = AuthenticationRepository(userBloc: userBloc, apiClient: apiClient);
+    _authenticationBloc =
+        AuthenticationBloc(authenticationRepository: authenticationRepository, userBloc: userBloc);
+    //_authenticationBloc.add(AuthenticationUserChanged(User.empty));
+    configBloc = ConfigBloc(authenticationBloc: _authenticationBloc, userBloc: userBloc);
+    configBloc.add(RestartAppEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
     AuthenticationBloc authenticationBloc =
         AuthenticationBloc(authenticationRepository: authenticationRepository, userBloc: userBloc);
-    ConfigBloc configBloc = ConfigBloc(authenticationBloc: authenticationBloc, userBloc: userBloc);
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider<AuthenticationRepository>(
               create: (context) => authenticationRepository),
-          RepositoryProvider<UserRepository>(create: (context) => userRepository)
+          RepositoryProvider<UserRepository>(create: (context) => userRepository),
+          RepositoryProvider<ProblemsRepository>(
+              create: (context) => ProblemsRepository(apiClient: apiClient, userBloc: userBloc)),
         ],
         child: MultiBlocProvider(
           providers: [
             BlocProvider<ConfigBloc>(create: (_) => configBloc),
             BlocProvider<AuthenticationBloc>(
                 create: (_) => authenticationBloc..add(AuthenticationUserChanged(User.empty))),
-            BlocProvider<UserBloc>(create: (_) => userBloc..add(UserEvent(User.empty))),
-            //..add(RestartAppEvent())),
-            /*
-            BlocProvider<ProblemsBloc>(
-                create: (BuildContext context) =>
-                    ProblemsBloc(problemsRepository: ProblemsRepository())),
-                    */
+            BlocProvider<UserBloc>(create: (_) => userBloc),
           ],
-          child: AppView(),
+          child: _buildAppView(context),
         ));
   }
-}
 
-class AppView extends StatefulWidget {
-  @override
-  _AppViewState createState() => _AppViewState();
-}
-
-class _AppViewState extends State<AppView> {
-  // The widget is stateful because we need to store the navigatorkey
-  final _navigatorKey = GlobalKey<NavigatorState>();
-  NavigatorState get _navigator => _navigatorKey.currentState;
-
-  ThemeData activeTheme = appThemeData[AppTheme.Dark];
-  /*
+  Widget _buildAppView(BuildContext context) {
+    ThemeData activeTheme = appThemeData[AppTheme.Dark];
+    /*
   if (!state.config.darkMode) {
     activeTheme = appThemeData[AppTheme.Light];
   }
   */
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Problemator".i18n,
-      theme: activeTheme,
-      navigatorKey: _navigatorKey,
-      supportedLocales: [
-        const Locale('en', "US"),
-        const Locale('fi', "FI"),
-      ],
-      builder: (context, child) {
-        return BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {
-            switch (state.status) {
-              case AuthenticationStatus.authenticated:
-                _navigator.pushAndRemoveUntil<void>(HomePage.route(), (route) => false);
-                break;
-
-              case AuthenticationStatus.unauthenticated:
-                _navigator.pushAndRemoveUntil<void>(LoginPage.route(), (route) => false);
-                break;
-
-              default:
-                break;
-            }
-          },
-          child: child,
-        );
-      },
-      onGenerateRoute: (_) => SplashPage.route(),
+    return BlocProvider(
+      create: (_) => _authenticationBloc,
+      child: MaterialApp(
+        title: "Problemator".i18n,
+        theme: activeTheme,
+        supportedLocales: [
+          const Locale('en', "US"),
+          const Locale('fi', "FI"),
+        ],
+        home: BlocBuilder<AuthenticationBloc, AuthenticationState>(builder: (context, state) {
+          if (state.status == AuthenticationStatus.unauthenticated) {
+            return LoginPage();
+          } else if (state.status == AuthenticationStatus.authenticated) {
+            return BlocProvider(
+                create: (context) => HomeBloc(
+                    problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
+                    userBloc: BlocProvider.of<UserBloc>(context))
+                  ..add(InitializeHomeScreenEvent()),
+                child: HomePage());
+          } else {
+            // Make splash screen stay around at least 2 secs
+            Future.delayed(Duration(seconds: 2)).then((value) {
+              //_authenticationBloc.add(AuthenticationUserChanged(User.empty));
+              //context.read<ConfigBloc>().add(RestartAppEvent());
+            });
+            return SplashPage();
+          }
+        }),
+      ),
     );
   }
 }

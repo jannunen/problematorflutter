@@ -1,6 +1,9 @@
 import 'dart:collection';
 
+import 'package:problemator/models/models.dart';
+
 class Dashboard {
+  /*
   Mysettings mysettings;
   List<Locations> locations;
   Climber climber;
@@ -10,9 +13,13 @@ class Dashboard {
   List<CompetitionInfo> upcoming;
   List<CompetitionInfo> ongoing;
   PointModifiers pointModifiers;
+  */
+  List<Tick> ticksToday;
 
-  Dashboard(
-      {this.mysettings,
+  Dashboard({
+    this.ticksToday,
+    /*
+        this.mysettings,
       this.locations,
       this.climber,
       this.locinfo,
@@ -20,8 +27,12 @@ class Dashboard {
       this.grades,
       this.upcoming,
       this.ongoing,
-      this.pointModifiers});
+      this.pointModifiers
+      */
+  });
+  Dashboard.fromJson(Map<String, dynamic> json) {}
 
+/*
   Dashboard.fromJson(Map<String, dynamic> json) {
     mysettings = json['mysettings'] != null ? new Mysettings.fromJson(json['mysettings']) : null;
     if (json['locations'] != null) {
@@ -647,4 +658,5 @@ class PointModifiers {
       });
     }
   }
+  */
 }

@@ -21,7 +21,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         _authenticationRepository = authenticationRepository,
         _userBloc = userBloc,
         super(const AuthenticationState.unknown()) {
-    print("Persimonoi");
+    // Listen for userbloc's user. If user changes, change
+    // the state of this bloc
     _userBloc.listen((user) {
       add(AuthenticationUserChanged(user));
     });

@@ -50,7 +50,7 @@ class User extends Equatable {
     );
   }
 
-  String toJson() => jsonEncode(toMap());
+  Map<String, dynamic> toJson() => toMap();
 
   Map<String, dynamic> toMap() {
     return {
@@ -58,7 +58,7 @@ class User extends Equatable {
       'id': id,
       'uid': uid,
       'message': message,
-      'jwt': jwt,
+      'JWT': jwt,
     };
   }
 }

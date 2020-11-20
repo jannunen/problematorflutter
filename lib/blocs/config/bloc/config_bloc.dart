@@ -18,9 +18,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
 
   ConfigBloc({this.authenticationBloc, this.userBloc}) : super(ConfigStateInitial()) {
     userBloc.listen((user) {
-      if (user != User.empty) {
-        add(ConfigValueChanged(state.config.copyWith(user: user)));
-      }
+      add(ConfigValueChanged(state.config.copyWith(user: user)));
     });
   }
 
@@ -51,7 +49,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     User user = null;
     if (userString != null) {
       try {
-        Map<String, dynamic> gymJson = jsonDecode(userString);
+        Map<String, dynamic> gymJson = json.decode(userString);
         user = User.fromJson(gymJson);
       } catch (error) {
         // assume gym info not in correct format...
@@ -60,15 +58,21 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     }
     String token = SharedObjects.prefs.getString('auth_token');
     bool darkMode = SharedObjects.prefs.getBool('darkMode') ?? true;
+    // If we have a valid user, notify userbloc...
+    if (user != null && user != User.empty) {
+      userBloc.add(UserEvent(user));
+    }
     return Config(user: user, token: token, darkMode: darkMode);
   }
 
   Future<void> _saveConfig(Config config) async {
     User user = config.user;
-    if (user != null) {
+    if (user != null && user != User.empty) {
       final json = user.toJson();
       String jsonString = jsonEncode(json);
       SharedObjects.prefs.setString('user', jsonString);
+    } else {
+      SharedObjects.prefs.setString('user', null);
     }
     SharedObjects.prefs.setString('auth_token', config.token);
     SharedObjects.prefs.setBool('darkMode', config.darkMode);
