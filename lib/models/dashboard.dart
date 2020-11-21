@@ -15,9 +15,11 @@ class Dashboard {
   PointModifiers pointModifiers;
   */
   List<Tick> ticksToday;
+  Spread spread;
 
   Dashboard({
     this.ticksToday,
+    this.spread,
     /*
         this.mysettings,
       this.locations,
@@ -659,4 +661,17 @@ class PointModifiers {
     }
   }
   */
+}
+
+class Spread {
+  List<SpreadPoint> points;
+
+  Spread({this.points});
+}
+
+class SpreadPoint {
+  String grade;
+  int amount;
+
+  SpreadPoint({this.grade, this.amount});
 }
