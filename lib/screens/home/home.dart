@@ -23,6 +23,7 @@ class HomePage extends StatelessWidget {
     ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
     _problemsRepository.setApiKey(user.jwt);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       drawer: DrawerMenu(),
       appBar: AppBar(
         title: const Text('Home'),
@@ -107,10 +108,13 @@ class HomePage extends StatelessWidget {
   }
 
   void _openAddProblemDialog(BuildContext context) {
-    showModalBottomSheet(
+    showBottomSheet(
         context: context,
-        builder: (context) {
-          return AddProblemForm();
+        builder: (ctx) {
+          // DO NOT name this parameter to context.
+          // Then the correct context cannot be found and the bloc chain breaks.
+          return BlocProvider<HomeBloc>.value(
+              value: BlocProvider.of<HomeBloc>(context), child: AddProblemForm());
         });
   }
 

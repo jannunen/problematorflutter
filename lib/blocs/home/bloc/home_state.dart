@@ -1,7 +1,9 @@
 part of 'home_bloc.dart';
 
 abstract class HomeState extends Equatable {
-  const HomeState();
+  final Dashboard dashboard;
+
+  const HomeState({this.dashboard});
 
   @override
   List<Object> get props => [];

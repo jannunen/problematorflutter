@@ -6,6 +6,7 @@ class Problem extends Equatable {
   final String gradeid;
   final String problemid;
   final String id;
+  final String htmlcolour;
   final String gradename;
   final String locationId;
   final String wallchar;
@@ -18,16 +19,16 @@ class Problem extends Equatable {
   final String startdefinition;
   final String enddefinition;
   final String addt;
-  final String cLike;
+  final int cLike;
   final String cLove;
-  final String cDislike;
+  final int cDislike;
   final String vscale;
   final String score;
   final String ascentcount;
   final String addedrelative;
   final String addedformatted;
   final int mytickcount;
-  final int tagshort;
+  final String tagshort;
   final String ticked;
 
   Problem({
@@ -36,6 +37,7 @@ class Problem extends Equatable {
     this.id,
     this.gradename,
     this.locationId,
+    this.htmlcolour,
     this.wallchar,
     this.walldesc,
     this.colour,
@@ -131,14 +133,16 @@ class Problem extends Equatable {
       colour: json['colour'],
       added: json['added'],
       tag: json['tag'],
+      tagshort: json['tagshort'],
       author: json['author'],
       routetype: json['routetype'],
       startdefinition: json['startdefinition'],
       enddefinition: json['enddefinition'],
       addt: json['addt'],
-      cLike: json['c_like'],
+      htmlcolour: json['htmlcolour'],
+      cLike: int.tryParse(json['c_like']),
       cLove: json['c_love'],
-      cDislike: json['c_dislike'],
+      cDislike: int.tryParse(json['c_dislike']),
       vscale: json['vscale'],
       score: json['score'],
       ascentcount: json['ascentcount'],

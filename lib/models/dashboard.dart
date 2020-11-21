@@ -16,10 +16,12 @@ class Dashboard {
   List<Tick> ticksToday;
   Spread spread;
   HashMap<String, Grade> grades;
+  List<Problem> problems;
 
   Dashboard({
     this.ticksToday,
     this.spread,
+    this.problems,
     /*
         this.mysettings,
       this.locations,
@@ -34,7 +36,13 @@ class Dashboard {
   });
   Dashboard.fromJson(Map<String, dynamic> json) {
     grades = new HashMap<String, Grade>();
-    if (json['grade'] != null) {
+    problems = new List<Problem>();
+    if (json['problems'] != null) {
+      json['problems'].forEach((v) {
+        problems.add(Problem.fromJson(v));
+      });
+    }
+    if (json['grades'] != null) {
       json['grades'].forEach((key, value) {
         grades[value['id']] = Grade(
           id: value['id'],
