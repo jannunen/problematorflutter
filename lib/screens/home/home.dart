@@ -5,6 +5,7 @@ import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/core/problemator_theme.dart';
+import 'package:problemator/widgets/drawer.dart';
 import 'package:problemator/widgets/problems/add_problem.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,6 +23,7 @@ class HomePage extends StatelessWidget {
     ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
     _problemsRepository.setApiKey(user.jwt);
     return Scaffold(
+      drawer: DrawerMenu(),
       appBar: AppBar(
         title: const Text('Home'),
         actions: <Widget>[
@@ -104,7 +106,13 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _openAddProblemDialog(BuildContext context) {}
+  void _openAddProblemDialog(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return AddProblemForm();
+        });
+  }
 
   Widget _buildFloorMap(BuildContext context, Dashboard dashboard) {
     final textTheme = Theme.of(context).textTheme;

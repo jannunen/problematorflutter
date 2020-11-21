@@ -10,6 +10,9 @@ final appThemeData = {
       fontFamily: 'Fira Sans',
       backgroundColor: Colors.grey[800],
       brightness: Brightness.dark,
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: Colors.grey[700],
+      ),
       textTheme: TextTheme(
         bodyText1: TextStyle(color: Colors.white70),
         bodyText2: TextStyle(color: Colors.white70),
@@ -27,6 +30,9 @@ final appThemeData = {
     backgroundColor: Color.fromRGBO(229, 229, 229, 0.9),
     brightness: Brightness.light,
     scaffoldBackgroundColor: Color.fromRGBO(229, 229, 229, 0.9),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: Colors.white,
+    ),
     textTheme: TextTheme(
       bodyText1: TextStyle(color: Colors.black87),
       bodyText2: TextStyle(color: Colors.black87),

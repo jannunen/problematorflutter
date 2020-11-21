@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 extension CustomColorScheme on ColorScheme {
+  BorderRadius get textFieldBorderRadius => BorderRadius.all(const Radius.circular(26));
+
   Color get roundButtonBackground => brightness == Brightness.light
       ? const Color.fromRGBO(47, 45, 81, 0.9) // #2f2d51
       : const Color.fromRGBO(47, 45, 81, 0.9);

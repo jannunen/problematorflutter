@@ -9,13 +9,13 @@ class Dashboard {
   Climber climber;
   Locinfo locinfo;
   Climbinfo climbinfo;
-  HashMap<String, Grade> grades;
   List<CompetitionInfo> upcoming;
   List<CompetitionInfo> ongoing;
   PointModifiers pointModifiers;
   */
   List<Tick> ticksToday;
   Spread spread;
+  HashMap<String, Grade> grades;
 
   Dashboard({
     this.ticksToday,
@@ -32,7 +32,27 @@ class Dashboard {
       this.pointModifiers
       */
   });
-  Dashboard.fromJson(Map<String, dynamic> json) {}
+  Dashboard.fromJson(Map<String, dynamic> json) {
+    grades = new HashMap<String, Grade>();
+    if (json['grade'] != null) {
+      json['grades'].forEach((key, value) {
+        grades[value['id']] = Grade(
+          id: value['id'],
+          name: value['name'],
+          sort: value['sort'],
+          tapecolour: value['tapecolour'],
+          vscale: value['vscale'],
+          score: value['score'],
+          chartcolor: value['chartcolor'],
+          southAfrica: value['south_africa'],
+          yds: value['yds'],
+          uiaa: value['uiaa'],
+          australian: value['australian'],
+          font: value['font'],
+        );
+      });
+    }
+  }
 
 /*
   Dashboard.fromJson(Map<String, dynamic> json) {
@@ -455,51 +475,6 @@ class GymAscents {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     return data;
-  }
-}
-
-class Grade {
-  String id;
-  String name;
-  String sort;
-  String tapecolour;
-  String vscale;
-  String score;
-  String chartcolor;
-  String southAfrica;
-  String yds;
-  String uiaa;
-  String australian;
-  String font;
-
-  Grade({
-    this.id,
-    this.name,
-    this.sort,
-    this.tapecolour,
-    this.vscale,
-    this.score,
-    this.chartcolor,
-    this.southAfrica,
-    this.yds,
-    this.uiaa,
-    this.australian,
-    this.font,
-  });
-
-  Grade.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    sort = json['sort'];
-    tapecolour = json['tapecolour'];
-    vscale = json['vscale'];
-    score = json['score'];
-    chartcolor = json['chartcolor'];
-    southAfrica = json['south_africa'];
-    yds = json['yds'];
-    uiaa = json['uiaa'];
-    australian = json['australian'];
-    font = json['font'];
   }
 }
 
