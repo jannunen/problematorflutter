@@ -44,19 +44,21 @@ class HomePage extends StatelessWidget {
               if (state is HomeLoading) {
                 return CircularProgressIndicator();
               } else if (state is HomeLoaded) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text("Climber's log",
-                        style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
-                    Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
-                    Text(user.name ?? '', style: textTheme.headline5),
-                    const SizedBox(height: 4.0),
-                    _buildTodayArea(context, state.dashboard),
-                    _buildFloorMap(context, state.dashboard),
-                    _buildMyLogs(context, state.dashboard),
-                    //Avatar(photo: user.photo),
-                  ],
+                return Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text("Climber's log",
+                          style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
+                      Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
+                      Text(user.name ?? '', style: textTheme.headline5),
+                      const SizedBox(height: 4.0),
+                      _buildTodayArea(context, state.dashboard),
+                      _buildFloorMap(context, state.dashboard),
+                      _buildMyLogs(context, state.dashboard),
+                      //Avatar(photo: user.photo),
+                    ],
+                  ),
                 );
               }
               return Container(child: Text("Unknown state" + state.toString()));

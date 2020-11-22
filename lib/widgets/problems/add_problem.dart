@@ -10,6 +10,7 @@ import 'package:problemator/core/problemator_theme.dart';
 import 'package:problemator/models/problem.dart';
 import 'package:problemator/widgets/problemator_button.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';
+import 'package:problemator/widgets/problems/show_problem.dart';
 
 class AddProblemForm extends StatefulWidget {
   @override
@@ -63,14 +64,6 @@ class _AddProblemForm extends State<AddProblemForm> {
                     ),
                     Expanded(
                       child: _buildAutocompleteTextField(context),
-                      /* TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: colorScheme.textFieldBorderRadius,
-                              ),
-                              prefixIcon: Icon(Icons.search),
-                              hintText: "Route name (or code)"))
-                              */
                     ),
                   ],
                 ),
@@ -103,29 +96,23 @@ class _AddProblemForm extends State<AddProblemForm> {
     return AutoCompleteTextField<Problem>(
       decoration:
           new InputDecoration(hintText: "Search problem:", suffixIcon: new Icon(Icons.search)),
-      itemSubmitted: (item) => setState(() => selected = item),
+      itemSubmitted: (item) {
+        Navigator.of(context).pop();
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) {
+            return ShowProblem(id: item.id);
+          }),
+        );
+
+/*
+        setState(() {
+          selected = item;
+        });
+        */
+      },
       key: key,
       suggestions: suggestions,
-      itemBuilder: (context, suggestion) => new Padding(
-          child: new Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: ProblemColorIndicator(
-                    htmlcolour: suggestion.htmlcolour,
-                  ),
-                ),
-                SizedBox(
-                  width: 2,
-                ),
-                Text(suggestion.tagshort),
-              ],
-            ),
-            Text(suggestion.gradename, style: textTheme.headline6),
-            Text(suggestion.walldesc),
-          ]),
-          padding: EdgeInsets.all(8.0)),
+      itemBuilder: (context, suggestion) => _buildSearchResultItem(context, suggestion),
       itemSorter: (a, b) => a.cLike == b.cLike
           ? 0
           : a.cLike > b.cLike
@@ -141,4 +128,29 @@ class _AddProblemForm extends State<AddProblemForm> {
   }
 
   _openFloorPlanSelector() {}
+
+  _buildSearchResultItem(BuildContext context, Problem suggestion) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    return new Padding(
+        child: new Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: ProblemColorIndicator(
+                  htmlcolour: suggestion.htmlcolour,
+                ),
+              ),
+              SizedBox(
+                width: 2,
+              ),
+              Text(suggestion.tagshort),
+            ],
+          ),
+          Text(suggestion.gradename, style: textTheme.headline6),
+          Text(suggestion.walldesc),
+        ]),
+        padding: EdgeInsets.all(8.0));
+  }
 }

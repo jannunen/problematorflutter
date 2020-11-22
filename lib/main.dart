@@ -83,6 +83,7 @@ class _AppState extends State<App> {
           child: MaterialApp(
             title: "Problemator".i18n,
             theme: activeTheme,
+            initialRoute: '/',
             supportedLocales: [
               const Locale('en', "US"),
               const Locale('fi', "FI"),
