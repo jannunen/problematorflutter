@@ -1,8 +1,11 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:intl/intl.dart';
+import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/core/screen_helpers.dart';
 import 'package:problemator/models/models.dart';
@@ -18,7 +21,7 @@ class BottomSheetAddTick extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() =>
-      _BottomSheetAddTick(problemExtraInfo: this.problemExtraInfo);
+      _BottomSheetAddTick(problemExtraInfo: this.problemExtraInfo, problem: problem);
 }
 
 class _BottomSheetAddTick extends State<BottomSheetAddTick> {
@@ -27,13 +30,28 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
 
   String _ascentType = 'send';
   int _amountOfTries = 1;
+  int _gradeOpinion;
   DateTime _tickDate = DateTime.now();
+  List<Grade> grades;
+
   final TextEditingController _triesController = TextEditingController();
 
-  _BottomSheetAddTick({this.problemExtraInfo, this.problem});
+  _BottomSheetAddTick({this.problemExtraInfo, this.problem}) {
+    if (this.problem != null) {
+      _gradeOpinion = int.tryParse(this.problem.gradeid);
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    HashMap<String, Grade> _grades = context.select((HomeBloc bloc) => bloc.state.dashboard.grades);
+    grades = _grades.values.toList()
+      ..sort((a, b) => int.parse(a.score).compareTo(int.parse(b.score)));
+    grades = _grades.values.toList()..sort((a, b) => int.parse(a.score) - int.parse(b.score));
     return Container(
         child: Column(
       children: [
@@ -142,21 +160,26 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+    String gradeStr =
+        grades.firstWhere((curproblem) => _gradeOpinion == int.parse(curproblem.id)).font;
     return Column(
       children: [
         ClipOval(
             child: Material(
                 color: theme.colorScheme.roundButtonBackground,
                 child: InkWell(
+                    onTap: () {
+                      _openSelectGradeOpinionSheet(context);
+                    },
                     child: SizedBox(
-                  width: 60,
-                  height: 60,
-                  child: Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Text("6B+", style: textTheme.headline1),
-                  )),
-                )))),
+                      width: 60,
+                      height: 60,
+                      child: Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Text(gradeStr, style: textTheme.headline1),
+                      )),
+                    )))),
         Text("Grade opinion"),
       ],
     );
@@ -293,14 +316,14 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
                   color: Colors.red,
                 ),
                 thisMonthDayBorderColor: Colors.grey,
-//          weekDays: null, /// for pass null when you do not want to render weekDays
+                //          weekDays: null, /// for pass null when you do not want to render weekDays
                 headerText: 'Custom Header',
                 weekFormat: true,
                 //markedDatesMap: _markedDateMap,
                 height: 200.0,
                 selectedDateTime: _tickDate,
                 showIconBehindDayText: true,
-//          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
+                //          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
                 customGridViewPhysics: NeverScrollableScrollPhysics(),
                 markedDateShowIcon: true,
                 markedDateIconMaxShown: 2,
@@ -318,11 +341,43 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
                 todayButtonColor: Colors.transparent,
                 todayBorderColor: Colors.green,
                 markedDateMoreShowTotal: true, // null for not showing hidden events indicator
-//          markedDateIconMargin: 9,
-//          markedDateIconOffset: 3,
+                //          markedDateIconMargin: 9,
+                //          markedDateIconOffset: 3,
               ),
             ]),
           );
+        });
+  }
+
+  void _openSelectGradeOpinionSheet(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    // Fetch grades.
+    showModalBottomSheet(
+        context: context,
+        builder: (ctx) {
+          return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(mainAxisSize: MainAxisSize.max, children: [
+                Text("Select a grade opinion", style: textTheme.headline5),
+                Expanded(
+                    child: ListView.separated(
+                  itemCount: grades.length,
+                  itemBuilder: (ctx, idx) {
+                    return ListTile(
+                      onTap: () => setState(() {
+                        _gradeOpinion = int.tryParse(grades[idx].id);
+                        Navigator.pop(context);
+                      }),
+                      dense: true,
+                      selected: int.tryParse(grades[idx].id) == this._gradeOpinion,
+                      title: Text(grades[idx].font),
+                    );
+                  },
+                  separatorBuilder: (_, _sec) => Divider(),
+                )),
+              ]));
         });
   }
 }

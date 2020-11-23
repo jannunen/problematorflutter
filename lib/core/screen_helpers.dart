@@ -4,7 +4,6 @@ Thanks: https://medium.com/tagmalogic/widgets-sizes-relative-to-screen-size-in-f
 */
 
 Size displaySize(BuildContext context) {
-  debugPrint('Size = ' + MediaQuery.of(context).size.toString());
   return MediaQuery.of(context).size;
 }
 
