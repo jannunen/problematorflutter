@@ -47,7 +47,7 @@ class ApiClient {
   }
 
   Future<User> logout() async {
-    final response = await _helper.get("logout/&react=true&api-auth-token=$_apiKey");
+    final response = await _helper.get("logout/?react=true&api-auth-token=$_apiKey");
     if (response.containsKey('error') && response['error'] == 'true') {
       throw new Exception(response['message']);
     }
@@ -56,5 +56,15 @@ class ApiClient {
 
   void setToken(String jwt) {
     this._apiKey = jwt;
+  }
+
+  Future<Tick> addtick(Tick tick) async {
+    final response =
+        await _helper.post("/savetick/?react=true&api-auth-token=$_apiKey", tick.toMap());
+    if (response.containsKey('error') && response['error'] == 'true') {
+      throw new Exception(response['message']);
+    }
+    Tick backTick = Tick.fromJson(response);
+    return backTick;
   }
 }

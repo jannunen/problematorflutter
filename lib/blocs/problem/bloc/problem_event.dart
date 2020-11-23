@@ -14,3 +14,11 @@ class LoadProblemExtraInfo extends ProblemEvent {
   @override
   List<Object> get props => [id];
 }
+
+class AddTick extends ProblemEvent {
+  final Tick tick;
+  AddTick({this.tick});
+
+  @override
+  List<Object> get props => ['tick'];
+}

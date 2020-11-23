@@ -20,3 +20,15 @@ class ProblemExtraInfoLoaded extends ProblemState {
   @override
   List<Object> get props => [problemExtraInfo];
 }
+
+class AddingTick extends ProblemState {
+  @override
+  List<Object> get props => ['AddingTick'];
+}
+
+class TickAdded extends ProblemState {
+  final Tick addedTick;
+  TickAdded({this.addedTick});
+  @override
+  List<Object> get props => [addedTick];
+}

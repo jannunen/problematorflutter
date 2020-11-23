@@ -174,7 +174,10 @@ class _ShowProblem extends State<ShowProblem> {
   Widget _buildBottomSheet(BuildContext context) {
     return BlocBuilder<ProblemBloc, ProblemState>(builder: (context, state) {
       if (state is ProblemExtraInfoLoaded) {
-        return BottomSheetAddTick(problemExtraInfo: state.problemExtraInfo);
+        return BottomSheetAddTick(
+          problemExtraInfo: state.problemExtraInfo,
+          problem: this.problem,
+        );
       } else if (state is ProblemExtraInfoLoading) {
         return Text("Loading...");
       }

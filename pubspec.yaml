@@ -49,6 +49,7 @@ dependencies:
   font_awesome_flutter: ^8.6.0
   firebase_core: "0.5.2"
   autocomplete_textfield: ^1.7.3
+  intl: ^0.16.1 ## For dateFormat
 
 dev_dependencies:
   mockito: ^4.1.0
