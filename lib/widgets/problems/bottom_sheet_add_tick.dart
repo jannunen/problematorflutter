@@ -14,6 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/widgets/problemator_action_button.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 
+const double _LIST_ITEM_HEIGHT = 40.0;
+
 class BottomSheetAddTick extends StatefulWidget {
   final ProblemExtraInfo problemExtraInfo;
   final Problem problem;
@@ -33,6 +35,7 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
   int _gradeOpinion;
   DateTime _tickDate = DateTime.now();
   List<Grade> grades;
+  int _selectedGradeIndex = 0;
 
   final TextEditingController _triesController = TextEditingController();
 
@@ -160,6 +163,7 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+
     String gradeStr =
         grades.firstWhere((curproblem) => _gradeOpinion == int.parse(curproblem.id)).font;
     return Column(
@@ -353,6 +357,7 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+    ScrollController _scrollController = new ScrollController();
     // Fetch grades.
     showModalBottomSheet(
         context: context,
@@ -363,14 +368,14 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
                 Text("Select a grade opinion", style: textTheme.headline5),
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: grades.length,
                     itemBuilder: (ctx, idx) {
+                      bool isSelected = int.tryParse(grades[idx].id) == this._gradeOpinion;
                       return Container(
-                        color: (int.tryParse(grades[idx].id) == this._gradeOpinion)
-                            ? colorScheme.accentColor
-                            : null,
+                        color: isSelected ? colorScheme.accentColor : null,
                         child: FlatButton(
-                          height: 10,
+                          height: _LIST_ITEM_HEIGHT,
                           onPressed: () => setState(() {
                             _gradeOpinion = int.tryParse(grades[idx].id);
                             Navigator.pop(context);
@@ -383,5 +388,11 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
                 ),
               ]));
         });
+    _selectedGradeIndex =
+        grades.indexWhere((element) => this._gradeOpinion == int.parse(element.id));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(_selectedGradeIndex * (_LIST_ITEM_HEIGHT),
+          duration: new Duration(milliseconds: 500), curve: Curves.ease);
+    });
   }
 }
