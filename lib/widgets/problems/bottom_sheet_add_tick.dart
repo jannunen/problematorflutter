@@ -362,21 +362,25 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
               child: Column(mainAxisSize: MainAxisSize.max, children: [
                 Text("Select a grade opinion", style: textTheme.headline5),
                 Expanded(
-                    child: ListView.separated(
-                  itemCount: grades.length,
-                  itemBuilder: (ctx, idx) {
-                    return ListTile(
-                      onTap: () => setState(() {
-                        _gradeOpinion = int.tryParse(grades[idx].id);
-                        Navigator.pop(context);
-                      }),
-                      dense: true,
-                      selected: int.tryParse(grades[idx].id) == this._gradeOpinion,
-                      title: Text(grades[idx].font),
-                    );
-                  },
-                  separatorBuilder: (_, _sec) => Divider(),
-                )),
+                  child: ListView.builder(
+                    itemCount: grades.length,
+                    itemBuilder: (ctx, idx) {
+                      return Container(
+                        color: (int.tryParse(grades[idx].id) == this._gradeOpinion)
+                            ? colorScheme.accentColor
+                            : null,
+                        child: FlatButton(
+                          height: 10,
+                          onPressed: () => setState(() {
+                            _gradeOpinion = int.tryParse(grades[idx].id);
+                            Navigator.pop(context);
+                          }),
+                          child: Text(grades[idx].font),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ]));
         });
   }
