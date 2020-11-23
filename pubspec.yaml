@@ -50,6 +50,7 @@ dependencies:
   firebase_core: "0.5.2"
   autocomplete_textfield: ^1.7.3
   intl: ^0.16.1 ## For dateFormat
+  flutter_calendar_carousel: ^1.5.1 # Used for adding a problem
 
 dev_dependencies:
   mockito: ^4.1.0

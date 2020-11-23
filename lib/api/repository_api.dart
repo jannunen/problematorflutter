@@ -39,4 +39,8 @@ class ProblemsRepository {
   Future<User> login(String username, String password) async {
     return await _apiClient.login(username, password);
   }
+
+  Future<Tick> addTick(Tick tick) async {
+    return await _apiClient.addtick(tick);
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 
 class Tick extends Equatable {
   final String problemid;
@@ -8,7 +9,13 @@ class Tick extends Equatable {
   final DateTime tickDate;
   final String preTick;
 
-  Tick({this.problemid, this.tries, this.gradeOpinion, this.ascentType, this.tickDate, this.preTick});
+  Tick(
+      {this.problemid,
+      this.tries,
+      this.gradeOpinion,
+      this.ascentType,
+      this.tickDate,
+      this.preTick});
 
   @override
   List<Object> get props => [problemid, tries, gradeOpinion, ascentType];
@@ -30,13 +37,15 @@ class Tick extends Equatable {
   }
 
   toMap() {
+    DateFormat format = DateFormat("yyyy-MM-dd");
     return {
-      'problemid' : this.problemid,
-      'tickdate' : this.tickDate,
-      'tries' : this.tries,
-      'grade_opinion' : this.gradeOpinion,
-      'ascent_type' : this.ascentType,
-      'table' : this.preTick,
-    }
+      'problemid': this.problemid,
+      'tickdate':
+          (this.tickDate == null) ? format.format(DateTime.now()) : format.format(this.tickDate),
+      'tries': this.tries,
+      'grade_opinion': this.gradeOpinion,
+      'ascent_type': this.ascentType,
+      'table': this.preTick,
+    };
   }
 }

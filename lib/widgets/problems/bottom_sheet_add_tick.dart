@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
+import 'package:intl/intl.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/core/screen_helpers.dart';
 import 'package:problemator/models/models.dart';
@@ -111,22 +114,26 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+    String tickDateStr = DateFormat("yyyy-MM-dd").format(_tickDate);
     return Column(
       children: [
         ClipOval(
             child: Material(
                 color: theme.colorScheme.roundButtonBackground,
                 child: InkWell(
+                    onTap: () {
+                      _openSelectTickDateSheet(context);
+                    },
                     child: SizedBox(
-                  width: 60,
-                  height: 60,
-                  child: Center(
-                      child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Icon(Icons.calculate_outlined),
-                  )),
-                )))),
-        Text("Today"),
+                      width: 60,
+                      height: 60,
+                      child: Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Icon(Icons.calculate_outlined),
+                      )),
+                    )))),
+        Text(tickDateStr),
       ],
     );
   }
@@ -263,5 +270,59 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
   void dispose() {
     _triesController.dispose();
     super.dispose();
+  }
+
+  void _openSelectTickDateSheet(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    showModalBottomSheet(
+        context: context,
+        builder: (ctx) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(mainAxisSize: MainAxisSize.max, children: [
+              Text("Select a tick date", style: textTheme.headline5),
+              CalendarCarousel<Event>(
+                onDayPressed: (DateTime date, List<Event> events) {
+                  this.setState(() => _tickDate = date);
+                  events.forEach((event) => print(event.title));
+                  Navigator.pop(context);
+                },
+                weekendTextStyle: TextStyle(
+                  color: Colors.red,
+                ),
+                thisMonthDayBorderColor: Colors.grey,
+//          weekDays: null, /// for pass null when you do not want to render weekDays
+                headerText: 'Custom Header',
+                weekFormat: true,
+                //markedDatesMap: _markedDateMap,
+                height: 200.0,
+                selectedDateTime: _tickDate,
+                showIconBehindDayText: true,
+//          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
+                customGridViewPhysics: NeverScrollableScrollPhysics(),
+                markedDateShowIcon: true,
+                markedDateIconMaxShown: 2,
+                selectedDayTextStyle: TextStyle(
+                  color: Colors.yellow,
+                ),
+                todayTextStyle: TextStyle(
+                  color: Colors.blue,
+                ),
+                markedDateIconBuilder: (event) {
+                  return event.icon;
+                },
+                minSelectedDate: _tickDate.subtract(Duration(days: 360)),
+                maxSelectedDate: _tickDate.add(Duration(days: 360)),
+                todayButtonColor: Colors.transparent,
+                todayBorderColor: Colors.green,
+                markedDateMoreShowTotal: true, // null for not showing hidden events indicator
+//          markedDateIconMargin: 9,
+//          markedDateIconOffset: 3,
+              ),
+            ]),
+          );
+        });
   }
 }
