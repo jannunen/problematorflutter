@@ -2,11 +2,10 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:problemator/blocs/dashboard_data/dashboard_data_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
-import 'package:problemator/core/problemator_theme.dart';
+import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/core/screen_helpers.dart';
-import 'package:problemator/core/problemator_theme.dart';
+import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/models/problem.dart';
 import 'package:problemator/widgets/problemator_button.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';
@@ -97,10 +96,11 @@ class _AddProblemForm extends State<AddProblemForm> {
       decoration:
           new InputDecoration(hintText: "Search problem:", suffixIcon: new Icon(Icons.search)),
       itemSubmitted: (item) {
-        Navigator.of(context).pop();
+        //Navigator.of(context).pop();
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) {
-            return ShowProblem(id: item.id);
+          MaterialPageRoute(builder: (dialogContext) {
+            return BlocProvider.value(
+                value: BlocProvider.of<HomeBloc>(context), child: ShowProblem(id: item.id));
           }),
         );
 

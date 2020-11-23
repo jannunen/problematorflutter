@@ -1,6 +1,7 @@
 import 'package:problemator/api/api_client.dart';
 import 'package:problemator/blocs/user/bloc/user_bloc.dart';
 import 'package:problemator/models/models.dart';
+import 'package:problemator/models/problem_extra_info.dart';
 
 ///
 /// Class handles the actual data fetching from the API.
@@ -27,7 +28,7 @@ class ProblemsRepository {
     return await _apiClient.getProblemList();
   }
 
-  Future<Problem> fetchProblemDetails(String problemid) async {
+  Future<ProblemExtraInfo> fetchProblemDetails(String problemid) async {
     return await _apiClient.fetchProblemDetails(problemid);
   }
 

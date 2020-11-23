@@ -1,5 +1,6 @@
 import 'package:problemator/api/api_helper.dart';
 import 'package:problemator/models/models.dart';
+import 'package:problemator/models/problem_extra_info.dart';
 
 class ApiClient {
   final ApiHelper _helper = ApiHelper();
@@ -17,10 +18,10 @@ class ApiClient {
     return ProblemList.fromJson(response);
   }
 
-  Future<Problem> fetchProblemDetails(String problemid) async {
+  Future<ProblemExtraInfo> fetchProblemDetails(String problemid) async {
     final response =
         await _helper.get("problem/" + problemid + "?react=true&api-auth-token=$_apiKey");
-    Problem problem = Problem.fromJson(response['problem']);
+    ProblemExtraInfo problem = ProblemExtraInfo.fromJson(response['problem']);
     return problem;
   }
 

@@ -30,6 +30,7 @@ class Problem extends Equatable {
   final int mytickcount;
   final String tagshort;
   final String ticked;
+  final List<dynamic> attributes;
 
   Problem({
     this.gradeid,
@@ -54,6 +55,7 @@ class Problem extends Equatable {
     this.vscale,
     this.score,
     this.ascentcount,
+    this.attributes,
     this.tagshort,
     this.addedformatted,
     this.addedrelative,
@@ -75,6 +77,7 @@ class Problem extends Equatable {
     colour,
     added,
     tag,
+    attributes,
     author,
     routetype,
     startdefinition,
@@ -112,6 +115,7 @@ class Problem extends Equatable {
         cLove: cLove,
         cDislike: cDislike,
         vscale: vscale,
+        attributes: attributes,
         score: score,
         ascentcount: ascentcount,
         tagshort: tagshort,
@@ -122,7 +126,8 @@ class Problem extends Equatable {
   }
 
   static Problem fromJson(Map<String, dynamic> json) {
-    return Problem(
+    Problem prob = new Problem(
+      attributes: json['attributes'],
       gradeid: json['gradeid'],
       problemid: json['problemid'],
       id: json['id'],
@@ -148,5 +153,6 @@ class Problem extends Equatable {
       ascentcount: json['ascentcount'],
       ticked: json['ticked'],
     );
+    return prob;
   }
 }

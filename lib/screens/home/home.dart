@@ -4,7 +4,7 @@ import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/models/models.dart';
-import 'package:problemator/core/problemator_theme.dart';
+import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
 import 'package:problemator/widgets/problems/add_problem.dart';
 
@@ -125,7 +125,7 @@ class HomePage extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
     return Container(
-      color: colorScheme.gymFloorPlanBackroundCOlor,
+      color: colorScheme.gymFloorPlanBackroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Image(image: AssetImage('assets/images/floorplans/floorplan_1.png')),

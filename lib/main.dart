@@ -5,6 +5,7 @@ import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/config/bloc/config_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
+import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/repository/authentication_repository.dart';
 import 'package:problemator/repository/user_repository.dart';
 import 'package:problemator/screens/home/home.dart';
@@ -79,6 +80,9 @@ class _AppState extends State<App> {
             BlocProvider<AuthenticationBloc>(
                 create: (_) => _authenticationBloc..add(AuthenticationUserChanged(User.empty))),
             BlocProvider<UserBloc>(create: (_) => userBloc),
+            BlocProvider<ProblemBloc>(
+                create: (context) => ProblemBloc(
+                    problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
           ],
           child: MaterialApp(
             title: "Problemator".i18n,

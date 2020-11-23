@@ -19,7 +19,7 @@ final appThemeData = {
         headline1:
             TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.grey.shade100),
         headline2:
-            TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.grey.shade100),
+            TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold, color: Colors.grey.shade100),
         headline3:
             TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.grey.shade100),
         headline4:
@@ -37,7 +37,7 @@ final appThemeData = {
       bodyText1: TextStyle(color: Colors.black87),
       bodyText2: TextStyle(color: Colors.black87),
       headline1: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, color: Colors.black87),
-      headline2: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black87),
+      headline2: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold, color: Colors.black87),
       headline3: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.black87),
       headline4: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black87),
     ),
