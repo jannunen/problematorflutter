@@ -181,7 +181,7 @@ class _ShowProblem extends State<ShowProblem> {
       } else if (state is ProblemExtraInfoLoading) {
         return Text("Loading...");
       }
-      return Text("Unknown state");
+      return Text("Unknown state" + state.toString());
     });
   }
 

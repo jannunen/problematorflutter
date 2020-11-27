@@ -11,10 +11,10 @@ import 'package:problemator/core/utils.dart';
 class ApiHelper {
   final String _baseUrl = "https://beta.problemator.fi/t/problematorapi/v03/";
 
-  Future<dynamic> get(String url, {Map<String, dynamic> params}) async {
+  Future<dynamic> get(String url, {Map<String, dynamic> params, bool useCache = true}) async {
     print('Api GET, url $_baseUrl' + '$url');
     try {
-      var file = await MyCacheManager().getSingleFile(_baseUrl + url);
+      var file = await MyCacheManager().getSingleFile(_baseUrl + url, useCache: useCache);
       if (file != null && await file.exists()) {
         var res = await file.readAsString();
         return _returnResponse(new http.Response(res, 200));

@@ -20,7 +20,7 @@ class ApiClient {
 
   Future<ProblemExtraInfo> fetchProblemDetails(String problemid) async {
     final response =
-        await _helper.get("problem/" + problemid + "?react=true&api-auth-token=$_apiKey");
+        await _helper.get("problem/?id=" + problemid + "&react=true&api-auth-token=$_apiKey");
     ProblemExtraInfo problem = ProblemExtraInfo.fromJson(response['problem']);
     return problem;
   }
@@ -69,9 +69,10 @@ class ApiClient {
     //return backTick.copyWith(problem: Problem.fromJson(response['problem']));
   }
 
-  Future<Problem> fetchProblem(String problemid) async {
-    final response =
-        await _helper.get("problem/?id=" + problemid + "&react=true&api-auth-token=$_apiKey");
+  Future<Problem> fetchProblem(String problemid, bool useCache) async {
+    final response = await _helper.get(
+        "problem/?id=" + problemid + "&react=true&api-auth-token=$_apiKey",
+        useCache: useCache);
     return Problem.fromJson(response);
   }
 }

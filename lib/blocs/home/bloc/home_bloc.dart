@@ -31,12 +31,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         Dashboard updatedDashboard = dashboard.copyWith();
 
         final String problemid = state.addedTick.problemid;
-        final Problem updatedProblem = await _problemsRepository.fetchProblem(problemid);
+        final Problem updatedProblem = await _problemsRepository.fetchProblem(problemid, false);
         // get updated problem info and incorporate that into the dashboard.
         //Problem updatedProblem = state.problem;
         List<Problem> problems = updatedDashboard.problems;
         // Find which problems..
-        int index = problems.indexWhere((Problem problem) => problem.id == updatedProblem.id);
+        int index =
+            problems.indexWhere((Problem problem) => problem.problemid == updatedProblem.problemid);
+
         if (index != -1) {
           // Problem found, update problem
           problems[index] = updatedProblem;

@@ -66,6 +66,8 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
             Scaffold.of(context).showSnackBar(SnackBar(
               content: Text("Tick saved"),
             ));
+            Navigator.pop(context);
+            Navigator.pop(context);
           }
         },
         child: Container(

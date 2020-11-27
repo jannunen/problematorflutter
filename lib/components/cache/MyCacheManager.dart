@@ -11,7 +11,7 @@ class MyCacheManager extends BaseCacheManager {
 
   static MyCacheManager _instance;
 
-  // singleton implementation 
+  // singleton implementation
   // for the custom cache manager
   factory MyCacheManager() {
     if (_instance == null) {
@@ -21,11 +21,11 @@ class MyCacheManager extends BaseCacheManager {
   }
 
   // pass the default setting values to the base class
-  // link the custom handler to handle HTTP calls 
+  // link the custom handler to handle HTTP calls
   // via the custom cache manager
   MyCacheManager._()
       : super(key,
-            maxAgeCacheObject: Duration(minutes: 20),
+            maxAgeCacheObject: Duration(minutes: 2),
             maxNrOfCacheObjects: 20,
             fileFetcher: _myHttpGetter);
 

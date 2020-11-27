@@ -10,7 +10,7 @@ class Tick extends Equatable {
   final String ascentType;
   final DateTime tickDate;
   final String preTick;
-  final Problem problem; // When adding new tick, it will return the problem reference
+  final String tickType;
 
   Tick({
     this.id,
@@ -19,19 +19,19 @@ class Tick extends Equatable {
     this.gradeOpinion,
     this.ascentType,
     this.tickDate,
+    this.tickType,
     this.preTick,
-    this.problem,
   });
 
   @override
-  List<Object> get props => [problemid, tries, gradeOpinion, ascentType];
+  List<Object> get props => [problemid, tries, gradeOpinion, ascentType, tickType];
 
   Tick copyWith({problemid, tries, gradeOpinion, ascentType, problem}) => Tick(
         problemid: problemid ?? this.problemid,
         tries: tries ?? this.tries,
         gradeOpinion: gradeOpinion ?? this.gradeOpinion,
         ascentType: ascentType ?? this.ascentType,
-        problem: problem ?? this.problem,
+        tickType: tickType ?? this.tickType,
       );
 
   static Tick fromJson(Map<String, dynamic> json) {
@@ -41,7 +41,7 @@ class Tick extends Equatable {
       tries: int.tryParse(json['tries']) ?? 0,
       gradeOpinion: json['gradeOpinion'],
       ascentType: json['ascentType'],
-      problem: json['problem'] != null ? Problem.fromJson(json['problem']) : null,
+      tickType: json['tick_type'],
     );
   }
 
@@ -55,6 +55,7 @@ class Tick extends Equatable {
       'grade_opinion': this.gradeOpinion,
       'ascent_type': this.ascentType,
       'table': this.preTick,
+      'tick_type': this.tickType,
     };
   }
 
@@ -68,6 +69,7 @@ class Tick extends Equatable {
       'grade_opinion': this.gradeOpinion ?? null,
       'ascent_type': this.ascentType ?? null,
       'table': this.preTick ?? null,
+      'tick_type': this.tickType ?? null,
     };
     if (removeNulls) {
       returnMap.removeWhere((key, value) => key == null || value == null);

@@ -43,6 +43,10 @@ class Dashboard {
         problems.add(Problem.fromJson(v));
       });
     }
+    if (json['ticks_today'] != null) {
+      ticksToday = new List();
+      json['ticks_today'].forEach((v) => ticksToday.add(Tick.fromJson(v)));
+    }
     if (json['grades'] != null) {
       json['grades'].forEach((key, value) {
         grades[value['id']] = Grade(

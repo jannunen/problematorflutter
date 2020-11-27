@@ -44,21 +44,19 @@ class HomePage extends StatelessWidget {
               if (state is HomeLoading) {
                 return CircularProgressIndicator();
               } else if (state is HomeLoaded) {
-                return Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text("Climber's log",
-                          style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
-                      Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
-                      Text(user.name ?? '', style: textTheme.headline5),
-                      const SizedBox(height: 4.0),
-                      _buildTodayArea(context, state.dashboard),
-                      _buildFloorMap(context, state.dashboard),
-                      _buildMyLogs(context, state.dashboard),
-                      //Avatar(photo: user.photo),
-                    ],
-                  ),
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text("Climber's log",
+                        style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
+                    Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
+                    Text(user.name ?? '', style: textTheme.headline5),
+                    const SizedBox(height: 4.0),
+                    _buildTodayArea(context, state.dashboard),
+                    _buildFloorMap(context, state.dashboard),
+                    _buildMyLogs(context, state.dashboard),
+                    //Avatar(photo: user.photo),
+                  ],
                 );
               }
               return Container(child: Text("Unknown state" + state.toString()));
@@ -154,8 +152,8 @@ class HomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(flex: 1, child: _buildMyLogsLeftColumn(context)),
-                Expanded(flex: 2, child: _buildMyLogsRightColumn(context)),
+                Expanded(child: _buildMyLogsLeftColumn(context)),
+                Expanded(child: _buildMyLogsRightColumn(context)),
               ],
             ),
             SizedBox(height: 16.0),
