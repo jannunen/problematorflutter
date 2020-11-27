@@ -58,13 +58,20 @@ class ApiClient {
     this._apiKey = jwt;
   }
 
-  Future<Tick> addtick(Tick tick) async {
-    final response =
-        await _helper.post("/savetick/?react=true&api-auth-token=$_apiKey", tick.toMap());
-    if (response.containsKey('error') && response['error'] == 'true') {
+  Future<Tick> addTick(Tick tick) async {
+    Map<String, String> postData = tick.toPostMap(true);
+    final response = await _helper.post("savetick/?react=true&api-auth-token=$_apiKey", postData);
+    if (response.containsKey('error') && (response['error'] == 'true' || response['error'])) {
       throw new Exception(response['message']);
     }
-    Tick backTick = Tick.fromJson(response);
+    Tick backTick = Tick.fromJson(response['tick']);
     return backTick;
+    //return backTick.copyWith(problem: Problem.fromJson(response['problem']));
+  }
+
+  Future<Problem> fetchProblem(String problemid) async {
+    final response =
+        await _helper.get("problem/?id=" + problemid + "&react=true&api-auth-token=$_apiKey");
+    return Problem.fromJson(response);
   }
 }

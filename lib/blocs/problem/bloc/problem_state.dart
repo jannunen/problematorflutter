@@ -26,9 +26,20 @@ class AddingTick extends ProblemState {
   List<Object> get props => ['AddingTick'];
 }
 
-class TickAdded extends ProblemState {
+class TickAdded extends ProblemExtraInfoLoaded {
   final Tick addedTick;
-  TickAdded({this.addedTick});
+  final Problem problem;
+  final ProblemExtraInfo problemExtraInfo;
+  TickAdded({this.addedTick, this.problemExtraInfo, this.problem});
   @override
   List<Object> get props => [addedTick];
+}
+
+class TickAddFailed extends ProblemExtraInfoLoaded {
+  final String error;
+  final ProblemExtraInfo problemExtraInfo;
+  TickAddFailed(this.error, this.problemExtraInfo);
+
+  @override
+  List<Object> get props => [error];
 }

@@ -23,10 +23,16 @@ class ProblemBloc extends Bloc<ProblemEvent, ProblemState> {
       yield (AddingTick());
       final ProblemExtraInfo problemExtraInfo =
           await problemsRepository.fetchProblemDetails(event.id);
-      yield (ProblemExtraInfoLoaded(problemExtraInfo: null));
+      yield (ProblemExtraInfoLoaded(problemExtraInfo: problemExtraInfo));
     } else if (event is AddTick) {
-      final Tick tick = await problemsRepository.addTick(event.tick);
-      yield (TickAdded(addedTick: tick));
+      ProblemExtraInfo problemExtraInfo = (this.state as ProblemExtraInfoLoaded).problemExtraInfo;
+      try {
+        final Tick tick = await problemsRepository.addTick(event.tick);
+        // Remember that HomeBloc is listening to states so it gets the updated problem info also
+        yield (TickAdded(addedTick: tick, problemExtraInfo: problemExtraInfo));
+      } catch (e) {
+        yield (TickAddFailed(e.toString(), problemExtraInfo));
+      }
     }
   }
 }

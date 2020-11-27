@@ -41,6 +41,10 @@ class ProblemsRepository {
   }
 
   Future<Tick> addTick(Tick tick) async {
-    return await _apiClient.addtick(tick);
+    return await _apiClient.addTick(tick);
+  }
+
+  Future<Problem> fetchProblem(String problemid) async {
+    return await _apiClient.fetchProblem(problemid);
   }
 }

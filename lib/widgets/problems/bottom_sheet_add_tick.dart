@@ -38,7 +38,6 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
   int _selectedGradeIndex = 0;
 
   final TextEditingController _triesController = TextEditingController();
-
   _BottomSheetAddTick({this.problemExtraInfo, this.problem}) {
     if (this.problem != null) {
       _gradeOpinion = int.tryParse(this.problem.gradeid);
@@ -55,16 +54,30 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
     grades = _grades.values.toList()
       ..sort((a, b) => int.parse(a.score).compareTo(int.parse(b.score)));
     grades = _grades.values.toList()..sort((a, b) => int.parse(a.score) - int.parse(b.score));
-    return Container(
-        child: Column(
-      children: [
-        SizedBox(
-          height: 24,
-        ),
-        _buildTryInfoHeader(context),
-        _buildAddTickAction(context),
-      ],
-    ));
+    return BlocListener<ProblemBloc, ProblemState>(
+        listener: (context, state) {
+          if (state is TickAddFailed) {
+            Scaffold.of(context)..hideCurrentSnackBar();
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text(state.error),
+            ));
+          } else if (state is TickAdded) {
+            Scaffold.of(context)..hideCurrentSnackBar();
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text("Tick saved"),
+            ));
+          }
+        },
+        child: Container(
+            child: Column(
+          children: [
+            SizedBox(
+              height: 24,
+            ),
+            _buildTryInfoHeader(context),
+            _buildAddTickAction(context),
+          ],
+        )));
   }
 
   Widget _buildTryInfoHeader(BuildContext context) {
@@ -307,48 +320,51 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
         context: context,
         builder: (ctx) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(mainAxisSize: MainAxisSize.max, children: [
-              Text("Select a tick date", style: textTheme.headline5),
-              CalendarCarousel<Event>(
-                onDayPressed: (DateTime date, List<Event> events) {
-                  this.setState(() => _tickDate = date);
-                  events.forEach((event) => print(event.title));
-                  Navigator.pop(context);
-                },
-                weekendTextStyle: TextStyle(
-                  color: Colors.red,
+            padding: const EdgeInsets.all(4.0),
+            child: Container(
+              height: displayHeight(context) * 0.8,
+              child: Column(mainAxisSize: MainAxisSize.max, children: [
+                Text("Select a tick date", style: textTheme.headline6),
+                CalendarCarousel<Event>(
+                  onDayPressed: (DateTime date, List<Event> events) {
+                    this.setState(() => _tickDate = date);
+                    events.forEach((event) => print(event.title));
+                    Navigator.pop(context);
+                  },
+                  weekendTextStyle: TextStyle(
+                    color: Colors.red,
+                  ),
+                  thisMonthDayBorderColor: Colors.grey,
+                  //          weekDays: null, /// for pass null when you do not want to render weekDays
+                  headerText: 'Tickdate',
+                  weekFormat: false,
+                  //markedDatesMap: _markedDateMap,
+                  height: 380.0,
+                  selectedDateTime: _tickDate,
+                  showIconBehindDayText: true,
+                  //          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
+                  customGridViewPhysics: NeverScrollableScrollPhysics(),
+                  markedDateShowIcon: true,
+                  markedDateIconMaxShown: 2,
+                  selectedDayTextStyle: TextStyle(
+                    color: Colors.yellow,
+                  ),
+                  todayTextStyle: TextStyle(
+                    color: Colors.blue,
+                  ),
+                  markedDateIconBuilder: (event) {
+                    return event.icon;
+                  },
+                  minSelectedDate: _tickDate.subtract(Duration(days: 360)),
+                  maxSelectedDate: _tickDate.add(Duration(days: 360)),
+                  todayButtonColor: Colors.transparent,
+                  todayBorderColor: Colors.green,
+                  markedDateMoreShowTotal: true, // null for not showing hidden events indicator
+                  //          markedDateIconMargin: 9,
+                  //          markedDateIconOffset: 3,
                 ),
-                thisMonthDayBorderColor: Colors.grey,
-                //          weekDays: null, /// for pass null when you do not want to render weekDays
-                headerText: 'Custom Header',
-                weekFormat: true,
-                //markedDatesMap: _markedDateMap,
-                height: 200.0,
-                selectedDateTime: _tickDate,
-                showIconBehindDayText: true,
-                //          daysHaveCircularBorder: false, /// null for not rendering any border, true for circular border, false for rectangular border
-                customGridViewPhysics: NeverScrollableScrollPhysics(),
-                markedDateShowIcon: true,
-                markedDateIconMaxShown: 2,
-                selectedDayTextStyle: TextStyle(
-                  color: Colors.yellow,
-                ),
-                todayTextStyle: TextStyle(
-                  color: Colors.blue,
-                ),
-                markedDateIconBuilder: (event) {
-                  return event.icon;
-                },
-                minSelectedDate: _tickDate.subtract(Duration(days: 360)),
-                maxSelectedDate: _tickDate.add(Duration(days: 360)),
-                todayButtonColor: Colors.transparent,
-                todayBorderColor: Colors.green,
-                markedDateMoreShowTotal: true, // null for not showing hidden events indicator
-                //          markedDateIconMargin: 9,
-                //          markedDateIconOffset: 3,
-              ),
-            ]),
+              ]),
+            ),
           );
         });
   }

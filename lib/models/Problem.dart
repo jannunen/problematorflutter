@@ -127,7 +127,7 @@ class Problem extends Equatable {
 
   static Problem fromJson(Map<String, dynamic> json) {
     Problem prob = new Problem(
-      attributes: json['attributes'],
+      attributes: json['attributes'] ?? [],
       gradeid: json['gradeid'],
       problemid: json['problemid'],
       id: json['id'],

@@ -98,9 +98,10 @@ class _AppState extends State<App> {
               } else if (state.status == AuthenticationStatus.authenticated) {
                 return BlocProvider(
                     create: (context) => HomeBloc(
-                        problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
-                        userBloc: BlocProvider.of<UserBloc>(context))
-                      ..add(InitializeHomeScreenEvent()),
+                          problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
+                          userBloc: BlocProvider.of<UserBloc>(context),
+                          problemBloc: BlocProvider.of<ProblemBloc>(context),
+                        )..add(InitializeHomeScreenEvent()),
                     child: HomePage());
               } else {
                 // Make splash screen stay around at least 2 secs

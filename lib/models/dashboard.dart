@@ -22,6 +22,7 @@ class Dashboard {
     this.ticksToday,
     this.spread,
     this.problems,
+    this.grades,
     /*
         this.mysettings,
       this.locations,
@@ -61,6 +62,13 @@ class Dashboard {
       });
     }
   }
+
+  Dashboard copyWith({ticksToday, spreak, problems, grades}) => Dashboard(
+        ticksToday: ticksToday ?? this.ticksToday,
+        spread: spread ?? this.spread,
+        problems: problems ?? this.problems,
+        grades: grades ?? this.grades,
+      );
 
 /*
   Dashboard.fromJson(Map<String, dynamic> json) {
