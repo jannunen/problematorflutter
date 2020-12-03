@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import './problems.dart';
-import 'package:problemator/models/models.dart';
 import 'package:problemator/api/repository_api.dart';
 
 class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {

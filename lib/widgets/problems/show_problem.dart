@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/blocs/problem/problem_bloc.dart';
-import 'package:problemator/core/hex_color.dart';
 import 'package:problemator/core/screen_helpers.dart';
 import 'package:problemator/models/problem.dart';
 import 'package:problemator/widgets/problems/bottom_sheet_add_tick.dart';

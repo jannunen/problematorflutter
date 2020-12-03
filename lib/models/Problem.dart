@@ -20,8 +20,8 @@ class Problem extends Equatable {
   final String enddefinition;
   final String addt;
   final int cLike;
-  final String cLove;
   final int cDislike;
+  final String cLove;
   final String vscale;
   final String score;
   final String ascentcount;

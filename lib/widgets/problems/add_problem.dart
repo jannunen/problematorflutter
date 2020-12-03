@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/core/screen_helpers.dart';
-import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/models/problem.dart';
 import 'package:problemator/widgets/problemator_button.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';

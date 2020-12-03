@@ -66,8 +66,11 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
             Scaffold.of(context).showSnackBar(SnackBar(
               content: Text("Tick saved"),
             ));
-            Navigator.pop(context);
-            Navigator.pop(context);
+            // If I leave these here, I will get a bad state, why?
+            // I understand that the object state changes, but
+            // the class ProblemExtraInfo stays.
+            //Navigator.pop(context);
+            ////Navigator.pop(context);
           }
         },
         child: Container(
@@ -96,6 +99,7 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
           padding: const EdgeInsets.only(top: 18, right: 8, bottom: 2, left: 8),
           child: Column(
             children: [
+              _buildTimesTickedInfo(context),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -412,5 +416,10 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
       _scrollController.animateTo(_selectedGradeIndex * (_LIST_ITEM_HEIGHT),
           duration: new Duration(milliseconds: 500), curve: Curves.ease);
     });
+  }
+
+  _buildTimesTickedInfo(BuildContext context) {
+    // Info can be found from dashboard.
+    //List<Tick> myTicksToday = context.select((HomeBloc bloc) => bloc.state.dashboard.ticksToday);
   }
 }

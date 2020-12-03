@@ -6,6 +6,7 @@ import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
+import 'package:problemator/widgets/image_map.dart';
 import 'package:problemator/widgets/problems/add_problem.dart';
 
 class HomePage extends StatelessWidget {
@@ -122,11 +123,47 @@ class HomePage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+    List<ImageMapShape> shapes = [
+      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall A", points: [
+        ImageMapCoordinate(48.14, 78.91),
+        ImageMapCoordinate(47.36, 64.19),
+        ImageMapCoordinate(38.28, 65.36),
+        ImageMapCoordinate(38.67, 78.91),
+      ]),
+      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall B", points: [
+        ImageMapCoordinate(11.43, 79.04),
+        ImageMapCoordinate(21.19, 65.49),
+        ImageMapCoordinate(37.5, 64.97),
+        ImageMapCoordinate(37.11, 79.17),
+      ]),
+      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall C", points: [
+        ImageMapCoordinate(10.55, 78.91),
+        ImageMapCoordinate(10.55, 54.56),
+        ImageMapCoordinate(19.63, 54.56),
+        ImageMapCoordinate(20.9, 64.71),
+      ]),
+      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall C", points: [
+        ImageMapCoordinate(11.04, 37.89),
+        ImageMapCoordinate(11.33, 24.22),
+        ImageMapCoordinate(41.02, 24.74),
+        ImageMapCoordinate(36.52, 37.63),
+      ]),
+      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall C", points: [
+        ImageMapCoordinate(41.15, 24.74),
+        ImageMapCoordinate(42.19, 33.46),
+        ImageMapCoordinate(46, 37.89),
+        ImageMapCoordinate(54.88, 40.63),
+        ImageMapCoordinate(61.13, 37.76),
+        ImageMapCoordinate(62.6, 31.38),
+        ImageMapCoordinate(62.11, 23.96),
+      ]),
+    ];
+
     return Container(
       color: colorScheme.gymFloorPlanBackroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Image(image: AssetImage('assets/images/floorplans/floorplan_1.png')),
+        child: ImageMap(shapes),
       ),
     );
   }
