@@ -136,22 +136,31 @@ class _ImageMap extends State<ImageMap> {
                   child: Stack(
                     children: [
                       image,
-                      ...instance.objects.map((object) {
-                        return AnimatedPositioned.fromRect(
+                      for (var i = 0; i < instance.objects.length; i++)
+                        AnimatedPositioned.fromRect(
                           duration: const Duration(milliseconds: 50),
-                          rect: object.rect.adjusted(
+                          rect: instance.objects[i].rect.adjusted(
                             _controller.offset,
                             _controller.scale,
                           ),
-                          child: FittedBox(
-                            fit: BoxFit.fill,
-                            child: SizedBox.fromSize(
-                              size: object.size,
-                              child: object.child,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                              color:
+                                  instance.isObjectSelected(i) ? Colors.grey : Colors.transparent,
+                            )),
+                            child: GestureDetector(
+                              onTapDown: (_) => _controller.selectObject(i),
+                              child: FittedBox(
+                                fit: BoxFit.fill,
+                                child: SizedBox.fromSize(
+                                  size: instance.objects[i].size,
+                                  child: instance.objects[i].child,
+                                ),
+                              ),
                             ),
                           ),
-                        );
-                      }).toList(),
+                        )
                     ],
                   ),
                 ),

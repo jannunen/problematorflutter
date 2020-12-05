@@ -161,9 +161,10 @@ class CanvasController {
   }
 
   void selectObject(int i) => _update(() {
-        _selectedObjects.add(0);
-        final item = _objects.removeAt(i);
-        _objects.insert(0, item);
+        _selectedObjects.clear();
+        _selectedObjects.add(i);
+        //final item = _objects.removeAt(i);
+        //_objects.insert(0, item);
       });
 
   /// Scale of the canvas
