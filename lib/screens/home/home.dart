@@ -7,6 +7,8 @@ import 'package:problemator/models/models.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
 import 'package:problemator/widgets/image_map.dart';
+import 'package:problemator/widgets/imagemap/image_map_coordinate.dart';
+import 'package:problemator/widgets/imagemap/image_map_shape.dart';
 import 'package:problemator/widgets/problems/add_problem.dart';
 
 class HomePage extends StatelessWidget {

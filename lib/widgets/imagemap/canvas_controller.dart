@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:problemator/widgets/imagemap/canvas_object.dart';
+import 'package:problemator/widgets/imagemap/image_map_shape.dart';
 import 'package:problemator/widgets/imagemap/rect_points.dart';
 
 /// Control the canvas and the objects on it
@@ -29,18 +30,18 @@ class CanvasController {
 
   // -- Canvas Objects --
 
-  final List<CanvasObject<Widget>> _objects = [];
+  final List<CanvasObject<ImageMapShape>> _objects = [];
 
   /// Current Objects on the canvas
-  List<CanvasObject<Widget>> get objects => _objects;
+  List<CanvasObject<ImageMapShape>> get objects => _objects;
 
   /// Add an object to the canvas
-  void addObject(CanvasObject<Widget> value) => _update(() {
+  void addObject(CanvasObject<ImageMapShape> value) => _update(() {
         _objects.add(value);
       });
 
   /// Add an object to the canvas
-  void updateObject(int i, CanvasObject<Widget> value) => _update(() {
+  void updateObject(int i, CanvasObject<ImageMapShape> value) => _update(() {
         _objects[i] = value;
       });
 
@@ -90,7 +91,7 @@ class CanvasController {
 
   final List<int> _selectedObjects = [];
   List<int> get selectedObjectsIndices => _selectedObjects;
-  List<CanvasObject<Widget>> get selectedObjects =>
+  List<CanvasObject<ImageMapShape>> get selectedObjects =>
       _selectedObjects.map((i) => _objects[i]).toList();
   bool isObjectSelected(int i) => _selectedObjects.contains(i);
 
@@ -104,6 +105,7 @@ class CanvasController {
 
   /// Called when any of the inputs update position
   void updateTouch(int pointer, Offset offsetVal, Offset globalVal) {
+    /*
     if (touchCount == 1) {
       // Widget Move
       _isMovingCanvasObject = true;
@@ -120,7 +122,8 @@ class CanvasController {
         final _newOffset = widget.offset + delta;
         _objects[idx] = widget.copyWith(dx: _newOffset.dx, dy: _newOffset.dy);
       }
-    } else if (touchCount == 2) {
+      */
+    if (touchCount == 2) {
       // Scale and Rotate Update
       _isMovingCanvasObject = false;
       final _rectA = _getRectFromPoints(_pointerMap.values.toList());

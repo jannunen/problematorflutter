@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:problemator/widgets/imagemap/canvas_object.dart';
+import 'package:problemator/widgets/imagemap/image_map_shape.dart';
 
 import 'imagemap/canvas_controller.dart';
 
@@ -25,21 +26,14 @@ class _ImageMap extends State<ImageMap> {
       dy: 20,
       width: 100,
       height: 100,
-      child: image,
-    ));
-    _controller.addObject(CanvasObject(
-      dx: 20,
-      dy: 20,
-      width: 100,
-      height: 100,
-      child: Container(color: Colors.blue),
+      child: shapes[0],
     ));
     _controller.addObject(CanvasObject(
       dx: 150,
       dy: 50,
       width: 100,
       height: 100,
-      child: Container(color: Colors.green),
+      child: shapes[1],
     ));
   }
 
@@ -153,9 +147,10 @@ class _ImageMap extends State<ImageMap> {
                               onTapDown: (_) => _controller.selectObject(i),
                               child: FittedBox(
                                 fit: BoxFit.fill,
-                                child: SizedBox.fromSize(
+                                child: CustomPaint(
                                   size: instance.objects[i].size,
-                                  child: instance.objects[i].child,
+                                  painter: ImageMapShapePainter(
+                                      context, instance.objects[i].child, instance.objects[i].size),
                                 ),
                               ),
                             ),
@@ -221,21 +216,6 @@ class ImageMapShapePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
   }
-}
-
-class ImageMapShape {
-  final String title;
-  final String description;
-  final List<ImageMapCoordinate> points;
-
-  ImageMapShape({this.title, this.description, this.points});
-}
-
-class ImageMapCoordinate {
-  final double x;
-  final double y;
-
-  ImageMapCoordinate(this.x, this.y);
 }
 
 class PolygonUtil {
