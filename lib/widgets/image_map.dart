@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:problemator/widgets/imagemap/canvas_object.dart';
 
 import 'imagemap/canvas_controller.dart';
 
@@ -15,9 +17,31 @@ class ImageMap extends StatefulWidget {
 class _ImageMap extends State<ImageMap> {
   final List<ImageMapShape> shapes;
   final _controller = CanvasController();
-  Map<ImageMapShape, GlobalKey> globalKeys = new Map();
+  final Image image = Image(image: AssetImage('assets/images/floorplans/floorplan_1.png'));
 
-  _ImageMap(this.shapes) {}
+  _ImageMap(this.shapes) {
+    _controller.addObject(CanvasObject(
+      dx: 20,
+      dy: 20,
+      width: 100,
+      height: 100,
+      child: image,
+    ));
+    _controller.addObject(CanvasObject(
+      dx: 20,
+      dy: 20,
+      width: 100,
+      height: 100,
+      child: Container(color: Colors.blue),
+    ));
+    _controller.addObject(CanvasObject(
+      dx: 150,
+      dy: 50,
+      width: 100,
+      height: 100,
+      child: Container(color: Colors.green),
+    ));
+  }
 
   @override
   void initState() {
@@ -33,39 +57,108 @@ class _ImageMap extends State<ImageMap> {
 
   @override
   Widget build(BuildContext context) {
-    final Image image = Image(image: AssetImage('assets/images/floorplans/floorplan_1.png'));
-
     return StreamBuilder<CanvasController>(
-      stream: _controller.stream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Scaffold(
-            appBar: AppBar(),
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        final instance = snapshot.data;
-        return Stack(
-          children: [
-            image,
-            ...this.shapes.map((aShape) {
-              if (globalKeys[aShape] == null) {
-                globalKeys[aShape] = GlobalKey();
-              }
-              Size size = Size(370, 300);
-              return GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  print(aShape.title + " " + aShape.description);
+        stream: _controller.stream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Scaffold(
+              appBar: AppBar(),
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          final instance = snapshot.data;
+          print(instance.selectedObjectsIndices);
+          return Column(
+            children: [
+              Row(
+                children: [
+                  FocusScope(
+                    canRequestFocus: false,
+                    child: IconButton(
+                      tooltip: 'Zoom In',
+                      icon: Icon(Icons.zoom_in),
+                      onPressed: _controller.zoomIn,
+                    ),
+                  ),
+                  FocusScope(
+                    canRequestFocus: false,
+                    child: IconButton(
+                      tooltip: 'Zoom Out',
+                      icon: Icon(Icons.zoom_out),
+                      onPressed: _controller.zoomOut,
+                    ),
+                  ),
+                  FocusScope(
+                    canRequestFocus: false,
+                    child: IconButton(
+                      tooltip: 'Reset the Scale and Offset',
+                      icon: Icon(Icons.restore),
+                      onPressed: _controller.reset,
+                    ),
+                  ),
+                ],
+              ),
+              Listener(
+                behavior: HitTestBehavior.opaque,
+                onPointerSignal: (details) {
+                  if (details is PointerScrollEvent) {
+                    GestureBinding.instance.pointerSignalResolver.register(details, (event) {
+                      if (event is PointerScrollEvent) {
+                        _controller.offset = _controller.offset - event.scrollDelta;
+                      }
+                    });
+                  }
                 },
-                child:
-                    CustomPaint(size: size, painter: ImageMapShapePainter(context, aShape, size)),
-              );
-            }).toList(),
-          ],
-        );
-      },
-    );
+                onPointerMove: (details) {
+                  _controller.updateTouch(
+                    details.pointer,
+                    details.localPosition,
+                    details.position,
+                  );
+                },
+                onPointerDown: (details) {
+                  _controller.addTouch(
+                    details.pointer,
+                    details.localPosition,
+                    details.position,
+                  );
+                },
+                onPointerUp: (details) {
+                  _controller.removeTouch(details.pointer);
+                },
+                onPointerCancel: (details) {
+                  _controller.removeTouch(details.pointer);
+                },
+                child: RawKeyboardListener(
+                  autofocus: true,
+                  focusNode: _controller.focusNode,
+                  onKey: (key) => _controller.rawKeyEvent(context, key),
+                  child: Stack(
+                    children: [
+                      image,
+                      ...instance.objects.map((object) {
+                        return AnimatedPositioned.fromRect(
+                          duration: const Duration(milliseconds: 50),
+                          rect: object.rect.adjusted(
+                            _controller.offset,
+                            _controller.scale,
+                          ),
+                          child: FittedBox(
+                            fit: BoxFit.fill,
+                            child: SizedBox.fromSize(
+                              size: object.size,
+                              child: object.child,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
 
@@ -277,5 +370,15 @@ class LineInterCircle {
     var x2 = a_2 - delta / 2;
     var y2 = Line.paramK(p1, p2) * x2 + Line.paramC(p1, p2);
     return Point(x2, y2);
+  }
+}
+
+extension RectUtils on Rect {
+  Rect adjusted(Offset offset, double scale) {
+    final left = (this.left + offset.dx) * scale;
+    final top = (this.top + offset.dy) * scale;
+    final width = this.width * scale;
+    final height = this.height * scale;
+    return Rect.fromLTWH(left, top, width, height);
   }
 }

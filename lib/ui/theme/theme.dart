@@ -7,6 +7,7 @@ enum AppTheme {
 
 final appThemeData = {
   AppTheme.Dark: ThemeData(
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       fontFamily: 'Nunito',
       primaryColor: Colors.white,
       backgroundColor: Colors.grey[800],
@@ -24,6 +25,7 @@ final appThemeData = {
             TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.grey.shade100),
       )),
   AppTheme.Light: ThemeData(
+    visualDensity: VisualDensity.adaptivePlatformDensity,
     fontFamily: 'Nunito',
     primaryColor: Colors.black87,
     backgroundColor: Color.fromRGBO(229, 229, 229, 0.9),
