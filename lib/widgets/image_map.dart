@@ -1,10 +1,6 @@
-import 'dart:async';
 import 'dart:math';
-import 'dart:ui' as ui;
-import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
-import 'package:problemator/core/screen_helpers.dart';
 
 class ImageMap extends StatefulWidget {
   final List<ImageMapShape> shapes;
@@ -16,24 +12,18 @@ class ImageMap extends StatefulWidget {
 
 class _ImageMap extends State<ImageMap> {
   final List<ImageMapShape> shapes;
-  double screenHeight;
-  double screenWidth;
 
   _ImageMap(this.shapes);
   @override
   Widget build(BuildContext context) {
-    screenWidth = displayWidth(context);
-    screenHeight = displayHeight(context);
     final Image image = Image(image: AssetImage('assets/images/floorplans/floorplan_1.png'));
     return Stack(
       children: [
-        //image,
+        image,
         ...this
             .shapes
             .map((aShape) => CustomPaint(
-                size: Size(370, 300),
-                painter: ImageMapShapePainter(
-                    context, aShape, image, this.screenWidth, this.screenHeight)))
+                size: Size(370, 300), painter: ImageMapShapePainter(context, aShape, image)))
             .toList(),
       ],
     );
@@ -44,10 +34,8 @@ class ImageMapShapePainter extends CustomPainter {
   final BuildContext context;
   final ImageMapShape shape;
   final Image image;
-  final double screenWidth;
-  final double screenHeight;
 
-  ImageMapShapePainter(this.context, this.shape, this.image, this.screenWidth, this.screenHeight);
+  ImageMapShapePainter(this.context, this.shape, this.image);
 
   double _getX(double xPercentage, double width) {
     double div = (xPercentage / 100 * width);
@@ -62,8 +50,8 @@ class ImageMapShapePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) async {
     final shapeBounds = Rect.fromLTRB(0, 0, size.width, size.height);
-    final paint2 = Paint()..color = Colors.blue;
-    canvas.drawRect(shapeBounds, paint2);
+    //final paint2 = Paint()..color = Colors.blue;
+    //canvas.drawRect(shapeBounds, paint2);
     double width = shapeBounds.width;
     double height = shapeBounds.height;
     // Convert imagemapcoordinates to points
@@ -80,7 +68,7 @@ class ImageMapShapePainter extends CustomPainter {
         path.lineTo(p.x, p.y);
       }
     });
-    path.lineTo(points[0].x, points[0].y);
+    //path.lineTo(points[0].x, points[0].y);
     /*
       ..moveTo(1, 1)
       ..lineTo(1, 300)
