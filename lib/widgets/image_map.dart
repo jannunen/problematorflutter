@@ -20,11 +20,16 @@ class _ImageMap extends State<ImageMap> {
     return Stack(
       children: [
         image,
-        ...this
-            .shapes
-            .map((aShape) => CustomPaint(
-                size: Size(370, 300), painter: ImageMapShapePainter(context, aShape, image)))
-            .toList(),
+        ...this.shapes.map((aShape) {
+          Size size = Size(370, 300);
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              print(aShape.title + " " + aShape.description);
+            },
+            child: CustomPaint(size: size, painter: ImageMapShapePainter(context, aShape, size)),
+          );
+        }).toList(),
       ],
     );
   }
@@ -33,9 +38,28 @@ class _ImageMap extends State<ImageMap> {
 class ImageMapShapePainter extends CustomPainter {
   final BuildContext context;
   final ImageMapShape shape;
-  final Image image;
+  final Size size;
+  Path path;
 
-  ImageMapShapePainter(this.context, this.shape, this.image);
+  ImageMapShapePainter(this.context, this.shape, this.size) {
+    double width = size.width;
+    double height = size.height;
+    // Convert imagemapcoordinates to points
+    List<Point> points =
+        this.shape.points.map((e) => Point(_getX(e.x, width), _getY(e.y, height))).toList();
+
+    final thisPath = Path();
+    points.asMap().forEach((index, Point p) {
+      if (index == 0) {
+        // If first item, start by moving pen to the point
+        thisPath.moveTo(p.x, p.y);
+      } else {
+        // COntinue by drawing a line
+        thisPath.lineTo(p.x, p.y);
+      }
+    });
+    path = thisPath;
+  }
 
   double _getX(double xPercentage, double width) {
     double div = (xPercentage / 100 * width);
@@ -49,32 +73,6 @@ class ImageMapShapePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) async {
-    final shapeBounds = Rect.fromLTRB(0, 0, size.width, size.height);
-    //final paint2 = Paint()..color = Colors.blue;
-    //canvas.drawRect(shapeBounds, paint2);
-    double width = shapeBounds.width;
-    double height = shapeBounds.height;
-    // Convert imagemapcoordinates to points
-    List<Point> points =
-        this.shape.points.map((e) => Point(_getX(e.x, width), _getY(e.y, height))).toList();
-
-    final path = Path();
-    points.asMap().forEach((index, Point p) {
-      if (index == 0) {
-        // If first item, start by moving pen to the point
-        path.moveTo(p.x, p.y);
-      } else {
-        // COntinue by drawing a line
-        path.lineTo(p.x, p.y);
-      }
-    });
-    //path.lineTo(points[0].x, points[0].y);
-    /*
-      ..moveTo(1, 1)
-      ..lineTo(1, 300)
-      ..lineTo(370, 300);
-      */
-
     var paint = Paint()
       ..style = PaintingStyle.fill
       ..color = Colors.red

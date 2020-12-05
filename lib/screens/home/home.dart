@@ -130,25 +130,25 @@ class HomePage extends StatelessWidget {
         ImageMapCoordinate(38.28, 65.36),
         ImageMapCoordinate(38.67, 78.91),
       ]),
-      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall B", points: [
+      ImageMapShape(description: 'Wall B has diipadaapa', title: "Wall B", points: [
         ImageMapCoordinate(11.43, 79.04),
         ImageMapCoordinate(21.19, 65.49),
         ImageMapCoordinate(37.5, 64.97),
         ImageMapCoordinate(37.11, 79.17),
       ]),
-      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall C", points: [
+      ImageMapShape(description: 'Wall C has diipadaapa', title: "Wall C", points: [
         ImageMapCoordinate(10.55, 78.91),
         ImageMapCoordinate(10.55, 54.56),
         ImageMapCoordinate(19.63, 54.56),
         ImageMapCoordinate(20.9, 64.71),
       ]),
-      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall C", points: [
+      ImageMapShape(description: 'Wall D has diipadaapa', title: "Wall D", points: [
         ImageMapCoordinate(11.04, 37.89),
         ImageMapCoordinate(11.33, 24.22),
         ImageMapCoordinate(41.02, 24.74),
         ImageMapCoordinate(36.52, 37.63),
       ]),
-      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall C", points: [
+      ImageMapShape(description: 'Wall E has diipadaapa', title: "Wall E", points: [
         ImageMapCoordinate(41.15, 24.74),
         ImageMapCoordinate(42.19, 33.46),
         ImageMapCoordinate(46, 37.89),
