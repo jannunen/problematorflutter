@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'imagemap/canvas_controller.dart';
+
 class ImageMap extends StatefulWidget {
   final List<ImageMapShape> shapes;
   ImageMap(this.shapes);
@@ -12,25 +14,57 @@ class ImageMap extends StatefulWidget {
 
 class _ImageMap extends State<ImageMap> {
   final List<ImageMapShape> shapes;
+  final _controller = CanvasController();
+  Map<ImageMapShape, GlobalKey> globalKeys = new Map();
 
-  _ImageMap(this.shapes);
+  _ImageMap(this.shapes) {}
+
+  @override
+  void initState() {
+    _controller.init();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Image image = Image(image: AssetImage('assets/images/floorplans/floorplan_1.png'));
-    return Stack(
-      children: [
-        image,
-        ...this.shapes.map((aShape) {
-          Size size = Size(370, 300);
-          return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              print(aShape.title + " " + aShape.description);
-            },
-            child: CustomPaint(size: size, painter: ImageMapShapePainter(context, aShape, size)),
+
+    return StreamBuilder<CanvasController>(
+      stream: _controller.stream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: Center(child: CircularProgressIndicator()),
           );
-        }).toList(),
-      ],
+        }
+        final instance = snapshot.data;
+        return Stack(
+          children: [
+            image,
+            ...this.shapes.map((aShape) {
+              if (globalKeys[aShape] == null) {
+                globalKeys[aShape] = GlobalKey();
+              }
+              Size size = Size(370, 300);
+              return GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  print(aShape.title + " " + aShape.description);
+                },
+                child:
+                    CustomPaint(size: size, painter: ImageMapShapePainter(context, aShape, size)),
+              );
+            }).toList(),
+          ],
+        );
+      },
     );
   }
 }
