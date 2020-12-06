@@ -51,6 +51,7 @@ dependencies:
   autocomplete_textfield: ^1.7.3
   intl: ^0.16.1 ## For dateFormat
   flutter_calendar_carousel: ^1.5.1 # Used for adding a problem
+  poly: ^ 1.0.5 # FOr checking if a point is inside a polygon
 
 dev_dependencies:
   mockito: ^4.1.0

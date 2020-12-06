@@ -253,4 +253,9 @@ class CanvasController {
     }
     return value;
   }
+
+  void clearObjectSelection() {
+    _selectedObjects.clear();
+    add(this);
+  }
 }

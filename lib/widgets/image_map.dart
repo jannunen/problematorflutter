@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:poly/poly.dart';
 import 'package:problemator/widgets/imagemap/canvas_object.dart';
 import 'package:problemator/widgets/imagemap/image_map_shape.dart';
 
@@ -21,20 +22,15 @@ class _ImageMap extends State<ImageMap> {
   final Image image = Image(image: AssetImage('assets/images/floorplans/floorplan_1.png'));
 
   _ImageMap(this.shapes) {
-    _controller.addObject(CanvasObject(
-      dx: 20,
-      dy: 20,
-      width: 100,
-      height: 100,
-      child: shapes[0],
-    ));
-    _controller.addObject(CanvasObject(
-      dx: 150,
-      dy: 50,
-      width: 100,
-      height: 100,
-      child: shapes[1],
-    ));
+    shapes.forEach((shape) {
+      _controller.addObject(CanvasObject(
+        dx: 0,
+        dy: 0,
+        width: 370,
+        height: 300,
+        child: shape,
+      ));
+    });
   }
 
   @override
@@ -144,7 +140,31 @@ class _ImageMap extends State<ImageMap> {
                                   instance.isObjectSelected(i) ? Colors.grey : Colors.transparent,
                             )),
                             child: GestureDetector(
-                              onTapDown: (_) => _controller.selectObject(i),
+                              onTapDown: (details) {
+                                Offset locPos = details.localPosition;
+                                Offset globalPos = details.globalPosition;
+                                // FIgure out which one of the objects has been clicked
+                                bool objectSelected = false;
+                                for (int i = 0; i < this.shapes.length; i++) {
+                                  final ImageMapShape shape = this.shapes[i];
+
+                                  print(shape.title);
+                                  final Polygon polygon = Polygon(shape
+                                      .translatePoints(
+                                          shape.points.map((e) => Point(e.x, e.y)).toList(),
+                                          370,
+                                          300)
+                                      .toList());
+                                  if (polygon.contains(locPos.dx, locPos.dy)) {
+                                    _controller.selectObject(i);
+                                    objectSelected = true;
+                                    break;
+                                  }
+                                }
+                                if (!objectSelected) {
+                                  _controller.clearObjectSelection();
+                                }
+                              },
                               child: FittedBox(
                                 fit: BoxFit.fill,
                                 child: CustomPaint(
@@ -176,8 +196,9 @@ class ImageMapShapePainter extends CustomPainter {
     double width = size.width;
     double height = size.height;
     // Convert imagemapcoordinates to points
-    List<Point> points =
-        this.shape.points.map((e) => Point(_getX(e.x, width), _getY(e.y, height))).toList();
+    List<Point> points = this
+        .shape
+        .translatePoints(this.shape.points.map((e) => Point(e.x, e.y)).toList(), width, height);
 
     final thisPath = Path();
     points.asMap().forEach((index, Point p) {
@@ -190,16 +211,6 @@ class ImageMapShapePainter extends CustomPainter {
       }
     });
     path = thisPath;
-  }
-
-  double _getX(double xPercentage, double width) {
-    double div = (xPercentage / 100 * width);
-    return div.roundToDouble();
-  }
-
-  double _getY(double yPercentage, double height) {
-    double div = (yPercentage / 100 * height);
-    return div.roundToDouble();
   }
 
   @override
