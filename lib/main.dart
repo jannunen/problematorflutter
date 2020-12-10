@@ -4,6 +4,7 @@ import 'package:problemator/api/api_client.dart';
 import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/config/bloc/config_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/repository/authentication_repository.dart';
@@ -80,15 +81,9 @@ class _AppState extends State<App> {
             BlocProvider<AuthenticationBloc>(
                 create: (_) => _authenticationBloc..add(AuthenticationUserChanged(User.empty))),
             BlocProvider<UserBloc>(create: (_) => userBloc),
-            BlocProvider<ProblemsBloc>(
-                create: (context) => ProblemsBloc(
-                    problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
             BlocProvider<ProblemBloc>(
                 create: (context) => ProblemBloc(
                     problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
-            BlocProvider<FilteredProblemsBloc>(
-                create: (context) =>
-                    FilteredProblemsBloc(problemsBloc: BlocProvider.of<ProblemsBloc>(context)))
           ],
           child: MaterialApp(
             title: "Problemator".i18n,
@@ -102,14 +97,22 @@ class _AppState extends State<App> {
               if (state.status == AuthenticationStatus.unauthenticated) {
                 return LoginPage();
               } else if (state.status == AuthenticationStatus.authenticated) {
-                return BlocProvider(
+                return MultiBlocProvider(providers: [
+                  BlocProvider<ProblemsBloc>(
+                      create: (context) => ProblemsBloc(
+                          problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
+                  BlocProvider<HomeBloc>(
                     create: (context) => HomeBloc(
                         problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
                         userBloc: BlocProvider.of<UserBloc>(context),
                         problemBloc: BlocProvider.of<ProblemBloc>(context),
                         problemsBloc: BlocProvider.of<ProblemsBloc>(context))
                       ..add(InitializeHomeScreenEvent()),
-                    child: HomePage());
+                  ),
+                  BlocProvider<FilteredProblemsBloc>(
+                      create: (context) => FilteredProblemsBloc(
+                          problemsBloc: BlocProvider.of<ProblemsBloc>(context))),
+                ], child: HomePage());
               } else {
                 // Make splash screen stay around at least 2 secs
                 Future.delayed(Duration(seconds: 2)).then((value) {

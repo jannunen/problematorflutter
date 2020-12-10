@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/core/core.dart';
 import 'package:problemator/blocs/blocs.dart';
 import 'package:problemator/widgets/widgets.dart';
-import 'package:problemator/screens/screens.dart';
 import 'package:problemator/flutter_problems_keys.dart';
 
 class FilteredProblems extends StatelessWidget {

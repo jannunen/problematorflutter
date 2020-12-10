@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/core/core.dart';
-import 'package:problemator/blocs/filtered_problems/filtered_problems.dart';
 import 'package:problemator/models/models.dart';
 
 import "widgets.i18n.dart";
