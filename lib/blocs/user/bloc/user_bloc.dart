@@ -14,7 +14,6 @@ class UserBloc extends Bloc<UserEvent, User> {
   Stream<User> mapEventToState(
     UserEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     yield (event.user);
   }
 }

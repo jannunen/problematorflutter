@@ -14,4 +14,9 @@ class UpdateDashboard extends HomeEvent {
   List<Object> get props => [dashboard];
 }
 
+class UpdateProblems extends HomeEvent {
+  final List<Problem> problems;
+  UpdateProblems(this.problems);
+}
+
 class InitializeHomeScreenEvent extends HomeEvent {}

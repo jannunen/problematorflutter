@@ -2,7 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:poly/poly.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_event.dart';
 import 'package:problemator/widgets/imagemap/canvas_object.dart';
 import 'package:problemator/widgets/imagemap/image_map_shape.dart';
 
@@ -142,13 +145,11 @@ class _ImageMap extends State<ImageMap> {
                             child: GestureDetector(
                               onTapDown: (details) {
                                 Offset locPos = details.localPosition;
-                                Offset globalPos = details.globalPosition;
                                 // FIgure out which one of the objects has been clicked
                                 bool objectSelected = false;
                                 for (int i = 0; i < this.shapes.length; i++) {
                                   final ImageMapShape shape = this.shapes[i];
 
-                                  print(shape.title);
                                   final Polygon polygon = Polygon(shape
                                       .translatePoints(
                                           shape.points.map((e) => Point(e.x, e.y)).toList(),
@@ -163,6 +164,15 @@ class _ImageMap extends State<ImageMap> {
                                 }
                                 if (!objectSelected) {
                                   _controller.clearObjectSelection();
+                                }
+                                // Update bloc by selected wall
+                                List<CanvasObject<ImageMapShape>> selectedWalls =
+                                    _controller.selectedObjects;
+                                if (selectedWalls != null && selectedWalls.length > 0) {
+                                  List<int> wallids = selectedWalls.map((e) => e.child.id).toList();
+                                  print("Selected wall(s): " + wallids.toString());
+                                  BlocProvider.of<FilteredProblemsBloc>(context)
+                                      .add(UpdateFilter(selectedWalls: wallids));
                                 }
                               },
                               child: FittedBox(

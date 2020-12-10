@@ -30,6 +30,7 @@ class Problem extends Equatable {
   final int mytickcount;
   final String tagshort;
   final String ticked;
+  final String wallid;
   final List<dynamic> attributes;
 
   Problem({
@@ -41,6 +42,7 @@ class Problem extends Equatable {
     this.htmlcolour,
     this.wallchar,
     this.walldesc,
+    this.wallid,
     this.colour,
     this.added,
     this.tag,
@@ -64,7 +66,7 @@ class Problem extends Equatable {
   });
 
   @override
-  List<Object> get props => [cLike, id, cLove, cDislike, ticked];
+  List<Object> get props => [cLike, id, cLove, cDislike, ticked, wallid, tagshort];
 
   Problem copyWith({
     gradeid,
@@ -78,6 +80,7 @@ class Problem extends Equatable {
     added,
     tag,
     attributes,
+    wallid,
     author,
     routetype,
     startdefinition,
@@ -122,6 +125,7 @@ class Problem extends Equatable {
         addedformatted: added,
         addedrelative: addedrelative,
         mytickcount: mytickcount,
+        wallid: wallid,
         ticked: ticked);
   }
 
@@ -152,6 +156,7 @@ class Problem extends Equatable {
       score: json['score'],
       ascentcount: json['ascentcount'],
       ticked: json['ticked'],
+      wallid: json['wallid'],
     );
     return prob;
   }

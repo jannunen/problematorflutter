@@ -14,19 +14,14 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final defaultStyle = Theme.of(context).textTheme.body1;
-    final activeStyle = Theme.of(context)
-        .textTheme
-        .body1
-        .copyWith(color: Theme.of(context).accentColor);
-    return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(
-        builder: (context, state) {
+    final activeStyle =
+        Theme.of(context).textTheme.body1.copyWith(color: Theme.of(context).accentColor);
+    return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
       final button = _Button(
         onSelected: (filter) {
-          BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(filter));
+          //BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(selectedWalls : wallids));
         },
-        activeFilter: state is FilteredProblemsLoaded
-            ? state.activeFilter
-            : VisibilityFilter.all,
+        activeFilter: state is FilteredProblemsLoaded ? state.activeFilter : VisibilityFilter.all,
         activeStyle: activeStyle,
         defaultStyle: defaultStyle,
       );
@@ -65,9 +60,7 @@ class _Button extends StatelessWidget {
           value: VisibilityFilter.all,
           child: Text(
             ArchSampleLocalizations.of(context).showAll,
-            style: activeFilter == VisibilityFilter.all
-                ? activeStyle
-                : defaultStyle,
+            style: activeFilter == VisibilityFilter.all ? activeStyle : defaultStyle,
           ),
         ),
         PopupMenuItem<VisibilityFilter>(
@@ -75,9 +68,7 @@ class _Button extends StatelessWidget {
           value: VisibilityFilter.climbed,
           child: Text(
             ArchSampleLocalizations.of(context).showActive,
-            style: activeFilter == VisibilityFilter.climbed
-                ? activeStyle
-                : defaultStyle,
+            style: activeFilter == VisibilityFilter.climbed ? activeStyle : defaultStyle,
           ),
         ),
         PopupMenuItem<VisibilityFilter>(
@@ -85,9 +76,7 @@ class _Button extends StatelessWidget {
           value: VisibilityFilter.project,
           child: Text(
             ArchSampleLocalizations.of(context).showCompleted,
-            style: activeFilter == VisibilityFilter.project
-                ? activeStyle
-                : defaultStyle,
+            style: activeFilter == VisibilityFilter.project ? activeStyle : defaultStyle,
           ),
         ),
       ],

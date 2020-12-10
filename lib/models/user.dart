@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 
 /// {@template user}
@@ -16,6 +14,7 @@ class User extends Equatable {
     this.photo,
     this.uid,
     this.jwt,
+    this.gymid,
     this.message,
   });
 
@@ -27,6 +26,7 @@ class User extends Equatable {
   final String uid;
   final String jwt;
   final String message;
+  final String gymid;
 
   /// The current user's name (display name).
   final String name;
@@ -35,10 +35,10 @@ class User extends Equatable {
   final String photo;
 
   /// Empty user which represents an unauthenticated user.
-  static const empty = User(email: '', id: '', name: null, photo: null);
+  static const empty = User(email: '', id: '', name: null, photo: null, gymid: null);
 
   @override
-  List<Object> get props => [email, id, name, photo];
+  List<Object> get props => [email, id, name, photo, gymid];
 
   static User fromJson(Map<String, dynamic> json) {
     return User(
@@ -47,6 +47,7 @@ class User extends Equatable {
       id: json['uid'] ?? null,
       message: json['message'] ?? null,
       jwt: json['JWT'] ?? null,
+      gymid: json['gymid'] ?? null,
     );
   }
 
@@ -59,6 +60,7 @@ class User extends Equatable {
       'uid': uid,
       'message': message,
       'JWT': jwt,
+      'gymid': gymid,
     };
   }
 }

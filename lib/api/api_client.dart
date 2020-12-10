@@ -5,6 +5,7 @@ import 'package:problemator/models/problem_extra_info.dart';
 class ApiClient {
   final ApiHelper _helper = ApiHelper();
   String _apiKey;
+  String _gymid;
   /*
   final String _apiKey =
       "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MDU3ODk5OTMsImp0aSI6Ik5qRT0iLCJpc3MiOiJ3d3cucHJvYmxlbWF0b3IuZmkiLCJuYmYiOjE2MDU3ODk5OTMsImV4cCI6MTYwODM4MTk5MywiZGF0YSI6eyJ1c2VySWQiOiIyNDYiLCJmaXJzdG5hbWUiOiJKYXJtbyIsImxhc3RuYW1lIjoiQW5udW5lbiIsImVtYWlsIjoiamFybW9AYW5udW5lbi5maSIsImd5bWlkIjoiMSJ9fQ.KmsEtPHY4ZZxPfsES1Rku4A0sTZoZTOPJunxukApQj3EzfF7nfM2H84iCNjov0yUsqGt7LGiRRQm_b7DA4LdTQ";
@@ -13,8 +14,13 @@ class ApiClient {
     this._apiKey = key;
   }
 
+  void setGym(String gymid) {
+    this._gymid = gymid;
+  }
+
   Future<ProblemList> getProblemList() async {
-    final response = await _helper.get("problemlist/?react=true&api-auth-token=$_apiKey");
+    final response = await _helper.get("problems/?react=true&api-auth-token=$_apiKey&loc=$_gymid",
+        useCache: false);
     return ProblemList.fromJson(response);
   }
 

@@ -6,9 +6,9 @@ class ProblemList {
   ProblemList({this.problems});
 
   static ProblemList fromJson(Map<String, dynamic> json) {
-    if (json['problems']) {
+    if (json['problems'] != null) {
       List<Problem> problems = new List();
-      json['problems'].forEach((k, v) {
+      json['problems'].forEach((v) {
         problems.add(Problem.fromJson(v));
       });
       return ProblemList(problems: problems);

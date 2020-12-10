@@ -2,20 +2,20 @@ import 'package:equatable/equatable.dart';
 import 'package:problemator/models/problem.dart';
 import 'package:problemator/models/visibility_filter.dart';
 
-
 abstract class FilteredProblemsEvent extends Equatable {
   const FilteredProblemsEvent();
 }
 
 class UpdateFilter extends FilteredProblemsEvent {
   final VisibilityFilter filter;
-  const UpdateFilter(this.filter);
+  final List<int> selectedWalls;
+  const UpdateFilter({this.filter, this.selectedWalls});
 
   @override
-  List<Object> get props => [filter];
+  List<Object> get props => [filter, selectedWalls];
 
   @override
-  String toString() => 'UpdateFilter { filter: $filter }';
+  String toString() => 'UpdateFilter { filter: $filter, $selectedWalls }';
 }
 
 class UpdateProblems extends FilteredProblemsEvent {

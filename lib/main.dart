@@ -80,9 +80,15 @@ class _AppState extends State<App> {
             BlocProvider<AuthenticationBloc>(
                 create: (_) => _authenticationBloc..add(AuthenticationUserChanged(User.empty))),
             BlocProvider<UserBloc>(create: (_) => userBloc),
+            BlocProvider<ProblemsBloc>(
+                create: (context) => ProblemsBloc(
+                    problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
             BlocProvider<ProblemBloc>(
                 create: (context) => ProblemBloc(
                     problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
+            BlocProvider<FilteredProblemsBloc>(
+                create: (context) =>
+                    FilteredProblemsBloc(problemsBloc: BlocProvider.of<ProblemsBloc>(context)))
           ],
           child: MaterialApp(
             title: "Problemator".i18n,
@@ -98,10 +104,11 @@ class _AppState extends State<App> {
               } else if (state.status == AuthenticationStatus.authenticated) {
                 return BlocProvider(
                     create: (context) => HomeBloc(
-                          problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
-                          userBloc: BlocProvider.of<UserBloc>(context),
-                          problemBloc: BlocProvider.of<ProblemBloc>(context),
-                        )..add(InitializeHomeScreenEvent()),
+                        problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
+                        userBloc: BlocProvider.of<UserBloc>(context),
+                        problemBloc: BlocProvider.of<ProblemBloc>(context),
+                        problemsBloc: BlocProvider.of<ProblemsBloc>(context))
+                      ..add(InitializeHomeScreenEvent()),
                     child: HomePage());
               } else {
                 // Make splash screen stay around at least 2 secs

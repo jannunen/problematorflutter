@@ -24,6 +24,10 @@ class ProblemsRepository {
     this._apiClient.setApiKey(key);
   }
 
+  void setGym(String gymid) {
+    this._apiClient.setGym(gymid);
+  }
+
   Future<ProblemList> fetchProblems() async {
     return await _apiClient.getProblemList();
   }

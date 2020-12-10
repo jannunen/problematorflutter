@@ -14,13 +14,26 @@ class FilteredProblemsLoading extends FilteredProblemsState {}
 class FilteredProblemsLoaded extends FilteredProblemsState {
   final List<Problem> filteredProblems;
   final VisibilityFilter activeFilter;
+  final List<int> selectedWalls;
 
-  const FilteredProblemsLoaded(this.filteredProblems, this.activeFilter);
+  const FilteredProblemsLoaded({this.filteredProblems, this.activeFilter, this.selectedWalls});
 
   @override
-  List<Object> get props => [filteredProblems, activeFilter];
+  List<Object> get props => [filteredProblems, selectedWalls, activeFilter];
 
   @override
   String toString() =>
-      'FilteredProblemsLoaded { filteredProblems: $filteredProblems, activeFilter: $activeFilter }';
+      'FilteredProblemsLoaded { filteredProblems: $filteredProblems,  visibilityFilter : $activeFilter, selectedWalls : $selectedWalls}';
+
+  FilteredProblemsLoaded copyWith({
+    List<Problem> filteredProblems,
+    VisibilityFilter activeFilter,
+    List<int> selectedWalls,
+  }) {
+    return FilteredProblemsLoaded(
+      filteredProblems: filteredProblems ?? this.filteredProblems,
+      activeFilter: activeFilter ?? this.activeFilter,
+      selectedWalls: selectedWalls ?? this.selectedWalls,
+    );
+  }
 }

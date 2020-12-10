@@ -25,6 +25,8 @@ class HomePage extends StatelessWidget {
     final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
     ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
     _problemsRepository.setApiKey(user.jwt);
+    // TODO: FIX
+    _problemsRepository.setGym("1");
     return Scaffold(
       resizeToAvoidBottomInset: true,
       drawer: DrawerMenu(),
@@ -47,19 +49,21 @@ class HomePage extends StatelessWidget {
               if (state is HomeLoading) {
                 return CircularProgressIndicator();
               } else if (state is HomeLoaded) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text("Climber's log",
-                        style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
-                    Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
-                    Text(user.name ?? '', style: textTheme.headline5),
-                    const SizedBox(height: 4.0),
-                    _buildTodayArea(context, state.dashboard),
-                    _buildFloorMap(context, state.dashboard),
-                    _buildMyLogs(context, state.dashboard),
-                    //Avatar(photo: user.photo),
-                  ],
+                return SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text("Climber's log",
+                          style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
+                      Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
+                      Text(user.name ?? '', style: textTheme.headline5),
+                      const SizedBox(height: 4.0),
+                      _buildTodayArea(context, state.dashboard),
+                      _buildFloorMap(context, state.dashboard),
+                      _buildMyLogs(context, state.dashboard),
+                      //Avatar(photo: user.photo),
+                    ],
+                  ),
                 );
               }
               return Container(child: Text("Unknown state" + state.toString()));
@@ -126,31 +130,31 @@ class HomePage extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
     List<ImageMapShape> shapes = [
-      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall A", points: [
+      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall A", id: 30, points: [
         ImageMapCoordinate(48.14, 78.91),
         ImageMapCoordinate(47.36, 64.19),
         ImageMapCoordinate(38.28, 65.36),
         ImageMapCoordinate(38.67, 78.91),
       ]),
-      ImageMapShape(description: 'Wall B has diipadaapa', title: "Wall B", points: [
+      ImageMapShape(description: 'Wall B has diipadaapa', title: "Wall B", id: 709, points: [
         ImageMapCoordinate(11.43, 79.04),
         ImageMapCoordinate(21.19, 65.49),
         ImageMapCoordinate(37.5, 64.97),
         ImageMapCoordinate(37.11, 79.17),
       ]),
-      ImageMapShape(description: 'Wall C has diipadaapa', title: "Wall C", points: [
+      ImageMapShape(description: 'Wall C has diipadaapa', title: "Wall C", id: 710, points: [
         ImageMapCoordinate(10.55, 78.91),
         ImageMapCoordinate(10.55, 54.56),
         ImageMapCoordinate(19.63, 54.56),
         ImageMapCoordinate(20.9, 64.71),
       ]),
-      ImageMapShape(description: 'Wall D has diipadaapa', title: "Wall D", points: [
+      ImageMapShape(description: 'Wall D has diipadaapa', title: "Wall D", id: 33, points: [
         ImageMapCoordinate(11.04, 37.89),
         ImageMapCoordinate(11.33, 24.22),
         ImageMapCoordinate(41.02, 24.74),
         ImageMapCoordinate(36.52, 37.63),
       ]),
-      ImageMapShape(description: 'Wall E has diipadaapa', title: "Wall E", points: [
+      ImageMapShape(description: 'Wall E has diipadaapa', title: "Wall E", id: 34, points: [
         ImageMapCoordinate(41.15, 24.74),
         ImageMapCoordinate(42.19, 33.46),
         ImageMapCoordinate(46, 37.89),
