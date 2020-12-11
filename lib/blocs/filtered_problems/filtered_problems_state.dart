@@ -3,37 +3,35 @@ import 'package:problemator/models/visibility_filter.dart';
 
 import 'package:equatable/equatable.dart';
 
-abstract class FilteredProblemsState extends Equatable {
-  const FilteredProblemsState();
-  @override
-  List<Object> get props => [];
-}
+enum FilteredProblemsStatus { loading, loaded, error }
 
-class FilteredProblemsLoading extends FilteredProblemsState {}
-
-class FilteredProblemsLoaded extends FilteredProblemsState {
+class FilteredProblemsState extends Equatable {
+  final FilteredProblemsStatus status;
   final List<Problem> filteredProblems;
   final VisibilityFilter activeFilter;
   final List<int> selectedWalls;
 
-  const FilteredProblemsLoaded({this.filteredProblems, this.activeFilter, this.selectedWalls});
+  const FilteredProblemsState(
+      {this.status, this.filteredProblems, this.activeFilter, this.selectedWalls});
 
   @override
-  List<Object> get props => [filteredProblems, selectedWalls, activeFilter];
+  List<Object> get props => [filteredProblems, selectedWalls, activeFilter, status];
 
   @override
   String toString() =>
-      'FilteredProblemsLoaded { filteredProblems: $filteredProblems,  visibilityFilter : $activeFilter, selectedWalls : $selectedWalls}';
+      'FilteredProblemsLoaded { filteredProblems: $filteredProblems,  visibilityFilter : $activeFilter, selectedWalls : $selectedWalls, status: $status}';
 
-  FilteredProblemsLoaded copyWith({
+  FilteredProblemsState copyWith({
     List<Problem> filteredProblems,
     VisibilityFilter activeFilter,
     List<int> selectedWalls,
+    FilteredProblemsStatus status,
   }) {
-    return FilteredProblemsLoaded(
+    return FilteredProblemsState(
       filteredProblems: filteredProblems ?? this.filteredProblems,
       activeFilter: activeFilter ?? this.activeFilter,
       selectedWalls: selectedWalls ?? this.selectedWalls,
+      status: status ?? this.status,
     );
   }
 }

@@ -81,8 +81,8 @@ class _AppState extends State<App> {
             BlocProvider<AuthenticationBloc>(
                 create: (_) => _authenticationBloc..add(AuthenticationUserChanged(User.empty))),
             BlocProvider<UserBloc>(create: (_) => userBloc),
-            BlocProvider<ProblemBloc>(
-                create: (context) => ProblemBloc(
+            BlocProvider<ProblemsBloc>(
+                create: (context) => ProblemsBloc(
                     problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
           ],
           child: MaterialApp(
@@ -98,9 +98,13 @@ class _AppState extends State<App> {
                 return LoginPage();
               } else if (state.status == AuthenticationStatus.authenticated) {
                 return MultiBlocProvider(providers: [
-                  BlocProvider<ProblemsBloc>(
-                      create: (context) => ProblemsBloc(
+                  BlocProvider<ProblemBloc>(
+                      create: (context) => ProblemBloc(
                           problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
+                  BlocProvider<FilteredProblemsBloc>(
+                      lazy: false,
+                      create: (context) =>
+                          FilteredProblemsBloc(BlocProvider.of<ProblemsBloc>(context))),
                   BlocProvider<HomeBloc>(
                     create: (context) => HomeBloc(
                         problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
@@ -109,9 +113,6 @@ class _AppState extends State<App> {
                         problemsBloc: BlocProvider.of<ProblemsBloc>(context))
                       ..add(InitializeHomeScreenEvent()),
                   ),
-                  BlocProvider<FilteredProblemsBloc>(
-                      create: (context) => FilteredProblemsBloc(
-                          problemsBloc: BlocProvider.of<ProblemsBloc>(context))),
                 ], child: HomePage());
               } else {
                 // Make splash screen stay around at least 2 secs

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:problemator/blocs/problems/problems.dart';
 import 'package:problemator/models/problem.dart';
 import 'package:problemator/models/visibility_filter.dart';
@@ -11,11 +10,12 @@ import 'filtered_problems_state.dart';
 
 class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsState> {
   final ProblemsBloc _problemsBloc;
-  StreamSubscription problemsSubscription;
 
-  FilteredProblemsBloc({problemsBloc})
+  //FilteredProblemsBloc(this._problemsBloc) : super(FilteredProblemsLoading());
+
+  FilteredProblemsBloc(problemsBloc)
       : this._problemsBloc = problemsBloc,
-        super(FilteredProblemsLoading()) {
+        super(FilteredProblemsState(status: FilteredProblemsStatus.loading)) {
     _problemsBloc.listen((state) {
       if (state is ProblemsLoaded) {
         add(UpdateProblems((problemsBloc.state as ProblemsLoaded).problems));
@@ -25,23 +25,24 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
 
   @override
   Stream<FilteredProblemsState> mapEventToState(FilteredProblemsEvent event) async* {
-    if (event is UpdateFilter) {
-      yield* _mapUpdateFilterToState(state as FilteredProblemsLoaded, event);
+    if (state.status == FilteredProblemsStatus.loaded && event is UpdateFilter) {
+      yield* _mapUpdateFilterToState(state, event);
     } else if (event is UpdateProblems) {
-      yield ((state as FilteredProblemsLoaded).copyWith(filteredProblems: event.problems));
+      yield (state.copyWith(
+          filteredProblems: event.problems, status: FilteredProblemsStatus.loaded));
       //yield* _mapProblemsUpdatedToState(event);
     }
   }
 
   Stream<FilteredProblemsState> _mapUpdateFilterToState(
-      FilteredProblemsLoaded newState, UpdateFilter event) async* {
-    if (newState is ProblemsLoaded) {
-      // Apply filters to state
-      newState.copyWith(
-          filteredProblems: _mapProblemsToFilteredProblems(newState.filteredProblems, event));
-      yield (newState);
-    }
+      FilteredProblemsState newState, UpdateFilter event) async* {
+    // Apply filters to state
+    newState.copyWith(
+        filteredProblems: _mapProblemsToFilteredProblems(newState.filteredProblems, event),
+        status: FilteredProblemsStatus.loaded);
+    yield (newState);
   }
+  /*
 
   Stream<FilteredProblemsState> _mapProblemsUpdatedToState(
     UpdateProblems event,
@@ -50,6 +51,7 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     //     ? (state as FilteredProblemsLoaded).activeFilter
     //     : VisibilityFilter.all;
   }
+  */
 
   List<Problem> _mapProblemsToFilteredProblems(List<Problem> problems, UpdateFilter event) {
     // Here we can have a plethora of filters.
@@ -70,11 +72,5 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
         return problem.ticked == null;
       }
     }).toList();
-  }
-
-  @override
-  Future<void> close() {
-    problemsSubscription.cancel();
-    return super.close();
   }
 }

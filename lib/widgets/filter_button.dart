@@ -22,7 +22,9 @@ class FilterButton extends StatelessWidget {
         onSelected: (filter) {
           //BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(selectedWalls : wallids));
         },
-        activeFilter: state is FilteredProblemsLoaded ? state.activeFilter : VisibilityFilter.all,
+        activeFilter: state.status == FilteredProblemsStatus.loaded
+            ? state.activeFilter
+            : VisibilityFilter.all,
         activeStyle: activeStyle,
         defaultStyle: defaultStyle,
       );
