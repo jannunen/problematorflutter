@@ -53,14 +53,7 @@ class HomePage extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text("Climber's log",
-                      style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
-                  Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
-                  Text(user.name ?? '', style: textTheme.headline5),
-                  const SizedBox(height: 4.0),
-                  _buildTodayArea(context, state.dashboard),
-                  Expanded(child: _buildFloorMap(context, state.dashboard)),
-                  Expanded(child: _buildProblemList(context)),
+                  Expanded(child: _buildProblemList(context, state, user)),
                   //_buildMyLogs(context, state.dashboard),
                   //Avatar(photo: user.photo),
                 ],
@@ -228,18 +221,29 @@ class HomePage extends StatelessWidget {
     ));
   }
 
-  Widget _buildProblemList(BuildContext context) {
+  Widget _buildProblemList(BuildContext context, HomeState homeState, User user) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
       if (state.status == FilteredProblemsStatus.loaded && state.filteredProblems.length > 0) {
         return ListView.builder(
           itemBuilder: (context, position) {
             final Problem problem = state.filteredProblems[position];
-            return ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              leading: Icon(Icons.account_circle),
-              title: Text(problem.gradename),
-              trailing: Icon(Icons.arrow_forward),
-            );
+            if (position == 0) {
+              return Column(children: [
+                Text("Climber's log",
+                    style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
+                Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
+                Text(user.name ?? '', style: textTheme.headline5),
+                const SizedBox(height: 4.0),
+                _buildTodayArea(context, homeState.dashboard),
+                _buildFloorMap(context, homeState.dashboard),
+                _buildProblemTile(problem),
+              ]);
+            }
+            return _buildProblemTile(problem);
           },
           itemCount: state.filteredProblems.length,
         );
@@ -247,5 +251,14 @@ class HomePage extends StatelessWidget {
         return Container(padding: new EdgeInsets.all(16), child: Text("Loading problems"));
       }
     });
+  }
+
+  Widget _buildProblemTile(Problem problem) {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      leading: Icon(Icons.account_circle),
+      title: Text(problem.gradename),
+      trailing: Icon(Icons.arrow_forward),
+    );
   }
 }
