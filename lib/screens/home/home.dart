@@ -228,10 +228,24 @@ class HomePage extends StatelessWidget {
 
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
       if (state.status == FilteredProblemsStatus.loaded && state.filteredProblems.length > 0) {
-        return ListView.builder(
-          itemBuilder: (context, position) {
-            final Problem problem = state.filteredProblems[position];
-            if (position == 0) {
+        return GroupedListView<Problem, String>(
+          elements: state.filteredProblems,
+          groupBy: (element) => element.wallchar,
+          groupComparator: (value1, value2) => value2.compareTo(value1),
+          itemComparator: (item1, item2) =>
+              int.tryParse(item1.problemid).compareTo(int.tryParse(item2.problemid)),
+          order: GroupedListOrder.DESC,
+          useStickyGroupSeparators: true,
+          groupHeaderBuilder: (Problem problem) => Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              problem.wallchar + " " + problem.walldesc,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          indexedItemBuilder: (context, problem, index) {
+            if (index == 0) {
               return Column(children: [
                 Text("Climber's log",
                     style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
@@ -242,10 +256,10 @@ class HomePage extends StatelessWidget {
                 _buildFloorMap(context, homeState.dashboard),
                 _buildProblemTile(problem),
               ]);
+            } else {
+              return _buildProblemTile(problem);
             }
-            return _buildProblemTile(problem);
           },
-          itemCount: state.filteredProblems.length,
         );
       } else if (state.status == FilteredProblemsStatus.loading) {
         return Container(padding: new EdgeInsets.all(16), child: Text("Loading problems"));
@@ -254,11 +268,17 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildProblemTile(Problem problem) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      leading: Icon(Icons.account_circle),
-      title: Text(problem.gradename),
-      trailing: Icon(Icons.arrow_forward),
+    return Card(
+      elevation: 8.0,
+      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      child: Container(
+        child: ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          leading: Icon(Icons.account_circle),
+          title: Text(problem.tagshort),
+          trailing: Icon(Icons.arrow_forward),
+        ),
+      ),
     );
   }
 }
