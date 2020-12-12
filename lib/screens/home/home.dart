@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
@@ -41,34 +44,30 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: Align(
-        alignment: const Alignment(0, -1 / 3),
-        child: BlocBuilder(
-            cubit: BlocProvider.of<HomeBloc>(context),
-            builder: (context, state) {
-              if (state is HomeLoading) {
-                return CircularProgressIndicator();
-              } else if (state is HomeLoaded) {
-                return SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text("Climber's log",
-                          style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
-                      Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
-                      Text(user.name ?? '', style: textTheme.headline5),
-                      const SizedBox(height: 4.0),
-                      _buildTodayArea(context, state.dashboard),
-                      _buildFloorMap(context, state.dashboard),
-                      _buildMyLogs(context, state.dashboard),
-                      //Avatar(photo: user.photo),
-                    ],
-                  ),
-                );
-              }
-              return Container(child: Text("Unknown state" + state.toString()));
-            }),
-      ),
+      body: BlocBuilder(
+          cubit: BlocProvider.of<HomeBloc>(context),
+          builder: (context, state) {
+            if (state is HomeLoading) {
+              return CircularProgressIndicator();
+            } else if (state is HomeLoaded) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text("Climber's log",
+                      style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
+                  Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
+                  Text(user.name ?? '', style: textTheme.headline5),
+                  const SizedBox(height: 4.0),
+                  _buildTodayArea(context, state.dashboard),
+                  Expanded(child: _buildFloorMap(context, state.dashboard)),
+                  Expanded(child: _buildProblemList(context)),
+                  //_buildMyLogs(context, state.dashboard),
+                  //Avatar(photo: user.photo),
+                ],
+              );
+            }
+            return Container(child: Text("Unknown state" + state.toString()));
+          }),
     );
   }
 
@@ -227,5 +226,26 @@ class HomePage extends StatelessWidget {
         Text("Last 30 days - Boulder"),
       ],
     ));
+  }
+
+  Widget _buildProblemList(BuildContext context) {
+    return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
+      if (state.status == FilteredProblemsStatus.loaded && state.filteredProblems.length > 0) {
+        return ListView.builder(
+          itemBuilder: (context, position) {
+            final Problem problem = state.filteredProblems[position];
+            return ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              leading: Icon(Icons.account_circle),
+              title: Text(problem.gradename),
+              trailing: Icon(Icons.arrow_forward),
+            );
+          },
+          itemCount: state.filteredProblems.length,
+        );
+      } else if (state.status == FilteredProblemsStatus.loading) {
+        return Container(padding: new EdgeInsets.all(16), child: Text("Loading problems"));
+      }
+    });
   }
 }
