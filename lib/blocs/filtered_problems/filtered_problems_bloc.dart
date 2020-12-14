@@ -15,7 +15,8 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
 
   FilteredProblemsBloc(problemsBloc)
       : this._problemsBloc = problemsBloc,
-        super(FilteredProblemsState(status: FilteredProblemsStatus.loading)) {
+        super(FilteredProblemsState(
+            status: FilteredProblemsStatus.loading, activeFilter: VisibilityFilter.all)) {
     _problemsBloc.listen((state) {
       if (state is ProblemsLoaded) {
         add(UpdateProblems((problemsBloc.state as ProblemsLoaded).problems));
@@ -30,17 +31,16 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     } else if (event is UpdateProblems) {
       yield (state.copyWith(
           filteredProblems: event.problems, status: FilteredProblemsStatus.loaded));
-      //yield* _mapProblemsUpdatedToState(event);
     }
   }
 
   Stream<FilteredProblemsState> _mapUpdateFilterToState(
       FilteredProblemsState newState, UpdateFilter event) async* {
     // Apply filters to state
-    newState.copyWith(
+    yield (newState.copyWith(
         filteredProblems: _mapProblemsToFilteredProblems(newState.filteredProblems, event),
-        status: FilteredProblemsStatus.loaded);
-    yield (newState);
+        activeFilter: newState.activeFilter,
+        status: FilteredProblemsStatus.loaded));
   }
   /*
 
@@ -57,10 +57,13 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     // Here we can have a plethora of filters.
     VisibilityFilter filter = event.filter;
     List<int> selectedWalls = event.selectedWalls;
+    // This always returns a RESULT of the original filtered array.
     return problems.where((problem) {
       // Apply selectedWalls filter
-      if (selectedWalls.length > 0 && !selectedWalls.contains(int.tryParse(problem.wallid))) {
-        return false;
+      if (selectedWalls.length > 0) {
+        if (!selectedWalls.contains(int.tryParse(problem.wallid))) {
+          return false;
+        }
       }
 
       // Apply visiblityfilter

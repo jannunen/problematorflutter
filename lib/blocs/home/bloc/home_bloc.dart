@@ -30,15 +30,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       this._problemsRepository.apiKey = user.jwt;
       add(InitializeHomeScreenEvent());
     });
-    /*
     _problemsBloc.listen((ProblemsState state) async {
       if (state is ProblemsLoaded) {
-        final ProblemsLoaded newState = (state as ProblemsLoaded);
         // Add the problems to this state.
-        add(UpdateProblems(newState.problems));
+        add(UpdateProblems(state.problems));
       }
     });
-    */
     _problemBloc.listen((ProblemState state) async {
       if (state is TickAdded) {
         // upadte fdfashhobhoihasd

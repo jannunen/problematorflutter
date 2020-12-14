@@ -13,18 +13,20 @@ import 'imagemap/canvas_controller.dart';
 
 class ImageMap extends StatefulWidget {
   final List<ImageMapShape> shapes;
-  ImageMap(this.shapes);
+  final Function onTap;
+  ImageMap(this.shapes, {this.onTap});
 
   @override
-  State<StatefulWidget> createState() => _ImageMap(this.shapes);
+  State<StatefulWidget> createState() => _ImageMap(this.shapes, onTap: this.onTap);
 }
 
 class _ImageMap extends State<ImageMap> {
   final List<ImageMapShape> shapes;
   final _controller = CanvasController();
   final Image image = Image(image: AssetImage('assets/images/floorplans/floorplan_1.png'));
+  final Function onTap;
 
-  _ImageMap(this.shapes) {
+  _ImageMap(this.shapes, {this.onTap}) {
     shapes.forEach((shape) {
       _controller.addObject(CanvasObject(
         dx: 0,
@@ -60,7 +62,7 @@ class _ImageMap extends State<ImageMap> {
             );
           }
           final instance = snapshot.data;
-          print(instance.selectedObjectsIndices);
+          //print(instance.selectedObjectsIndices);
           return Column(
             children: [
               Row(
@@ -170,9 +172,9 @@ class _ImageMap extends State<ImageMap> {
                                     _controller.selectedObjects;
                                 if (selectedWalls != null && selectedWalls.length > 0) {
                                   List<int> wallids = selectedWalls.map((e) => e.child.id).toList();
-                                  print("Selected wall(s): " + wallids.toString());
-                                  BlocProvider.of<FilteredProblemsBloc>(context)
-                                      .add(UpdateFilter(selectedWalls: wallids));
+                                  if (this.onTap != null) {
+                                    this.onTap(wallids);
+                                  }
                                 }
                               },
                               child: FittedBox(

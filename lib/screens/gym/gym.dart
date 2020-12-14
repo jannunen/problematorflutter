@@ -4,23 +4,23 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
-import 'package:problemator/blocs/filtered_problems/filtered_problems_event.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/models/models.dart';
-import 'package:problemator/screens/gym/gym.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
 import 'package:problemator/widgets/image_map.dart';
 import 'package:problemator/widgets/imagemap/image_map_coordinate.dart';
 import 'package:problemator/widgets/imagemap/image_map_shape.dart';
-import 'package:problemator/widgets/problems/add_problem.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';
 import 'package:problemator/widgets/problems/show_problem.dart';
 
-class HomePage extends StatelessWidget {
+class GymPage extends StatelessWidget {
   static Route route() {
-    return MaterialPageRoute<void>(builder: (_) => HomePage());
+    return MaterialPageRoute<void>(builder: (_) => GymPage());
   }
 
   @override
@@ -48,16 +48,17 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: BlocBuilder(
-          cubit: BlocProvider.of<HomeBloc>(context),
+      body: BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(
+          cubit: BlocProvider.of<FilteredProblemsBloc>(context),
           builder: (context, state) {
-            if (state is HomeLoading) {
+            if (state.status == FilteredProblemsStatus.loading) {
               return CircularProgressIndicator();
-            } else if (state is HomeLoaded) {
+            } else if (state.status == FilteredProblemsStatus.loaded) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(child: _buildMainViewAsList(context, state, user)),
+                  Expanded(child: _buildProblemList(context, state, user)),
+                  //Avatar(photo: user.photo),
                 ],
               );
             }
@@ -66,60 +67,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildTodayArea(BuildContext context, Dashboard dashboard) {
-    int tickAmountToday = dashboard.ticksToday?.length ?? 0;
-    ThemeData theme = Theme.of(context);
-    ColorScheme colorScheme = theme.colorScheme;
-
-    return Center(
-      child: Column(
-        children: [
-          Text("Today"),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    tickAmountToday.toString(),
-                    style: TextStyle(fontSize: 30),
-                  ),
-                  Padding(padding: EdgeInsets.all(1.0)),
-                  Text("route(s)")
-                ],
-              ),
-              RaisedButton(
-                  onPressed: () => _openAddProblemDialog(context),
-                  color: colorScheme.roundButtonBackground,
-                  textColor: colorScheme.roundButtonTextColor,
-                  padding: EdgeInsets.all(14.0),
-                  child: Column(children: [
-                    Icon(
-                      Icons.add,
-                      size: 25,
-                    ),
-                    Text("Add"),
-                  ]),
-                  shape: CircleBorder()),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _openAddProblemDialog(BuildContext context) {
-    showBottomSheet(
-        context: context,
-        builder: (ctx) {
-          // DO NOT name this parameter to context.
-          // Then the correct context cannot be found and the bloc chain breaks.
-          return BlocProvider<HomeBloc>.value(
-              value: BlocProvider.of<HomeBloc>(context), child: AddProblemForm());
-        });
-  }
-
-  Widget _buildFloorMap(BuildContext context, Dashboard dashboard) {
+  Widget _buildFloorMap(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
@@ -163,94 +111,50 @@ class HomePage extends StatelessWidget {
       color: colorScheme.gymFloorPlanBackroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ImageMap(shapes, onTap: (event) {
-          print("Selected wall(s): " + event.toString());
-          BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(selectedWalls: event));
-
-          // Navigate to  gym view.
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (dialogContext) {
-              return BlocProvider.value(
-                  value: BlocProvider.of<FilteredProblemsBloc>(context), child: GymPage());
-            }),
-          );
-        }),
+        child: ImageMap(shapes),
       ),
     );
   }
 
-  Widget _buildMyLogs(BuildContext context, Dashboard dashboard) {
-    final textTheme = Theme.of(context).textTheme;
-    ThemeData theme = Theme.of(context);
-    ColorScheme colorScheme = theme.colorScheme;
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: colorScheme.myLogsContainerBackgroundColor,
-        ),
-        child: Column(
-          children: [
-            SizedBox(height: 8.0),
-            Text("My logs",
-                style: textTheme.headline5.copyWith(color: colorScheme.myLogsHeaderTextColor)),
-            // Go for left column having the big number icons and the
-            // right side for the bar chart
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(child: _buildMyLogsLeftColumn(context)),
-                Expanded(child: _buildMyLogsRightColumn(context)),
-              ],
-            ),
-            SizedBox(height: 16.0),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMyLogsLeftColumn(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Container(
-        child: Column(
-      children: [
-        Text("9", style: textTheme.headline1.copyWith(fontWeight: FontWeight.normal)),
-        Text("sessions"),
-        Text("37", style: textTheme.headline1.copyWith(fontWeight: FontWeight.normal)),
-        Text("routes"),
-      ],
-    ));
-  }
-
-  Widget _buildMyLogsRightColumn(BuildContext context) {
-    return Container(
-        child: Column(
-      children: [
-        Text("barchart here"),
-        Text("Last 30 days - Boulder"),
-      ],
-    ));
-  }
-
-  Widget _buildMainViewAsList(BuildContext context, HomeState homeState, User user) {
+  Widget _buildProblemList(
+      BuildContext context, FilteredProblemsState filteredProblemsState, User user) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
 
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
       if (state.status == FilteredProblemsStatus.loaded && state.filteredProblems.length > 0) {
-        return ListView(
-          children: [
-            Text("Climber's log",
-                style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
-            Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
-            Text(user.name ?? '', style: textTheme.headline5),
-            const SizedBox(height: 4.0),
-            _buildTodayArea(context, homeState.dashboard),
-            _buildFloorMap(context, homeState.dashboard),
-          ],
+        return GroupedListView<Problem, String>(
+          elements: state.filteredProblems,
+          groupBy: (element) => element.wallchar,
+          groupComparator: (value1, value2) => value2.compareTo(value1),
+          itemComparator: (item1, item2) =>
+              int.tryParse(item1.problemid).compareTo(int.tryParse(item2.problemid)),
+          order: GroupedListOrder.DESC,
+          useStickyGroupSeparators: true,
+          groupHeaderBuilder: (Problem problem) => Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              problem.wallchar + " " + problem.walldesc,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          indexedItemBuilder: (context, problem, index) {
+            if (index == 0) {
+              return Column(children: [
+                Text("Climber's log",
+                    style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
+                Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
+                Text(user.name ?? '', style: textTheme.headline5),
+                const SizedBox(height: 4.0),
+                _buildFloorMap(context),
+                _buildProblemTile(context, problem),
+              ]);
+            } else {
+              return _buildProblemTile(context, problem);
+            }
+          },
         );
       } else if (state.status == FilteredProblemsStatus.loading) {
         return Container(padding: new EdgeInsets.all(17), child: Text("Loading problems"));

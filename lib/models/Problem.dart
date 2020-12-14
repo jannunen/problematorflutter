@@ -155,6 +155,7 @@ class Problem extends Equatable {
       vscale: json['vscale'],
       score: json['score'],
       ascentcount: json['ascentcount'],
+      addedrelative: json['addedrelative'],
       ticked: json['ticked'],
       wallid: json['wallid'],
     );
