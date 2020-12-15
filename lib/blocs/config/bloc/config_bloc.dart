@@ -46,7 +46,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
   Future<Config> _loadConfig() async {
     // Construct a config objula
     String userString = SharedObjects.prefs.getString('user');
-    User user = null;
+    User user;
     if (userString != null) {
       try {
         Map<String, dynamic> gymJson = json.decode(userString);

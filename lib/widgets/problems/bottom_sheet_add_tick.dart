@@ -420,6 +420,14 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
 
   _buildTimesTickedInfo(BuildContext context) {
     // Info can be found from dashboard.
-    //List<Tick> myTicksToday = context.select((HomeBloc bloc) => bloc.state.dashboard.ticksToday);
+    //(List<Tick> myTicksToday = context.select((HomeBloc bloc) => bloc.state.dashboard.ticksToday);
+
+    return (this.problemExtraInfo.ascents != null)
+        ? Row(mainAxisSize: MainAxisSize.min, children: [
+            Text("You have climbed this problem"),
+            Text(this.problemExtraInfo.ascents.length ?? "0"),
+            Text("time(s)")
+          ])
+        : Container();
   }
 }

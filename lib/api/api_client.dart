@@ -1,6 +1,7 @@
 import 'package:problemator/api/api_helper.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/models/problem_extra_info.dart';
+import 'package:problemator/models/responses/tick_response.dart';
 
 class ApiClient {
   final ApiHelper _helper = ApiHelper();
@@ -64,15 +65,14 @@ class ApiClient {
     this._apiKey = jwt;
   }
 
-  Future<Tick> addTick(Tick tick) async {
+  Future<TickResponse> addTick(Tick tick) async {
     Map<String, String> postData = tick.toPostMap(true);
     final response = await _helper.post("savetick/?react=true&api-auth-token=$_apiKey", postData);
     if (response.containsKey('error') && (response['error'] == 'true' || response['error'])) {
       throw new Exception(response['message']);
     }
-    Tick backTick = Tick.fromJson(response['tick']);
+    TickResponse backTick = TickResponse.fromJson(response);
     return backTick;
-    //return backTick.copyWith(problem: Problem.fromJson(response['problem']));
   }
 
   Future<Problem> fetchProblem(String problemid, bool useCache) async {

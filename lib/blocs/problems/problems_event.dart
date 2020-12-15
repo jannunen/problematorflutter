@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:problemator/models/problem.dart';
 
 @immutable
 abstract class ProblemsEvent extends Equatable {
@@ -14,6 +15,10 @@ class LoadProblems extends ProblemsEvent {
   String toString() => 'LoadProblems';
 }
 
+class UpdateProblem extends ProblemsEvent {
+  final Problem problem;
+  UpdateProblem(this.problem);
+}
 /*
 class UpdateProblem extends ProblemsEvent {
   final Problem updatedProblem;

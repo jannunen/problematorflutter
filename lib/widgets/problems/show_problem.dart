@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:problemator/blocs/home/bloc/home_bloc.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/blocs/problem/problem_bloc.dart';
 import 'package:problemator/core/screen_helpers.dart';
@@ -31,8 +31,8 @@ class _ShowProblem extends State<ShowProblem> {
   Widget build(BuildContext context) {
     // Find problems
 
-    this.problem = context.select(
-        (HomeBloc b) => b.state.dashboard.problems.firstWhere((element) => element.id == id));
+    this.problem = context.select((FilteredProblemsBloc b) =>
+        b.state.filteredProblems.firstWhere((element) => element.id == id));
     // Find the problem from bloc and sta
     return Scaffold(
       appBar: AppBar(
@@ -130,7 +130,7 @@ class _ShowProblem extends State<ShowProblem> {
     return Container(
       height: displayHeight(context) * 0.5,
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.only(left: 40.0, top: 40, right: 20, bottom: 20),
         child: Column(
           children: [
             Text("Route author"),
@@ -142,7 +142,7 @@ class _ShowProblem extends State<ShowProblem> {
                     SizedBox(
                       width: 20,
                     ),
-                    Text(problem.addedformatted ?? "N/A")
+                    Text(problem.addedrelative ?? "N/A")
                   ],
                 ),
               ],
@@ -156,14 +156,27 @@ class _ShowProblem extends State<ShowProblem> {
                 Text(problem.addt ?? "No additional info"),
               ],
             ),
+            /*
+            SizedBox(
+              height: 18,
+            ),
             Text("+ add video beta"),
+            */
+            SizedBox(
+              height: 18,
+            ),
             Text("Opinions"),
             Text("7A+ jne"),
             SizedBox(
               height: 10,
             ),
-            Text(problem.cDislike.toString() ?? "0" + "dislikes"),
-            _buildDislikeAction(context)
+            Row(
+              children: [
+                Text((problem.cDislike.toString() ?? "0") + " dislikes"),
+                SizedBox(width: 4),
+                _buildDislikeAction(context)
+              ],
+            ),
           ],
         ),
       ),
@@ -179,8 +192,9 @@ class _ShowProblem extends State<ShowProblem> {
         );
       } else if (state is ProblemExtraInfoLoading) {
         return Text("Loading...");
+      } else {
+        return Text("I do not know what this state is" + state.toString());
       }
-      return Text("Unknown state" + state.toString());
     });
   }
 

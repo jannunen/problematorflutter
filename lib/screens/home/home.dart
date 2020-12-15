@@ -7,6 +7,7 @@ import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart'
 import 'package:problemator/blocs/filtered_problems/filtered_problems_event.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
+import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/screens/gym/gym.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
@@ -170,8 +171,12 @@ class HomePage extends StatelessWidget {
           // Navigate to  gym view.
           Navigator.of(context).push(
             MaterialPageRoute(builder: (dialogContext) {
-              return BlocProvider.value(
-                  value: BlocProvider.of<FilteredProblemsBloc>(context), child: GymPage());
+              return MultiBlocProvider(providers: [
+                BlocProvider<FilteredProblemsBloc>.value(
+                    value: BlocProvider.of<FilteredProblemsBloc>(context)),
+                BlocProvider<ProblemBloc>.value(value: BlocProvider.of<ProblemBloc>(context)),
+                BlocProvider<HomeBloc>.value(value: BlocProvider.of<HomeBloc>(context)),
+              ], child: GymPage());
             }),
           );
         }),
@@ -240,7 +245,7 @@ class HomePage extends StatelessWidget {
     ColorScheme colorScheme = theme.colorScheme;
 
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
-      if (state.status == FilteredProblemsStatus.loaded && state.filteredProblems.length > 0) {
+      if (state.status == FilteredProblemsStatus.loaded) {
         return ListView(
           children: [
             Text("Climber's log",
@@ -254,6 +259,8 @@ class HomePage extends StatelessWidget {
         );
       } else if (state.status == FilteredProblemsStatus.loading) {
         return Container(padding: new EdgeInsets.all(17), child: Text("Loading problems"));
+      } else {
+        return Text("Weird state " + state.toString());
       }
     });
   }

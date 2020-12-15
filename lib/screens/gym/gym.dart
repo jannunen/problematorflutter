@@ -4,11 +4,10 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
-import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
-import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
-import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_event.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
+import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
@@ -57,8 +56,7 @@ class GymPage extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(child: _buildProblemList(context, state, user)),
-                  //Avatar(photo: user.photo),
+                  Expanded(child: _buildGymPage(context, state, user)),
                 ],
               );
             }
@@ -111,27 +109,50 @@ class GymPage extends StatelessWidget {
       color: colorScheme.gymFloorPlanBackroundColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ImageMap(shapes),
+        child: ImageMap(
+          shapes,
+          onTap: (event) {
+            print("Selected wall(s): " + event.toString());
+            BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(selectedWalls: event));
+
+            // Navigate to  gym view.
+            /*
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (dialogContext) {
+                return MultiBlocProvider(providers: [
+                  BlocProvider<FilteredProblemsBloc>.value(
+                      value: BlocProvider.of<FilteredProblemsBloc>(context)),
+                  BlocProvider<ProblemBloc>.value(value: BlocProvider.of<ProblemBloc>(context)),
+                  BlocProvider<HomeBloc>.value(value: BlocProvider.of<HomeBloc>(context)),
+                ], child: GymPage());
+              }),
+            );
+            */
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildProblemList(
+  Widget _buildGymPage(
       BuildContext context, FilteredProblemsState filteredProblemsState, User user) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
 
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
-      if (state.status == FilteredProblemsStatus.loaded && state.filteredProblems.length > 0) {
+      if (state.status == FilteredProblemsStatus.loaded) {
+        if (state.filteredProblems.length == 0) {
+          return Text("No problems. Too much filtering.");
+        }
         return GroupedListView<Problem, String>(
           elements: state.filteredProblems,
           groupBy: (element) => element.wallchar,
           groupComparator: (value1, value2) => value2.compareTo(value1),
           itemComparator: (item1, item2) =>
               int.tryParse(item1.problemid).compareTo(int.tryParse(item2.problemid)),
-          order: GroupedListOrder.DESC,
-          useStickyGroupSeparators: true,
+          order: GroupedListOrder.ASC,
+          useStickyGroupSeparators: false,
           groupHeaderBuilder: (Problem problem) => Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -143,10 +164,6 @@ class GymPage extends StatelessWidget {
           indexedItemBuilder: (context, problem, index) {
             if (index == 0) {
               return Column(children: [
-                Text("Climber's log",
-                    style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
-                Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
-                Text(user.name ?? '', style: textTheme.headline5),
                 const SizedBox(height: 4.0),
                 _buildFloorMap(context),
                 _buildProblemTile(context, problem),
@@ -174,8 +191,12 @@ class GymPage extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (dialogContext) {
-                return BlocProvider.value(
-                    value: BlocProvider.of<HomeBloc>(context), child: ShowProblem(id: problem.id));
+                return MultiBlocProvider(providers: [
+                  BlocProvider<FilteredProblemsBloc>.value(
+                      value: BlocProvider.of<FilteredProblemsBloc>(context)),
+                  BlocProvider<ProblemBloc>.value(value: BlocProvider.of<ProblemBloc>(context)),
+                  BlocProvider<HomeBloc>.value(value: BlocProvider.of<HomeBloc>(context)),
+                ], child: ShowProblem(id: problem.id));
               }),
             );
           },
@@ -190,7 +211,13 @@ class GymPage extends StatelessWidget {
 }
 
 Widget _buildTileTrailing(BuildContext context, Problem problem) {
-  return Text(problem.addedrelative ?? "No data");
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(problem.addedrelative ?? "No data"),
+      Text((problem.ascentcount ?? "No ascents") + " ascent(s)"),
+    ],
+  );
 }
 
 _buildTileMain(BuildContext context, Problem problem) {

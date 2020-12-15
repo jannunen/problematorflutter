@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/models/problem_extra_info.dart';
+import 'package:problemator/models/responses/tick_response.dart';
 
 part 'problem_event.dart';
 part 'problem_state.dart';
@@ -27,9 +28,12 @@ class ProblemBloc extends Bloc<ProblemEvent, ProblemState> {
     } else if (event is AddTick) {
       ProblemExtraInfo problemExtraInfo = (this.state as ProblemExtraInfoLoaded).problemExtraInfo;
       try {
-        final Tick tick = await problemsRepository.addTick(event.tick);
+        final TickResponse tickResponse = await problemsRepository.addTick(event.tick);
         // Remember that HomeBloc is listening to states so it gets the updated problem info also
-        yield (TickAdded(addedTick: tick, problemExtraInfo: problemExtraInfo));
+        yield (TickAdded(
+            addedTick: tickResponse.tick,
+            problemExtraInfo: problemExtraInfo,
+            problem: tickResponse.problem));
       } catch (e) {
         yield (TickAddFailed(e.toString(), problemExtraInfo));
       }

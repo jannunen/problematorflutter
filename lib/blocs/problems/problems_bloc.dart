@@ -1,22 +1,33 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
+import 'package:problemator/models/problem.dart';
 import './problems.dart';
 import 'package:problemator/api/repository_api.dart';
 
 class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
   final ProblemsRepository problemsRepository;
+  final ProblemBloc _problemBloc;
 
-  ProblemsBloc({@required this.problemsRepository}) : super(ProblemsNotLoaded());
+  ProblemsBloc({@required this.problemsRepository, problemBloc})
+      : this._problemBloc = problemBloc,
+        super(ProblemsNotLoaded()) {
+    _problemBloc.listen((state) {
+      if (state is TickAdded) {
+        add(UpdateProblem(state.problem));
+      }
+    });
+  }
 
   @override
   Stream<ProblemsState> mapEventToState(ProblemsEvent event) async* {
     if (event is LoadProblems) {
       yield* _mapLoadProblemsToState();
+    } else if (event is UpdateProblem) {
+      yield* _mapUpdateTodoToState(state, event);
     }
-    /* else if (event is UpdateProblem) {
-      yield* _mapUpdateTodoToState(currentState, event);
-    } else if (event is ToggleAll) {
+    /* else if (event is ToggleAll) {
       yield* _mapToggleAllToState(currentState);
     } else if (event is ClearCompleted) {
       yield* _mapClearCompletedToState(currentState);
@@ -37,21 +48,18 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
     }
   }
 
-/*
-
-
   Stream<ProblemsState> _mapUpdateTodoToState(
     ProblemsState currentState,
     UpdateProblem event,
   ) async* {
     if (currentState is ProblemsLoaded) {
       final List<Problem> updatedProblems = currentState.problems.map((todo) {
-        return todo.id == event.updatedProblem.id ? event.updatedProblem : todo;
+        return todo.id == event.problem.id ? event.problem : todo;
       }).toList();
       yield ProblemsLoaded(updatedProblems);
-      _saveProblems(updatedProblems);
     }
   }
+/*
 
 
   Stream<ProblemsState> _mapToggleAllToState(ProblemsState currentState) async* {

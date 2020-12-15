@@ -13,7 +13,7 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
 
   //FilteredProblemsBloc(this._problemsBloc) : super(FilteredProblemsLoading());
 
-  FilteredProblemsBloc(problemsBloc)
+  FilteredProblemsBloc({problemsBloc})
       : this._problemsBloc = problemsBloc,
         super(FilteredProblemsState(
             status: FilteredProblemsStatus.loading, activeFilter: VisibilityFilter.all)) {
@@ -36,9 +36,12 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
 
   Stream<FilteredProblemsState> _mapUpdateFilterToState(
       FilteredProblemsState newState, UpdateFilter event) async* {
-    // Apply filters to state
+    // Apply filters to state. REMEMBER that the ORIGINAL set of problems is
+    // being used. That's why we use _problemsBloc.state. Otherwise we
+    // would end up with having an "AND" and ending up with zero problems.
     yield (newState.copyWith(
-        filteredProblems: _mapProblemsToFilteredProblems(newState.filteredProblems, event),
+        filteredProblems:
+            _mapProblemsToFilteredProblems((_problemsBloc.state as ProblemsLoaded).problems, event),
         activeFilter: newState.activeFilter,
         status: FilteredProblemsStatus.loaded));
   }
