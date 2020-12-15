@@ -171,7 +171,14 @@ class GymPage extends StatelessWidget {
                     _buildCompletionStatus(context, state),
                     _buildFloorMap(context),
                     _buildFilters(context, state),
-                    Text("Problem list", style: theme.textTheme.headline1),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text("Problem list", style: theme.textTheme.headline1),
+                        Text(state.filteredProblems.length.toString() + " route(s)",
+                            style: theme.textTheme.headline2),
+                      ],
+                    ),
                     _buildProblemTile(context, problem),
                   ]);
                 } else {
@@ -257,7 +264,7 @@ class GymPage extends StatelessWidget {
                   children: [
                     Text("Style", style: theme.textTheme.headline2),
                     SizedBox(width: 4),
-                    ..._buildProblemStyles(context),
+                    ..._buildProblemStyles(context, state.selectedRouteAttributes),
                   ],
                 ),
               ),
@@ -284,6 +291,8 @@ class GymPage extends StatelessWidget {
       RouteSortOption.newest_last: "Newest last",
       RouteSortOption.most_ascents: "Most ascents",
       RouteSortOption.least_ascents: "Least ascents",
+      RouteSortOption.hardest_first: "Hardest first",
+      RouteSortOption.hardest_last: "Hardest last",
       RouteSortOption.most_liked: "Most liked",
       RouteSortOption.least_liked: "Least liked",
       RouteSortOption.routesetter: "Routesetter",
@@ -310,14 +319,20 @@ class GymPage extends StatelessWidget {
   }
 }
 
-List<Widget> _buildProblemStyles(BuildContext context) {
+List<Widget> _buildProblemStyles(BuildContext context, List<String> selectedRouteAttributes) {
   final List<String> attributesInUse =
       context.select((ProblemsBloc bloc) => (bloc.state as ProblemsLoaded).attributesInUse);
 
   return attributesInUse
       .map((e) => Padding(
             padding: const EdgeInsets.all(4.0),
-            child: ProblematorButton(child: Text(e)),
+            child: ProblematorButton(
+                selected: selectedRouteAttributes.contains(e),
+                onPressed: () {
+                  BlocProvider.of<FilteredProblemsBloc>(context)
+                      .add(UpdateFilter(selectedRouteAttributes: [e]));
+                },
+                child: Text(e)),
           ))
       .toList();
 }

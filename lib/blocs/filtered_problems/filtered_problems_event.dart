@@ -11,20 +11,28 @@ class UpdateFilter extends FilteredProblemsEvent {
   final VisibilityFilter filter;
   final List<int> selectedWalls;
   final RouteSortOption sort;
+  final List<String> selectedRouteAttributes;
 
-  const UpdateFilter({this.filter, this.selectedWalls, this.sort});
-
-  @override
-  List<Object> get props => [filter, selectedWalls, sort];
+  const UpdateFilter({this.filter, this.selectedWalls, this.sort, this.selectedRouteAttributes});
 
   @override
-  String toString() => 'UpdateFilter { filter: $filter, walls: $selectedWalls , sort : $sort}';
+  List<Object> get props => [filter, selectedWalls, sort, selectedRouteAttributes];
 
-  UpdateFilter copyWith({VisibilityFilter filter, List<int> selectedWalls, RouteSortOption sort}) {
+  @override
+  String toString() =>
+      'UpdateFilter { filter: $filter, walls: $selectedWalls , sort : $sort, selectedRouteAttributes: $selectedRouteAttributes}';
+
+  UpdateFilter copyWith(
+      {VisibilityFilter filter,
+      List<int> selectedWalls,
+      RouteSortOption sort,
+      List<String> selectedRouteAttributes}) {
     return UpdateFilter(
-        filter: filter ?? this.filter,
-        selectedWalls: selectedWalls ?? this.selectedWalls,
-        sort: sort ?? this.sort);
+      filter: filter ?? this.filter,
+      selectedWalls: selectedWalls ?? this.selectedWalls,
+      sort: sort ?? this.sort,
+      selectedRouteAttributes: selectedRouteAttributes ?? this.selectedRouteAttributes,
+    );
   }
 }
 

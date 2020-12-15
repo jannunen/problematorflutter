@@ -1,4 +1,6 @@
 enum RouteSortOption {
+  hardest_first,
+  hardest_last,
   sectors_asc,
   sectors_desc,
   newest_first,

@@ -17,9 +17,11 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
   FilteredProblemsBloc({problemsBloc})
       : this._problemsBloc = problemsBloc,
         super(FilteredProblemsState(
-            status: FilteredProblemsStatus.loading,
-            activeFilter: VisibilityFilter.all,
-            sort: RouteSortOption.tag_asc)) {
+          status: FilteredProblemsStatus.loading,
+          activeFilter: VisibilityFilter.all,
+          sort: RouteSortOption.tag_asc,
+          selectedRouteAttributes: [],
+        )) {
     _problemsBloc.listen((state) {
       if (state is ProblemsLoaded) {
         add(UpdateProblems((problemsBloc.state as ProblemsLoaded).problems));
@@ -45,10 +47,26 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
 
     // Combine event filters with state filter, so that we have the whole
     // set of filters
+
+    // As the route attribute filters can be toggled on and off they have to be
+    // combined to the event. If the filter exists in the filters array, it
+    // must be removed and if it doesn't, it must be added.
+    final List<String> updatedAttributes = List.from(state.selectedRouteAttributes ?? []);
+    if (event.selectedRouteAttributes != null && event.selectedRouteAttributes.length > 0) {
+      event.selectedRouteAttributes.forEach((e) {
+        if (updatedAttributes.contains(e)) {
+          updatedAttributes.removeWhere((element) => element == e);
+        } else {
+          updatedAttributes.add(e);
+        }
+      });
+    }
     UpdateFilter combinedFilter = event.copyWith(
-        filter: event.filter ?? state.activeFilter,
-        selectedWalls: event.selectedWalls ?? state.selectedWalls,
-        sort: event.sort ?? state.sort);
+      filter: event.filter ?? state.activeFilter,
+      selectedWalls: event.selectedWalls ?? state.selectedWalls,
+      sort: event.sort ?? state.sort,
+      selectedRouteAttributes: updatedAttributes,
+    );
 
     yield (newState.copyWith(
         filteredProblems: _mapProblemsToFilteredProblems(
@@ -56,6 +74,7 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
         activeFilter: combinedFilter.filter,
         selectedWalls: combinedFilter.selectedWalls,
         sort: event.sort,
+        selectedRouteAttributes: updatedAttributes,
         status: FilteredProblemsStatus.loaded));
   }
   /*
@@ -74,8 +93,10 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     VisibilityFilter filter = event.filter;
     List<int> selectedWalls = event.selectedWalls;
     RouteSortOption sort = event.sort;
+    List<String> selectedRouteAttributes = event.selectedRouteAttributes;
+
     // This always returns a RESULT of the original filtered array.
-    final List<Problem> filteredProblems = problems.where((problem) {
+    List<Problem> filteredProblems = problems.where((problem) {
       // Apply selectedWalls filter
       if (selectedWalls != null && selectedWalls.length > 0) {
         if (!selectedWalls.contains(int.tryParse(problem.wallid))) {
@@ -98,8 +119,32 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
         return problem.ticked == null;
       }
     }).toList();
+
+    // Apply selected route attributes
+    final List<Problem> againFilteredProblems = filteredProblems.where((problem) {
+      if (selectedRouteAttributes != null && selectedRouteAttributes.length > 0) {
+        List<String> attrs = problem.attributes.map((v) => v as String).toList();
+        // Let's start with if amount of selectedRouteAttributes is MORE than
+        // route attributes, we can safely assume that we cannot include the item.
+        if (selectedRouteAttributes.length > attrs.length) {
+          return false;
+        }
+        // Check that ALL of the selectedRouteAttributes are in the problems
+        // attributes.
+        bool allFound = true;
+        selectedRouteAttributes.forEach((e) {
+          if (!attrs.contains(e)) {
+            allFound = false;
+          }
+        });
+        return allFound;
+      }
+      // If no attributes are set, default showing all.
+      return true;
+    }).toList();
+
     // After filtering, do sorting.
-    filteredProblems.sort((a, b) {
+    againFilteredProblems.sort((a, b) {
       switch (sort) {
         case RouteSortOption.least_ascents:
           return int.tryParse(a.ascentcount) - int.tryParse(b.ascentcount);
@@ -137,9 +182,15 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
         case RouteSortOption.tag_desc:
           return b.tagshort.compareTo(a.tagshort);
           break;
+        case RouteSortOption.hardest_first:
+          return int.tryParse(b.score) - int.tryParse(a.score);
+          break;
+        case RouteSortOption.hardest_last:
+          return int.tryParse(a.score) - int.tryParse(b.score);
+          break;
       }
       return 0;
     });
-    return filteredProblems;
+    return againFilteredProblems;
   }
 }
