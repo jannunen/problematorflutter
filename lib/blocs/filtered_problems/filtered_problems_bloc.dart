@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:problemator/blocs/problems/problems.dart';
 import 'package:problemator/models/problem.dart';
+import 'package:problemator/models/route_sort_options.dart';
 import 'package:problemator/models/visibility_filter.dart';
 
 import 'filtered_problems_event.dart';
@@ -16,7 +17,9 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
   FilteredProblemsBloc({problemsBloc})
       : this._problemsBloc = problemsBloc,
         super(FilteredProblemsState(
-            status: FilteredProblemsStatus.loading, activeFilter: VisibilityFilter.all)) {
+            status: FilteredProblemsStatus.loading,
+            activeFilter: VisibilityFilter.all,
+            sort: RouteSortOption.tag_asc)) {
     _problemsBloc.listen((state) {
       if (state is ProblemsLoaded) {
         add(UpdateProblems((problemsBloc.state as ProblemsLoaded).problems));
@@ -44,7 +47,9 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     // set of filters
     UpdateFilter combinedFilter = event.copyWith(
         filter: event.filter ?? state.activeFilter,
-        selectedWalls: event.selectedWalls ?? state.selectedWalls);
+        selectedWalls: event.selectedWalls ?? state.selectedWalls,
+        sort: event.sort ?? state.sort);
+
     yield (newState.copyWith(
         filteredProblems: _mapProblemsToFilteredProblems(
             (_problemsBloc.state as ProblemsLoaded).problems, combinedFilter),
@@ -67,8 +72,9 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     // Here we can have a plethora of filters.
     VisibilityFilter filter = event.filter;
     List<int> selectedWalls = event.selectedWalls;
+    RouteSortOption sort = event.sort;
     // This always returns a RESULT of the original filtered array.
-    return problems.where((problem) {
+    final List<Problem> filteredProblems = problems.where((problem) {
       // Apply selectedWalls filter
       if (selectedWalls != null && selectedWalls.length > 0) {
         if (!selectedWalls.contains(int.tryParse(problem.wallid))) {
@@ -91,5 +97,48 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
         return problem.ticked == null;
       }
     }).toList();
+    // After filtering, do sorting.
+    filteredProblems.sort((a, b) {
+      switch (sort) {
+        case RouteSortOption.least_ascents:
+          return int.tryParse(a.ascentcount) - int.tryParse(b.ascentcount);
+          break;
+        case RouteSortOption.sectors_asc:
+          return a.wallchar.compareTo(b.wallchar);
+          break;
+        case RouteSortOption.sectors_desc:
+          return b.wallchar.compareTo(a.wallchar);
+          break;
+        case RouteSortOption.newest_first:
+          return int.tryParse(a.ageInWeeks) - int.tryParse(b.ageInWeeks);
+          break;
+        case RouteSortOption.newest_last:
+          return int.tryParse(b.ageInWeeks) - int.tryParse(a.ageInWeeks);
+          break;
+        case RouteSortOption.most_ascents:
+          return int.tryParse(b.ascentcount) - int.tryParse(a.ascentcount);
+          break;
+        case RouteSortOption.least_ascents:
+          return int.tryParse(a.ascentcount) - int.tryParse(b.ascentcount);
+          break;
+        case RouteSortOption.most_liked:
+          return a.cLike - b.cLike;
+          break;
+        case RouteSortOption.least_liked:
+          return b.cLike - a.cLike;
+          break;
+        case RouteSortOption.routesetter:
+          return a.author.compareTo(b.author);
+          break;
+        case RouteSortOption.tag_asc:
+          return a.tagshort.compareTo(b.tagshort);
+          break;
+        case RouteSortOption.tag_desc:
+          return b.tagshort.compareTo(a.tagshort);
+          break;
+      }
+      return 0;
+    });
+    return filteredProblems;
   }
 }

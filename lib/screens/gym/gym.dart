@@ -265,7 +265,7 @@ class GymPage extends StatelessWidget {
                   children: [
                     Text("Sort by", style: theme.textTheme.headline2),
                     SizedBox(width: 4),
-                    ..._buildSortOptions(context),
+                    ..._buildSortOptions(context, state.sort)
                   ],
                 ),
               )
@@ -276,7 +276,7 @@ class GymPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildSortOptions(BuildContext context) {
+  List<Widget> _buildSortOptions(BuildContext context, RouteSortOption selectedSort) {
     Map<RouteSortOption, String> sortOptions = {
       RouteSortOption.sectors_asc: "Sectors ASC",
       RouteSortOption.sectors_desc: "Sectors DESC",
@@ -287,21 +287,24 @@ class GymPage extends StatelessWidget {
       RouteSortOption.most_liked: "Most liked",
       RouteSortOption.least_liked: "Least liked",
       RouteSortOption.routesetter: "Routesetter",
+      RouteSortOption.tag_asc: "Tag ASC",
+      RouteSortOption.tag_desc: "Tag DESC",
     };
     return sortOptions.entries
         .map((entry) => Padding(
               padding: const EdgeInsets.all(4.0),
               child: ProblematorButton(
                 child: Text(entry.value),
-                onPressed: () => _handleSortOptionClick(entry.key),
+                selected: entry.key == selectedSort,
+                onPressed: () => _handleSortOptionClick(context, entry.key),
               ),
             ))
         .toList();
   }
 
-  _handleSortOptionClick(RouteSortOption sort) {
+  _handleSortOptionClick(BuildContext context, RouteSortOption sort) {
     print("Sort by" + sort.toString());
-    int i = 1;
+    BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(sort: sort));
   }
 }
 

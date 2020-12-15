@@ -8,4 +8,6 @@ enum RouteSortOption {
   most_liked,
   least_liked,
   routesetter,
+  tag_asc,
+  tag_desc,
 }
