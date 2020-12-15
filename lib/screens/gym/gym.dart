@@ -147,8 +147,10 @@ class GymPage extends StatelessWidget {
           elements: problems,
           groupBy: (element) => element.wallchar,
           groupComparator: (value1, value2) => value2.compareTo(value1),
+          /*
           itemComparator: (item1, item2) =>
               int.tryParse(item1.problemid).compareTo(int.tryParse(item2.problemid)),
+              */
           order: GroupedListOrder.ASC,
           useStickyGroupSeparators: false,
           groupHeaderBuilder: (Problem problem) => Padding(
@@ -278,8 +280,6 @@ class GymPage extends StatelessWidget {
 
   List<Widget> _buildSortOptions(BuildContext context, RouteSortOption selectedSort) {
     Map<RouteSortOption, String> sortOptions = {
-      RouteSortOption.sectors_asc: "Sectors ASC",
-      RouteSortOption.sectors_desc: "Sectors DESC",
       RouteSortOption.newest_first: "Newest first",
       RouteSortOption.newest_last: "Newest last",
       RouteSortOption.most_ascents: "Most ascents",
@@ -289,6 +289,8 @@ class GymPage extends StatelessWidget {
       RouteSortOption.routesetter: "Routesetter",
       RouteSortOption.tag_asc: "Tag ASC",
       RouteSortOption.tag_desc: "Tag DESC",
+      RouteSortOption.sectors_asc: "Sectors ASC",
+      RouteSortOption.sectors_desc: "Sectors DESC",
     };
     return sortOptions.entries
         .map((entry) => Padding(

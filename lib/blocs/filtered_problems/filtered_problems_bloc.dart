@@ -55,6 +55,7 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
             (_problemsBloc.state as ProblemsLoaded).problems, combinedFilter),
         activeFilter: combinedFilter.filter,
         selectedWalls: combinedFilter.selectedWalls,
+        sort: event.sort,
         status: FilteredProblemsStatus.loaded));
   }
   /*
@@ -110,10 +111,10 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
           return b.wallchar.compareTo(a.wallchar);
           break;
         case RouteSortOption.newest_first:
-          return int.tryParse(a.ageInWeeks) - int.tryParse(b.ageInWeeks);
+          return a.ageInDays - b.ageInDays;
           break;
         case RouteSortOption.newest_last:
-          return int.tryParse(b.ageInWeeks) - int.tryParse(a.ageInWeeks);
+          return b.ageInDays - a.ageInDays;
           break;
         case RouteSortOption.most_ascents:
           return int.tryParse(b.ascentcount) - int.tryParse(a.ascentcount);
@@ -122,10 +123,10 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
           return int.tryParse(a.ascentcount) - int.tryParse(b.ascentcount);
           break;
         case RouteSortOption.most_liked:
-          return a.cLike - b.cLike;
+          return b.cLike - a.cLike;
           break;
         case RouteSortOption.least_liked:
-          return b.cLike - a.cLike;
+          return a.cLike - b.cLike;
           break;
         case RouteSortOption.routesetter:
           return a.author.compareTo(b.author);

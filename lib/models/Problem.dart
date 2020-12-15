@@ -7,7 +7,7 @@ class Problem extends Equatable {
   final bool fresh;
   final String problemid;
   final String id;
-  final String ageInWeeks;
+  final int ageInDays;
   final String soonToBeRemoved;
   final String htmlcolour;
   final String gradename;
@@ -39,7 +39,7 @@ class Problem extends Equatable {
 
   Problem({
     this.gradeid,
-    this.ageInWeeks,
+    this.ageInDays,
     this.partOfCircuit,
     this.problemid,
     this.fresh,
@@ -75,7 +75,7 @@ class Problem extends Equatable {
 
   @override
   List<Object> get props =>
-      [cLike, id, cLove, cDislike, ticked, wallid, tagshort, fresh, partOfCircuit, ageInWeeks];
+      [cLike, id, cLove, cDislike, ticked, wallid, tagshort, fresh, partOfCircuit, ageInDays];
 
   Problem copyWith({
     gradeid,
@@ -85,7 +85,7 @@ class Problem extends Equatable {
     id,
     gradename,
     locationId,
-    ageInWeeks,
+    ageInDays,
     wallchar,
     soonToBeRemoved,
     walldesc,
@@ -119,7 +119,7 @@ class Problem extends Equatable {
         locationId: locationId,
         soonToBeRemoved: soonToBeRemoved,
         fresh: fresh,
-        ageInWeeks: ageInWeeks,
+        ageInDays: ageInDays,
         wallchar: wallchar,
         walldesc: walldesc,
         colour: colour,
@@ -151,7 +151,7 @@ class Problem extends Equatable {
       attributes: json['attributes'] ?? [],
       gradeid: json['gradeid'],
       problemid: json['problemid'],
-      ageInWeeks: json['age_in_weeks'],
+      ageInDays: json['ageindays'],
       partOfCircuit: json['part_of_circuit'],
       fresh: json['fresh'],
       id: json['id'],
