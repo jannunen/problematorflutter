@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
@@ -8,6 +9,8 @@ import 'package:problemator/blocs/filtered_problems/filtered_problems_event.dart
 import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
+import 'package:problemator/blocs/problems/problems_bloc.dart';
+import 'package:problemator/blocs/problems/problems_state.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
@@ -15,6 +18,7 @@ import 'package:problemator/widgets/image_map.dart';
 import 'package:problemator/widgets/imagemap/image_map_coordinate.dart';
 import 'package:problemator/widgets/imagemap/image_map_shape.dart';
 import 'package:problemator/widgets/problemator_button.dart';
+import 'package:problemator/widgets/problemator_round_button.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';
 import 'package:problemator/widgets/problems/show_problem.dart';
 
@@ -149,16 +153,21 @@ class GymPage extends StatelessWidget {
             ),
           ),
           indexedItemBuilder: (context, problem, index) {
-            if (index == 0) {
-              return Column(children: [
-                const SizedBox(height: 4.0),
-                _buildRouteFilters(context, state),
-                _buildFloorMap(context),
-                _buildProblemTile(context, problem),
-              ]);
-            } else {
-              return _buildProblemTile(context, problem);
-            }
+            return Builder(
+              builder: (context) {
+                if (index == 0) {
+                  return Column(children: [
+                    const SizedBox(height: 4.0),
+                    _buildRouteFilters(context, state),
+                    _buildCompletionStatus(context, state),
+                    _buildFloorMap(context),
+                    _buildProblemTile(context, problem),
+                  ]);
+                } else {
+                  return _buildProblemTile(context, problem);
+                }
+              },
+            );
           },
         );
       } else if (state.status == FilteredProblemsStatus.loading) {
@@ -199,6 +208,79 @@ class GymPage extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildCompletionStatus(BuildContext context, FilteredProblemsState state) {
+  final textTheme = Theme.of(context).textTheme;
+  ThemeData theme = Theme.of(context);
+  ColorScheme colorScheme = theme.colorScheme;
+
+  final List<Problem> allProblems =
+      context.select((ProblemsBloc bloc) => (bloc.state as ProblemsLoaded).problems);
+  final List<Problem> tickedProblems = allProblems.where((element) => element.ticked).toList();
+  final double completionPercentage =
+      ((tickedProblems.length / allProblems.length) * 100).round() / 100;
+  return Container(
+      child: Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(left: 16, right: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                ProblematorRoundButton(
+                    padding: EdgeInsets.only(top: 7),
+                    backgroundColor: Colors.white,
+                    child: Text(tickedProblems.length.toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ))),
+                Text("Your ticks")
+              ],
+            ),
+            Column(
+              children: [
+                ProblematorRoundButton(
+                    padding: EdgeInsets.only(top: 7),
+                    backgroundColor: Colors.white,
+                    child: SizedBox(
+                      child: Text(allProblems.length.toString(),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          )),
+                    )),
+                Text("Total problems")
+              ],
+            ),
+          ],
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LinearPercentIndicator(
+                width: MediaQuery.of(context).size.width - 50,
+                animation: true,
+                lineHeight: 20.0,
+                animationDuration: 2000,
+                percent: completionPercentage,
+                animateFromLastPercent: true,
+                center: Text((completionPercentage * 100).round().toString() + "%"),
+                linearStrokeCap: LinearStrokeCap.roundAll,
+                progressColor: Color.fromRGBO(108, 197, 81, 1)),
+          ],
+        ),
+      ),
+    ],
+  ));
 }
 
 Widget _buildRouteFilters(BuildContext context, FilteredProblemsState state) {

@@ -32,7 +32,7 @@ class Problem extends Equatable {
   final String addedformatted;
   final int mytickcount;
   final String tagshort;
-  final String ticked;
+  final bool ticked;
   final String wallid;
   final List<dynamic> attributes;
 
