@@ -16,6 +16,11 @@ class UpdateFilter extends FilteredProblemsEvent {
 
   @override
   String toString() => 'UpdateFilter { filter: $filter, $selectedWalls }';
+
+  UpdateFilter copyWith({VisibilityFilter filter, List<int> selectedWalls}) {
+    return UpdateFilter(
+        filter: filter ?? this.filter, selectedWalls: selectedWalls ?? this.selectedWalls);
+  }
 }
 
 class UpdateProblems extends FilteredProblemsEvent {

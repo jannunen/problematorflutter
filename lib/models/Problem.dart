@@ -4,11 +4,14 @@ import 'package:meta/meta.dart';
 @immutable
 class Problem extends Equatable {
   final String gradeid;
+  final bool fresh;
   final String problemid;
   final String id;
+  final String soonToBeRemoved;
   final String htmlcolour;
   final String gradename;
   final String locationId;
+  final bool partOfCircuit;
   final String wallchar;
   final String walldesc;
   final String colour;
@@ -35,10 +38,13 @@ class Problem extends Equatable {
 
   Problem({
     this.gradeid,
+    this.partOfCircuit,
     this.problemid,
+    this.fresh,
     this.id,
     this.gradename,
     this.locationId,
+    this.soonToBeRemoved,
     this.htmlcolour,
     this.wallchar,
     this.walldesc,
@@ -66,15 +72,19 @@ class Problem extends Equatable {
   });
 
   @override
-  List<Object> get props => [cLike, id, cLove, cDislike, ticked, wallid, tagshort];
+  List<Object> get props =>
+      [cLike, id, cLove, cDislike, ticked, wallid, tagshort, fresh, partOfCircuit];
 
   Problem copyWith({
     gradeid,
+    partOfCircuit,
     problemid,
+    fresh,
     id,
     gradename,
     locationId,
     wallchar,
+    soonToBeRemoved,
     walldesc,
     colour,
     added,
@@ -104,11 +114,14 @@ class Problem extends Equatable {
         problemid: problemid,
         gradename: gradename,
         locationId: locationId,
+        soonToBeRemoved: soonToBeRemoved,
+        fresh: fresh,
         wallchar: wallchar,
         walldesc: walldesc,
         colour: colour,
         added: added,
         tag: tag,
+        partOfCircuit: partOfCircuit,
         author: author,
         routetype: routetype,
         startdefinition: startdefinition,
@@ -134,6 +147,8 @@ class Problem extends Equatable {
       attributes: json['attributes'] ?? [],
       gradeid: json['gradeid'],
       problemid: json['problemid'],
+      partOfCircuit: json['part_of_circuit'],
+      fresh: json['fresh'],
       id: json['id'],
       gradename: json['gradename'],
       locationId: json['location_id'],
@@ -142,6 +157,7 @@ class Problem extends Equatable {
       colour: json['colour'],
       added: json['added'],
       tag: json['tag'],
+      soonToBeRemoved: json['soontoberemoved'],
       tagshort: json['tagshort'],
       author: json['author'],
       routetype: json['routetype'],

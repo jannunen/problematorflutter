@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:problemator/ui/theme/problemator_theme.dart';
 
 class ProblematorButton extends StatelessWidget {
   final Function onPressed;
   final Widget child;
-  ProblematorButton({this.onPressed, this.child});
+  final bool selected;
+  ProblematorButton({this.onPressed, this.child, this.selected = false});
 
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -11,7 +13,7 @@ class ProblematorButton extends StatelessWidget {
     ColorScheme colorScheme = theme.colorScheme;
 
     return RaisedButton(
-        color: theme.buttonColor,
+        color: selected ? colorScheme.activeButtonColor : theme.buttonColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
         onPressed: onPressed,
         child: Padding(

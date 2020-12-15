@@ -39,10 +39,17 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     // Apply filters to state. REMEMBER that the ORIGINAL set of problems is
     // being used. That's why we use _problemsBloc.state. Otherwise we
     // would end up with having an "AND" and ending up with zero problems.
+
+    // Combine event filters with state filter, so that we have the whole
+    // set of filters
+    UpdateFilter combinedFilter = event.copyWith(
+        filter: event.filter ?? state.activeFilter,
+        selectedWalls: event.selectedWalls ?? state.selectedWalls);
     yield (newState.copyWith(
-        filteredProblems:
-            _mapProblemsToFilteredProblems((_problemsBloc.state as ProblemsLoaded).problems, event),
-        activeFilter: newState.activeFilter,
+        filteredProblems: _mapProblemsToFilteredProblems(
+            (_problemsBloc.state as ProblemsLoaded).problems, combinedFilter),
+        activeFilter: combinedFilter.filter,
+        selectedWalls: combinedFilter.selectedWalls,
         status: FilteredProblemsStatus.loaded));
   }
   /*
@@ -63,7 +70,7 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     // This always returns a RESULT of the original filtered array.
     return problems.where((problem) {
       // Apply selectedWalls filter
-      if (selectedWalls.length > 0) {
+      if (selectedWalls != null && selectedWalls.length > 0) {
         if (!selectedWalls.contains(int.tryParse(problem.wallid))) {
           return false;
         }
@@ -72,6 +79,12 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
       // Apply visiblityfilter
       if (filter == VisibilityFilter.all) {
         return true;
+      } else if (filter == VisibilityFilter.expiring) {
+        return (problem.soonToBeRemoved == "1");
+      } else if (filter == VisibilityFilter.circuits) {
+        return (problem.partOfCircuit);
+      } else if (filter == VisibilityFilter.fresh) {
+        return (problem.fresh);
       } else if (filter == VisibilityFilter.project) {
         return problem.ticked == null;
       } else {

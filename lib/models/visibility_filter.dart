@@ -1,1 +1,1 @@
-enum VisibilityFilter { all, project, climbed }
+enum VisibilityFilter { all, project, climbed, fresh, expiring, circuits }

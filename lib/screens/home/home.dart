@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';

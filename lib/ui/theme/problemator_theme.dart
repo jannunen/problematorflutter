@@ -7,6 +7,10 @@ extension CustomColorScheme on ColorScheme {
 
   BorderRadius get textFieldBorderRadius => BorderRadius.all(const Radius.circular(26));
 
+  Color get activeButtonColor => brightness == Brightness.light
+      ? const Color.fromRGBO(245, 199, 36, 1)
+      : const Color.fromRGBO(218, 180, 43, 1);
+
   Color get roundButtonBackground => brightness == Brightness.light
       ? const Color.fromRGBO(47, 45, 81, 0.9) // #2f2d51
       : const Color.fromRGBO(147, 145, 181, 0.9);

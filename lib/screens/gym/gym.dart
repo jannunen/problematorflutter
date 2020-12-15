@@ -14,6 +14,7 @@ import 'package:problemator/widgets/drawer.dart';
 import 'package:problemator/widgets/image_map.dart';
 import 'package:problemator/widgets/imagemap/image_map_coordinate.dart';
 import 'package:problemator/widgets/imagemap/image_map_shape.dart';
+import 'package:problemator/widgets/problemator_button.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';
 import 'package:problemator/widgets/problems/show_problem.dart';
 
@@ -112,22 +113,7 @@ class GymPage extends StatelessWidget {
         child: ImageMap(
           shapes,
           onTap: (event) {
-            print("Selected wall(s): " + event.toString());
             BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(selectedWalls: event));
-
-            // Navigate to  gym view.
-            /*
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (dialogContext) {
-                return MultiBlocProvider(providers: [
-                  BlocProvider<FilteredProblemsBloc>.value(
-                      value: BlocProvider.of<FilteredProblemsBloc>(context)),
-                  BlocProvider<ProblemBloc>.value(value: BlocProvider.of<ProblemBloc>(context)),
-                  BlocProvider<HomeBloc>.value(value: BlocProvider.of<HomeBloc>(context)),
-                ], child: GymPage());
-              }),
-            );
-            */
           },
         ),
       ),
@@ -142,11 +128,12 @@ class GymPage extends StatelessWidget {
 
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
       if (state.status == FilteredProblemsStatus.loaded) {
-        if (state.filteredProblems.length == 0) {
-          return Text("No problems. Too much filtering.");
-        }
+        final List<Problem> problems =
+            (state.filteredProblems != null && state.filteredProblems.length > 0)
+                ? state.filteredProblems
+                : ([Problem(wallchar: '', walldesc: '', problemid: 'null')].toList());
         return GroupedListView<Problem, String>(
-          elements: state.filteredProblems,
+          elements: problems,
           groupBy: (element) => element.wallchar,
           groupComparator: (value1, value2) => value2.compareTo(value1),
           itemComparator: (item1, item2) =>
@@ -165,6 +152,7 @@ class GymPage extends StatelessWidget {
             if (index == 0) {
               return Column(children: [
                 const SizedBox(height: 4.0),
+                _buildRouteFilters(context, state),
                 _buildFloorMap(context),
                 _buildProblemTile(context, problem),
               ]);
@@ -183,6 +171,9 @@ class GymPage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+    if (problem.problemid == 'null') {
+      return Container(child: Text("No problems matching the filters."));
+    }
     return Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -208,6 +199,57 @@ class GymPage extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildRouteFilters(BuildContext context, FilteredProblemsState state) {
+  return Wrap(
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(left: 4, right: 4),
+        child: ProblematorButton(
+            child: Text("All routes"),
+            selected: state.activeFilter == VisibilityFilter.all,
+            onPressed: () {
+              // Update filter
+              BlocProvider.of<FilteredProblemsBloc>(context)
+                  .add(UpdateFilter(filter: VisibilityFilter.all));
+            }),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 4, right: 4),
+        child: ProblematorButton(
+            child: Text("New routes"),
+            selected: state.activeFilter == VisibilityFilter.fresh,
+            onPressed: () {
+              // Update filter
+              BlocProvider.of<FilteredProblemsBloc>(context)
+                  .add(UpdateFilter(filter: VisibilityFilter.fresh));
+            }),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 4, right: 4),
+        child: ProblematorButton(
+            child: Text("Expiring routes"),
+            selected: state.activeFilter == VisibilityFilter.expiring,
+            onPressed: () {
+              // Update filter
+              BlocProvider.of<FilteredProblemsBloc>(context)
+                  .add(UpdateFilter(filter: VisibilityFilter.expiring));
+            }),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 4, right: 4),
+        child: ProblematorButton(
+            child: Text("Circuits"),
+            selected: state.activeFilter == VisibilityFilter.circuits,
+            onPressed: () {
+              // Update filter
+              BlocProvider.of<FilteredProblemsBloc>(context)
+                  .add(UpdateFilter(filter: VisibilityFilter.circuits));
+            }),
+      ),
+    ],
+  );
 }
 
 Widget _buildTileTrailing(BuildContext context, Problem problem) {
