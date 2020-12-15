@@ -17,13 +17,14 @@ class ProblemsLoading extends ProblemsState {
 
 class ProblemsLoaded extends ProblemsState {
   final List<Problem> problems;
+  final List<String> attributesInUse;
 
-  ProblemsLoaded([this.problems = const []]) : super([problems]);
+  ProblemsLoaded({this.attributesInUse = const [], this.problems = const []}) : super([problems]);
 
   @override
-  String toString() => 'ProblemsLoaded { problems: $problems }';
+  String toString() => 'ProblemsLoaded { problems: $problems , attributesInUse: $attributesInUse}';
   @override
-  List<Object> get props => [problems];
+  List<Object> get props => [problems, attributesInUse];
 }
 
 class ProblemsNotLoaded extends ProblemsState {

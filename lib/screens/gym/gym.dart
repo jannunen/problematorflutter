@@ -12,6 +12,7 @@ import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/blocs/problems/problems_bloc.dart';
 import 'package:problemator/blocs/problems/problems_state.dart';
 import 'package:problemator/models/models.dart';
+import 'package:problemator/models/route_sort_options.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
 import 'package:problemator/widgets/image_map.dart';
@@ -110,18 +111,24 @@ class GymPage extends StatelessWidget {
       ]),
     ];
 
-    return Container(
-      color: colorScheme.gymFloorPlanBackroundColor,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ImageMap(
-          shapes,
-          onTap: (event) {
-            BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(selectedWalls: event));
-          },
-        ),
-      ),
-    );
+    return ExpansionTile(
+        title: Text("Floor plan / Sectors"),
+        trailing: Text("Click to expand"),
+        children: [
+          Container(
+            color: colorScheme.gymFloorPlanBackroundColor,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ImageMap(
+                shapes,
+                onTap: (event) {
+                  BlocProvider.of<FilteredProblemsBloc>(context)
+                      .add(UpdateFilter(selectedWalls: event));
+                },
+              ),
+            ),
+          ),
+        ]);
   }
 
   Widget _buildGymPage(
@@ -161,6 +168,8 @@ class GymPage extends StatelessWidget {
                     _buildRouteFilters(context, state),
                     _buildCompletionStatus(context, state),
                     _buildFloorMap(context),
+                    _buildFilters(context, state),
+                    Text("Problem list", style: theme.textTheme.headline1),
                     _buildProblemTile(context, problem),
                   ]);
                 } else {
@@ -208,6 +217,104 @@ class GymPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildFilters(BuildContext context, FilteredProblemsState state) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return ExpansionTile(
+      title: Text("Filters"),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Text("Grades", style: theme.textTheme.headline2),
+                    SizedBox(width: 4),
+                    ProblematorButton(child: Text("Up to 4+")),
+                    SizedBox(width: 4),
+                    ProblematorButton(child: Text("Up to 5")),
+                    SizedBox(width: 4),
+                    ProblematorButton(child: Text("5 to 5+")),
+                    SizedBox(width: 4),
+                    ProblematorButton(child: Text("6a to 6c")),
+                    SizedBox(width: 4),
+                    ProblematorButton(child: Text("7a to 7c")),
+                    SizedBox(width: 4),
+                    ProblematorButton(child: Text("7c+ and higher")),
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Text("Style", style: theme.textTheme.headline2),
+                    SizedBox(width: 4),
+                    ..._buildProblemStyles(context),
+                  ],
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Text("Sort by", style: theme.textTheme.headline2),
+                    SizedBox(width: 4),
+                    ..._buildSortOptions(context),
+                  ],
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  List<Widget> _buildSortOptions(BuildContext context) {
+    Map<RouteSortOption, String> sortOptions = {
+      RouteSortOption.sectors_asc: "Sectors ASC",
+      RouteSortOption.sectors_desc: "Sectors DESC",
+      RouteSortOption.newest_first: "Newest first",
+      RouteSortOption.newest_last: "Newest last",
+      RouteSortOption.most_ascents: "Most ascents",
+      RouteSortOption.least_ascents: "Least ascents",
+      RouteSortOption.most_liked: "Most liked",
+      RouteSortOption.least_liked: "Least liked",
+      RouteSortOption.routesetter: "Routesetter",
+    };
+    return sortOptions.entries
+        .map((entry) => Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: ProblematorButton(
+                child: Text(entry.value),
+                onPressed: () => _handleSortOptionClick(entry.key),
+              ),
+            ))
+        .toList();
+  }
+
+  _handleSortOptionClick(RouteSortOption sort) {
+    print("Sort by" + sort.toString());
+    int i = 1;
+  }
+}
+
+List<Widget> _buildProblemStyles(BuildContext context) {
+  final List<String> attributesInUse =
+      context.select((ProblemsBloc bloc) => (bloc.state as ProblemsLoaded).attributesInUse);
+
+  return attributesInUse
+      .map((e) => Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: ProblematorButton(child: Text(e)),
+          ))
+      .toList();
 }
 
 Widget _buildCompletionStatus(BuildContext context, FilteredProblemsState state) {

@@ -39,7 +39,8 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
     try {
       final problemList = await this.problemsRepository.fetchProblems();
       if (problemList != null) {
-        yield ProblemsLoaded(problemList.problems);
+        yield ProblemsLoaded(
+            problems: problemList.problems, attributesInUse: problemList.attributesInUse);
       } else {
         yield ProblemsErrorLoading("Probably not logged in");
       }
@@ -56,7 +57,8 @@ class ProblemsBloc extends Bloc<ProblemsEvent, ProblemsState> {
       final List<Problem> updatedProblems = currentState.problems.map((todo) {
         return todo.id == event.problem.id ? event.problem : todo;
       }).toList();
-      yield ProblemsLoaded(updatedProblems);
+      yield ProblemsLoaded(
+          problems: updatedProblems, attributesInUse: []..addAll(currentState.attributesInUse));
     }
   }
 /*
