@@ -23,7 +23,20 @@ import 'package:problemator/widgets/problemator_round_button.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';
 import 'package:problemator/widgets/problems/show_problem.dart';
 
-class GymPage extends StatelessWidget {
+// This needs to be a statefulwidget, because we want to save
+// the UI state for the ExpansionTile
+
+class GymPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _GymPage();
+}
+
+class _GymPage extends State<GymPage> {
+  final Key gradesExpansionTileState = PageStorageKey('gradesExpansionTile');
+  final Key styleExpansionTileState = PageStorageKey('styleExpansionTile');
+  final Key sortExpansionTileState = PageStorageKey('sortExpansionTile');
+  final Key filtersExpansionTileState = PageStorageKey('filtersExpansionTile');
+
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => GymPage());
   }
@@ -232,52 +245,16 @@ class GymPage extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
     return ExpansionTile(
+      key: filtersExpansionTileState,
       title: Text("Filters"),
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Text("Grades", style: theme.textTheme.headline2),
-                    SizedBox(width: 4),
-                    ProblematorButton(child: Text("Up to 4+")),
-                    SizedBox(width: 4),
-                    ProblematorButton(child: Text("Up to 5")),
-                    SizedBox(width: 4),
-                    ProblematorButton(child: Text("5 to 5+")),
-                    SizedBox(width: 4),
-                    ProblematorButton(child: Text("6a to 6c")),
-                    SizedBox(width: 4),
-                    ProblematorButton(child: Text("7a to 7c")),
-                    SizedBox(width: 4),
-                    ProblematorButton(child: Text("7c+ and higher")),
-                  ],
-                ),
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Text("Style", style: theme.textTheme.headline2),
-                    SizedBox(width: 4),
-                    ..._buildProblemStyles(context, state.selectedRouteAttributes),
-                  ],
-                ),
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Text("Sort by", style: theme.textTheme.headline2),
-                    SizedBox(width: 4),
-                    ..._buildSortOptions(context, state.sort)
-                  ],
-                ),
-              )
+              _buildGradeFilterOptions(context),
+              _buildProblemStyleOptions(context, state),
+              _buildSortOptionsContainer(context, state),
             ],
           ),
         )
@@ -317,193 +294,257 @@ class GymPage extends StatelessWidget {
     print("Sort by" + sort.toString());
     BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(sort: sort));
   }
-}
 
-List<Widget> _buildProblemStyles(BuildContext context, List<String> selectedRouteAttributes) {
-  final List<String> attributesInUse =
-      context.select((ProblemsBloc bloc) => (bloc.state as ProblemsLoaded).attributesInUse);
+  Widget _buildProblemStyleOptions(BuildContext context, state) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return SingleChildScrollView(
+      key: styleExpansionTileState,
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          Text("Style", style: theme.textTheme.headline2),
+          SizedBox(width: 4),
+          ..._buildProblemStyles(context, state.selectedRouteAttributes),
+        ],
+      ),
+    );
+  }
 
-  return attributesInUse
-      .map((e) => Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: ProblematorButton(
-                selected: selectedRouteAttributes.contains(e),
-                onPressed: () {
-                  BlocProvider.of<FilteredProblemsBloc>(context)
-                      .add(UpdateFilter(selectedRouteAttributes: [e]));
-                },
-                child: Text(e)),
-          ))
-      .toList();
-}
+  Widget _buildSortOptionsContainer(BuildContext context, state) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return SingleChildScrollView(
+      key:
+          sortExpansionTileState, // This needs to be given, because parent expansiontile has it also
 
-Widget _buildCompletionStatus(BuildContext context, FilteredProblemsState state) {
-  final textTheme = Theme.of(context).textTheme;
-  ThemeData theme = Theme.of(context);
-  ColorScheme colorScheme = theme.colorScheme;
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          Text("Sort by", style: theme.textTheme.headline2),
+          SizedBox(width: 4),
+          ..._buildSortOptions(context, state.sort),
+        ],
+      ),
+    );
+  }
 
-  final List<Problem> allProblems =
-      context.select((ProblemsBloc bloc) => (bloc.state as ProblemsLoaded).problems);
-  final List<Problem> tickedProblems = allProblems.where((element) => element.ticked).toList();
-  final double completionPercentage =
-      ((tickedProblems.length / allProblems.length) * 100).round() / 100;
-  return Container(
-      child: Column(
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                ProblematorRoundButton(
-                    padding: EdgeInsets.only(top: 7),
-                    backgroundColor: Colors.white,
-                    child: Text(tickedProblems.length.toString(),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                        ))),
-                Text("Your ticks")
-              ],
-            ),
-            Column(
-              children: [
-                ProblematorRoundButton(
-                    padding: EdgeInsets.only(top: 7),
-                    backgroundColor: Colors.white,
-                    child: SizedBox(
-                      child: Text(allProblems.length.toString(),
+  Widget _buildGradeFilterOptions(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+
+    return SingleChildScrollView(
+      key: gradesExpansionTileState,
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          Text("Grades", style: theme.textTheme.headline2),
+          SizedBox(width: 4),
+          ProblematorButton(child: Text("Up to 4+")),
+          SizedBox(width: 4),
+          ProblematorButton(child: Text("Up to 5")),
+          SizedBox(width: 4),
+          ProblematorButton(child: Text("5 to 5+")),
+          SizedBox(width: 4),
+          ProblematorButton(child: Text("6a to 6c")),
+          SizedBox(width: 4),
+          ProblematorButton(child: Text("7a to 7c")),
+          SizedBox(width: 4),
+          ProblematorButton(child: Text("7c+ and higher")),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildProblemStyles(BuildContext context, List<String> selectedRouteAttributes) {
+    final List<String> attributesInUse =
+        context.select((ProblemsBloc bloc) => (bloc.state as ProblemsLoaded).attributesInUse);
+
+    return attributesInUse
+        .map((e) => Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: ProblematorButton(
+                  selected: selectedRouteAttributes.contains(e),
+                  onPressed: () {
+                    BlocProvider.of<FilteredProblemsBloc>(context)
+                        .add(UpdateFilter(selectedRouteAttributes: [e]));
+                  },
+                  child: Text(e)),
+            ))
+        .toList();
+  }
+
+  Widget _buildCompletionStatus(BuildContext context, FilteredProblemsState state) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+
+    final List<Problem> allProblems =
+        context.select((ProblemsBloc bloc) => (bloc.state as ProblemsLoaded).problems);
+    final List<Problem> tickedProblems = allProblems.where((element) => element.ticked).toList();
+    final double completionPercentage =
+        ((tickedProblems.length / allProblems.length) * 100).round() / 100;
+    return Container(
+        child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  ProblematorRoundButton(
+                      padding: EdgeInsets.only(top: 7),
+                      backgroundColor: Colors.white,
+                      child: Text(tickedProblems.length.toString(),
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
-                          )),
-                    )),
-                Text("Total problems")
-              ],
-            ),
-          ],
+                          ))),
+                  Text("Your ticks")
+                ],
+              ),
+              Column(
+                children: [
+                  ProblematorRoundButton(
+                      padding: EdgeInsets.only(top: 7),
+                      backgroundColor: Colors.white,
+                      child: SizedBox(
+                        child: Text(allProblems.length.toString(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            )),
+                      )),
+                  Text("Total problems")
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LinearPercentIndicator(
-                width: MediaQuery.of(context).size.width - 50,
-                animation: true,
-                lineHeight: 20.0,
-                animationDuration: 2000,
-                percent: completionPercentage,
-                animateFromLastPercent: true,
-                center: Text((completionPercentage * 100).round().toString() + "%"),
-                linearStrokeCap: LinearStrokeCap.roundAll,
-                progressColor: Color.fromRGBO(108, 197, 81, 1)),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width - 50,
+                  animation: true,
+                  lineHeight: 20.0,
+                  animationDuration: 2000,
+                  percent: completionPercentage,
+                  animateFromLastPercent: true,
+                  center: Text((completionPercentage * 100).round().toString() + "%"),
+                  linearStrokeCap: LinearStrokeCap.roundAll,
+                  progressColor: Color.fromRGBO(108, 197, 81, 1)),
+            ],
+          ),
         ),
-      ),
-    ],
-  ));
-}
-
-Widget _buildRouteFilters(BuildContext context, FilteredProblemsState state) {
-  return Wrap(
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(left: 4, right: 4),
-        child: ProblematorButton(
-            child: Text("All routes"),
-            selected: state.activeFilter == VisibilityFilter.all,
-            onPressed: () {
-              // Update filter
-              BlocProvider.of<FilteredProblemsBloc>(context)
-                  .add(UpdateFilter(filter: VisibilityFilter.all));
-            }),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(left: 4, right: 4),
-        child: ProblematorButton(
-            child: Text("New routes"),
-            selected: state.activeFilter == VisibilityFilter.fresh,
-            onPressed: () {
-              // Update filter
-              BlocProvider.of<FilteredProblemsBloc>(context)
-                  .add(UpdateFilter(filter: VisibilityFilter.fresh));
-            }),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(left: 4, right: 4),
-        child: ProblematorButton(
-            child: Text("Expiring routes"),
-            selected: state.activeFilter == VisibilityFilter.expiring,
-            onPressed: () {
-              // Update filter
-              BlocProvider.of<FilteredProblemsBloc>(context)
-                  .add(UpdateFilter(filter: VisibilityFilter.expiring));
-            }),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(left: 4, right: 4),
-        child: ProblematorButton(
-            child: Text("Circuits"),
-            selected: state.activeFilter == VisibilityFilter.circuits,
-            onPressed: () {
-              // Update filter
-              BlocProvider.of<FilteredProblemsBloc>(context)
-                  .add(UpdateFilter(filter: VisibilityFilter.circuits));
-            }),
-      ),
-    ],
-  );
-}
-
-Widget _buildTileTrailing(BuildContext context, Problem problem) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Text(problem.addedrelative ?? "No data"),
-      Text((problem.ascentcount ?? "No ascents") + " ascent(s)"),
-    ],
-  );
-}
-
-_buildTileMain(BuildContext context, Problem problem) {
-  final textTheme = Theme.of(context).textTheme;
-  ThemeData theme = Theme.of(context);
-  ColorScheme colorScheme = theme.colorScheme;
-  return Row(mainAxisSize: MainAxisSize.min, children: [
-    SizedBox(width: 50, child: Text(problem.gradename, style: textTheme.headline1)),
-    _buildProblemLikes(context, problem),
-  ]);
-}
-
-Widget _buildProblemLikes(BuildContext context, Problem problem) {
-  final textTheme = Theme.of(context).textTheme;
-  ThemeData theme = Theme.of(context);
-  ColorScheme colorScheme = theme.colorScheme;
-  return Padding(
-    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-    child: Row(
-      children: [
-        Icon(Icons.favorite, size: 16, color: Colors.red[400]),
-        SizedBox(width: 4),
-        Text(problem.cLike.toString(), style: textTheme.headline3),
       ],
-    ),
-  );
-}
+    ));
+  }
 
-Widget _buildTileLeading(BuildContext context, Problem problem) {
-  final textTheme = Theme.of(context).textTheme;
-  ThemeData theme = Theme.of(context);
-  ColorScheme colorScheme = theme.colorScheme;
-  return Row(mainAxisSize: MainAxisSize.min, children: [
-    ProblemColorIndicator(htmlcolour: problem.htmlcolour, width: 24, height: 24),
-    SizedBox(width: 4),
-    Text(problem.tagshort ?? "No colour", style: textTheme.headline2)
-  ]);
+  Widget _buildRouteFilters(BuildContext context, FilteredProblemsState state) {
+    return Wrap(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, right: 4),
+          child: ProblematorButton(
+              child: Text("All routes"),
+              selected: state.activeFilter == VisibilityFilter.all,
+              onPressed: () {
+                // Update filter
+                BlocProvider.of<FilteredProblemsBloc>(context)
+                    .add(UpdateFilter(filter: VisibilityFilter.all));
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, right: 4),
+          child: ProblematorButton(
+              child: Text("New routes"),
+              selected: state.activeFilter == VisibilityFilter.fresh,
+              onPressed: () {
+                // Update filter
+                BlocProvider.of<FilteredProblemsBloc>(context)
+                    .add(UpdateFilter(filter: VisibilityFilter.fresh));
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, right: 4),
+          child: ProblematorButton(
+              child: Text("Expiring routes"),
+              selected: state.activeFilter == VisibilityFilter.expiring,
+              onPressed: () {
+                // Update filter
+                BlocProvider.of<FilteredProblemsBloc>(context)
+                    .add(UpdateFilter(filter: VisibilityFilter.expiring));
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, right: 4),
+          child: ProblematorButton(
+              child: Text("Circuits"),
+              selected: state.activeFilter == VisibilityFilter.circuits,
+              onPressed: () {
+                // Update filter
+                BlocProvider.of<FilteredProblemsBloc>(context)
+                    .add(UpdateFilter(filter: VisibilityFilter.circuits));
+              }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTileTrailing(BuildContext context, Problem problem) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(problem.addedrelative ?? "No data"),
+        Text((problem.ascentcount ?? "No ascents") + " ascent(s)"),
+      ],
+    );
+  }
+
+  _buildTileMain(BuildContext context, Problem problem) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      SizedBox(width: 50, child: Text(problem.gradename, style: textTheme.headline1)),
+      _buildProblemLikes(context, problem),
+    ]);
+  }
+
+  Widget _buildProblemLikes(BuildContext context, Problem problem) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: Row(
+        children: [
+          Icon(Icons.favorite, size: 16, color: Colors.red[400]),
+          SizedBox(width: 4),
+          Text(problem.cLike.toString(), style: textTheme.headline3),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTileLeading(BuildContext context, Problem problem) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      ProblemColorIndicator(htmlcolour: problem.htmlcolour, width: 24, height: 24),
+      SizedBox(width: 4),
+      Text(problem.tagshort ?? "No colour", style: textTheme.headline2)
+    ]);
+  }
 }
