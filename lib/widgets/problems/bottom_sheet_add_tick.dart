@@ -51,9 +51,8 @@ class _BottomSheetAddTick extends State<BottomSheetAddTick> {
   @override
   Widget build(BuildContext context) {
     HashMap<String, Grade> _grades = context.select((HomeBloc bloc) => bloc.state.dashboard.grades);
-    grades = _grades.values.toList()
-      ..sort((a, b) => int.parse(a.score).compareTo(int.parse(b.score)));
-    grades = _grades.values.toList()..sort((a, b) => int.parse(a.score) - int.parse(b.score));
+    grades = _grades.values.toList()..sort((a, b) => a.score - b.score);
+    grades = _grades.values.toList()..sort((a, b) => a.score - b.score);
     return BlocListener<ProblemBloc, ProblemState>(
         listener: (context, state) {
           if (state is TickAddFailed) {

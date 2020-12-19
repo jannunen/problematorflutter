@@ -13,22 +13,32 @@ class FilteredProblemsState extends Equatable {
   final List<int> selectedWalls;
   final RouteSortOption sort;
   final List<String> selectedRouteAttributes;
+  final List<GradeSortScoreSpan> gradeFilters;
 
-  const FilteredProblemsState(
-      {this.status,
-      this.filteredProblems,
-      this.activeFilter,
-      this.selectedWalls,
-      this.sort,
-      this.selectedRouteAttributes});
+  const FilteredProblemsState({
+    this.status,
+    this.filteredProblems,
+    this.activeFilter,
+    this.selectedWalls,
+    this.sort,
+    this.selectedRouteAttributes,
+    this.gradeFilters,
+  });
 
   @override
-  List<Object> get props =>
-      [filteredProblems, selectedWalls, activeFilter, status, sort, selectedRouteAttributes];
+  List<Object> get props => [
+        filteredProblems,
+        selectedWalls,
+        activeFilter,
+        status,
+        sort,
+        selectedRouteAttributes,
+        gradeFilters
+      ];
 
   @override
   String toString() =>
-      'FilteredProblemsLoaded { filteredProblems: $filteredProblems,  visibilityFilter : $activeFilter, selectedWalls : $selectedWalls, sort : $sort,status: $status, selectedRouteAttributes: $selectedRouteAttributes}';
+      'FilteredProblemsLoaded { filteredProblems: $filteredProblems,  visibilityFilter : $activeFilter, selectedWalls : $selectedWalls, sort : $sort,status: $status, selectedRouteAttributes: $selectedRouteAttributes, gradeFilter: $gradeFilters}';
 
   FilteredProblemsState copyWith({
     List<Problem> filteredProblems,
@@ -37,6 +47,7 @@ class FilteredProblemsState extends Equatable {
     FilteredProblemsStatus status,
     RouteSortOption sort,
     List<String> selectedRouteAttributes,
+    List<GradeSortScoreSpan> gradeFilters,
   }) {
     return FilteredProblemsState(
       filteredProblems: filteredProblems ?? this.filteredProblems,
@@ -45,6 +56,7 @@ class FilteredProblemsState extends Equatable {
       status: status ?? this.status,
       sort: sort ?? this.sort,
       selectedRouteAttributes: selectedRouteAttributes ?? this.selectedRouteAttributes,
+      gradeFilters: gradeFilters ?? this.gradeFilters,
     );
   }
 }

@@ -4,7 +4,7 @@ class Grade {
   String sort;
   String tapecolour;
   String vscale;
-  String score;
+  int score;
   String chartcolor;
   String southAfrica;
   String yds;
@@ -33,7 +33,7 @@ class Grade {
     sort = json['sort'];
     tapecolour = json['tapecolour'];
     vscale = json['vscale'];
-    score = json['score'];
+    score = int.tryParse(json['score']);
     chartcolor = json['chartcolor'];
     southAfrica = json['south_africa'];
     yds = json['yds'];

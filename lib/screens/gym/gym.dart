@@ -149,6 +149,8 @@ class _GymPage extends State<GymPage> {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+    final List<Problem> allProblems =
+        context.select((ProblemsBloc bloc) => (bloc.state as ProblemsLoaded).problems);
 
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
       if (state.status == FilteredProblemsStatus.loaded) {
@@ -188,8 +190,14 @@ class _GymPage extends State<GymPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text("Problem list", style: theme.textTheme.headline1),
-                        Text(state.filteredProblems.length.toString() + " route(s)",
-                            style: theme.textTheme.headline2),
+                        (state.filteredProblems.length == allProblems.length)
+                            ? Text(allProblems.length.toString() + "route(s) in total")
+                            : Text(
+                                "Showing " +
+                                    state.filteredProblems.length.toString() +
+                                    "/" +
+                                    allProblems.length.toString(),
+                                style: theme.textTheme.headline4)
                       ],
                     ),
                     _buildProblemTile(context, problem),
@@ -252,7 +260,7 @@ class _GymPage extends State<GymPage> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              _buildGradeFilterOptions(context),
+              _buildGradeFilterOptions(context, state),
               _buildProblemStyleOptions(context, state),
               _buildSortOptionsContainer(context, state),
             ],
@@ -263,22 +271,7 @@ class _GymPage extends State<GymPage> {
   }
 
   List<Widget> _buildSortOptions(BuildContext context, RouteSortOption selectedSort) {
-    Map<RouteSortOption, String> sortOptions = {
-      RouteSortOption.newest_first: "Newest first",
-      RouteSortOption.newest_last: "Newest last",
-      RouteSortOption.most_ascents: "Most ascents",
-      RouteSortOption.least_ascents: "Least ascents",
-      RouteSortOption.hardest_first: "Hardest first",
-      RouteSortOption.hardest_last: "Hardest last",
-      RouteSortOption.most_liked: "Most liked",
-      RouteSortOption.least_liked: "Least liked",
-      RouteSortOption.routesetter: "Routesetter",
-      RouteSortOption.tag_asc: "Tag ASC",
-      RouteSortOption.tag_desc: "Tag DESC",
-      RouteSortOption.sectors_asc: "Sectors ASC",
-      RouteSortOption.sectors_desc: "Sectors DESC",
-    };
-    return sortOptions.entries
+    return RouteFilteringOptions.sortOptions.entries
         .map((entry) => Padding(
               padding: const EdgeInsets.all(4.0),
               child: ProblematorButton(
@@ -290,7 +283,7 @@ class _GymPage extends State<GymPage> {
         .toList();
   }
 
-  _handleSortOptionClick(BuildContext context, RouteSortOption sort) {
+  void _handleSortOptionClick(BuildContext context, RouteSortOption sort) {
     print("Sort by" + sort.toString());
     BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(sort: sort));
   }
@@ -331,7 +324,20 @@ class _GymPage extends State<GymPage> {
     );
   }
 
-  Widget _buildGradeFilterOptions(BuildContext context) {
+  List<Widget> buildGradeFilterOptionRows(BuildContext context, selectedGradeFilters) {
+    return RouteFilteringOptions.gradeFilterOptions.entries
+        .map((entry) => Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: ProblematorButton(
+                child: Text(entry.key),
+                selected: selectedGradeFilters.contains(entry.value),
+                onPressed: () => _handleGradeFilterOptionClick(context, entry.value),
+              ),
+            ))
+        .toList();
+  }
+
+  Widget _buildGradeFilterOptions(BuildContext context, FilteredProblemsState state) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
@@ -342,18 +348,7 @@ class _GymPage extends State<GymPage> {
       child: Row(
         children: [
           Text("Grades", style: theme.textTheme.headline2),
-          SizedBox(width: 4),
-          ProblematorButton(child: Text("Up to 4+")),
-          SizedBox(width: 4),
-          ProblematorButton(child: Text("Up to 5")),
-          SizedBox(width: 4),
-          ProblematorButton(child: Text("5 to 5+")),
-          SizedBox(width: 4),
-          ProblematorButton(child: Text("6a to 6c")),
-          SizedBox(width: 4),
-          ProblematorButton(child: Text("7a to 7c")),
-          SizedBox(width: 4),
-          ProblematorButton(child: Text("7c+ and higher")),
+          ...buildGradeFilterOptionRows(context, state.gradeFilters),
         ],
       ),
     );
@@ -511,16 +506,6 @@ class _GymPage extends State<GymPage> {
     );
   }
 
-  _buildTileMain(BuildContext context, Problem problem) {
-    final textTheme = Theme.of(context).textTheme;
-    ThemeData theme = Theme.of(context);
-    ColorScheme colorScheme = theme.colorScheme;
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      SizedBox(width: 50, child: Text(problem.gradename, style: textTheme.headline1)),
-      _buildProblemLikes(context, problem),
-    ]);
-  }
-
   Widget _buildProblemLikes(BuildContext context, Problem problem) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
@@ -537,6 +522,16 @@ class _GymPage extends State<GymPage> {
     );
   }
 
+  Widget _buildTileMain(BuildContext context, Problem problem) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      SizedBox(width: 50, child: Text(problem.gradename, style: textTheme.headline1)),
+      _buildProblemLikes(context, problem),
+    ]);
+  }
+
   Widget _buildTileLeading(BuildContext context, Problem problem) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
@@ -547,4 +542,9 @@ class _GymPage extends State<GymPage> {
       Text(problem.tagshort ?? "No colour", style: textTheme.headline2)
     ]);
   }
+}
+
+_handleGradeFilterOptionClick(BuildContext context, GradeSortScoreSpan gradeFilter) {
+  print("Filter by grade" + gradeFilter.toString());
+  BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(gradeFilters: [gradeFilter]));
 }

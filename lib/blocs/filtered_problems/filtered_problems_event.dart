@@ -12,26 +12,35 @@ class UpdateFilter extends FilteredProblemsEvent {
   final List<int> selectedWalls;
   final RouteSortOption sort;
   final List<String> selectedRouteAttributes;
+  final List<GradeSortScoreSpan> gradeFilters;
 
-  const UpdateFilter({this.filter, this.selectedWalls, this.sort, this.selectedRouteAttributes});
+  const UpdateFilter(
+      {this.filter,
+      this.selectedWalls,
+      this.sort,
+      this.selectedRouteAttributes,
+      this.gradeFilters});
 
   @override
-  List<Object> get props => [filter, selectedWalls, sort, selectedRouteAttributes];
+  List<Object> get props => [filter, selectedWalls, sort, selectedRouteAttributes, gradeFilters];
 
   @override
   String toString() =>
-      'UpdateFilter { filter: $filter, walls: $selectedWalls , sort : $sort, selectedRouteAttributes: $selectedRouteAttributes}';
+      'UpdateFilter { filter: $filter, walls: $selectedWalls , sort : $sort, selectedRouteAttributes: $selectedRouteAttributes}, gradeFilter: $gradeFilters';
 
-  UpdateFilter copyWith(
-      {VisibilityFilter filter,
-      List<int> selectedWalls,
-      RouteSortOption sort,
-      List<String> selectedRouteAttributes}) {
+  UpdateFilter copyWith({
+    VisibilityFilter filter,
+    List<int> selectedWalls,
+    RouteSortOption sort,
+    List<String> selectedRouteAttributes,
+    List<GradeSortScoreSpan> gradeFilters,
+  }) {
     return UpdateFilter(
       filter: filter ?? this.filter,
       selectedWalls: selectedWalls ?? this.selectedWalls,
       sort: sort ?? this.sort,
       selectedRouteAttributes: selectedRouteAttributes ?? this.selectedRouteAttributes,
+      gradeFilters: gradeFilters ?? this.gradeFilters,
     );
   }
 }

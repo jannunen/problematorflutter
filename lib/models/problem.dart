@@ -27,7 +27,7 @@ class Problem extends Equatable {
   final int cDislike;
   final String cLove;
   final String vscale;
-  final String score;
+  final int score;
   final String ascentcount;
   final String addedrelative;
   final String addedformatted;

@@ -17,11 +17,11 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
   FilteredProblemsBloc({problemsBloc})
       : this._problemsBloc = problemsBloc,
         super(FilteredProblemsState(
-          status: FilteredProblemsStatus.loading,
-          activeFilter: VisibilityFilter.all,
-          sort: RouteSortOption.tag_asc,
-          selectedRouteAttributes: [],
-        )) {
+            status: FilteredProblemsStatus.loading,
+            activeFilter: VisibilityFilter.all,
+            sort: RouteSortOption.tag_asc,
+            selectedRouteAttributes: [],
+            gradeFilters: [])) {
     _problemsBloc.listen((state) {
       if (state is ProblemsLoaded) {
         add(UpdateProblems((problemsBloc.state as ProblemsLoaded).problems));
@@ -61,10 +61,23 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
         }
       });
     }
+    // Do the same applying for (multiple) gradefilters
+    final List<GradeSortScoreSpan> updatedGradeFilters = List.from(state.gradeFilters ?? []);
+    if (event.gradeFilters != null && event.gradeFilters.length > 0) {
+      event.gradeFilters.forEach((e) {
+        if (updatedGradeFilters.contains(e)) {
+          updatedGradeFilters.removeWhere((element) => element == e);
+        } else {
+          updatedGradeFilters.add(e);
+        }
+      });
+    }
+
     UpdateFilter combinedFilter = event.copyWith(
       filter: event.filter ?? state.activeFilter,
       selectedWalls: event.selectedWalls ?? state.selectedWalls,
       sort: event.sort ?? state.sort,
+      gradeFilters: updatedGradeFilters,
       selectedRouteAttributes: updatedAttributes,
     );
 
@@ -75,18 +88,9 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
         selectedWalls: combinedFilter.selectedWalls,
         sort: event.sort,
         selectedRouteAttributes: updatedAttributes,
+        gradeFilters: updatedGradeFilters,
         status: FilteredProblemsStatus.loaded));
   }
-  /*
-
-  Stream<FilteredProblemsState> _mapProblemsUpdatedToState(
-    UpdateProblems event,
-  ) async* {
-    // final visibilityFilter = state is FilteredProblemsLoaded
-    //     ? (state as FilteredProblemsLoaded).activeFilter
-    //     : VisibilityFilter.all;
-  }
-  */
 
   List<Problem> _mapProblemsToFilteredProblems(List<Problem> problems, UpdateFilter event) {
     // Here we can have a plethora of filters.
@@ -94,6 +98,7 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     List<int> selectedWalls = event.selectedWalls;
     RouteSortOption sort = event.sort;
     List<String> selectedRouteAttributes = event.selectedRouteAttributes;
+    List<GradeSortScoreSpan> gradeFilters = event.gradeFilters;
 
     // This always returns a RESULT of the original filtered array.
     List<Problem> filteredProblems = problems.where((problem) {
@@ -121,7 +126,7 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     }).toList();
 
     // Apply selected route attributes
-    final List<Problem> againFilteredProblems = filteredProblems.where((problem) {
+    filteredProblems = filteredProblems.where((problem) {
       if (selectedRouteAttributes != null && selectedRouteAttributes.length > 0) {
         List<String> attrs = problem.attributes.map((v) => v as String).toList();
         // Let's start with if amount of selectedRouteAttributes is MORE than
@@ -143,8 +148,21 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
       return true;
     }).toList();
 
+    // Apply gradefilters
+    if (gradeFilters.length > 0) {
+      filteredProblems = filteredProblems.where((problem) {
+        return gradeFilters.where((gradeFilter) {
+              if (problem.score >= gradeFilter.min && problem.score <= gradeFilter.max) {
+                return true;
+              }
+              return false;
+            }).length >
+            0;
+      }).toList();
+    }
+
     // After filtering, do sorting.
-    againFilteredProblems.sort((a, b) {
+    filteredProblems.sort((a, b) {
       switch (sort) {
         case RouteSortOption.least_ascents:
           return int.tryParse(a.ascentcount) - int.tryParse(b.ascentcount);
@@ -183,14 +201,14 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
           return b.tagshort.compareTo(a.tagshort);
           break;
         case RouteSortOption.hardest_first:
-          return int.tryParse(b.score) - int.tryParse(a.score);
+          return (b.score) - (a.score);
           break;
         case RouteSortOption.hardest_last:
-          return int.tryParse(a.score) - int.tryParse(b.score);
+          return (a.score) - (b.score);
           break;
       }
       return 0;
     });
-    return againFilteredProblems;
+    return filteredProblems;
   }
 }
