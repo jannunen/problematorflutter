@@ -1,5 +1,6 @@
 import 'package:problemator/api/api_client.dart';
 import 'package:problemator/blocs/user/bloc/user_bloc.dart';
+import 'package:problemator/models/gym.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/models/problem_extra_info.dart';
 import 'package:problemator/models/responses/tick_response.dart';
@@ -51,5 +52,9 @@ class ProblemsRepository {
 
   Future<Problem> fetchProblem(String problemid, bool useCache) async {
     return await _apiClient.fetchProblem(problemid, useCache);
+  }
+
+  Future<List<Gym>> fetchGyms(bool useCache) async {
+    return await _apiClient.fetchGyms(useCache);
   }
 }

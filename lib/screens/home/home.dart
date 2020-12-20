@@ -5,6 +5,7 @@ import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_event.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
+import 'package:problemator/blocs/gyms/bloc/gyms_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/models/models.dart';
@@ -265,7 +266,15 @@ class HomePage extends StatelessWidget {
                 Text("Current gym: "),
                 RaisedButton(
                   child: Text(user.gymid?.toString() ?? "Not selected, click to select"),
-                  onPressed: () => Navigator.of(context).push<void>(ChooseGym.route()),
+                  onPressed: () => Navigator.of(context).push<void>(
+                    MaterialPageRoute(
+                      builder: (dialogContext) {
+                        return Scaffold(
+                            body: BlocProvider<GymsBloc>.value(
+                                value: BlocProvider.of<GymsBloc>(context), child: ChooseGym()));
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),

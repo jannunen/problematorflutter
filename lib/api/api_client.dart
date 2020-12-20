@@ -1,4 +1,5 @@
 import 'package:problemator/api/api_helper.dart';
+import 'package:problemator/models/gym.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/models/problem_extra_info.dart';
 import 'package:problemator/models/responses/tick_response.dart';
@@ -81,5 +82,11 @@ class ApiClient {
         "problem/?id=" + problemid + "&react=true&api-auth-token=$_apiKey",
         useCache: useCache);
     return Problem.fromJson(response);
+  }
+
+  Future<List<Gym>> fetchGyms(bool useCache) async {
+    final response =
+        await _helper.get("get_gyms/&react=true&api-auth-token=$_apiKey", useCache: useCache);
+    return Gym.listFromJson(response);
   }
 }

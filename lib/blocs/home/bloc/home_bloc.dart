@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:problemator/api/repository_api.dart';
+import 'package:problemator/blocs/gyms/bloc/gyms_bloc.dart';
 import 'package:problemator/blocs/problem/problem_bloc.dart';
 import 'package:problemator/blocs/problems/problems_bloc.dart';
 import 'package:problemator/blocs/problems/problems_event.dart';
@@ -18,12 +19,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ProblemsRepository _problemsRepository;
   final ProblemBloc _problemBloc;
   final ProblemsBloc _problemsBloc;
+  final GymsBloc _gymsBloc;
 
-  HomeBloc({userBloc, problemsRepository, problemBloc, problemsBloc})
+  HomeBloc({userBloc, problemsRepository, problemBloc, problemsBloc, gymsBloc})
       : this._problemsRepository = problemsRepository,
         this._problemBloc = problemBloc,
         this._problemsBloc = problemsBloc,
         this._userBloc = userBloc,
+        this._gymsBloc = gymsBloc,
         super(HomeInitial()) {
     _userBloc.listen((user) {
       // IF user is NOT empty, load the home page.
@@ -79,6 +82,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final Dashboard dashboard = await _problemsRepository.fetchDashboard();
       // Load also problemlist
       _problemsBloc.add(LoadProblems());
+      // Get list of gyms
+      _gymsBloc.add(FetchGyms());
       yield (HomeLoaded(dashboard));
     }
   }

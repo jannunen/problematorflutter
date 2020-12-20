@@ -5,6 +5,7 @@ import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/config/bloc/config_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
+import 'package:problemator/blocs/gyms/bloc/gyms_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/repository/authentication_repository.dart';
@@ -102,17 +103,22 @@ class _AppState extends State<App> {
                 return LoginPage();
               } else if (state.status == AuthenticationStatus.authenticated) {
                 return MultiBlocProvider(providers: [
+                  BlocProvider<GymsBloc>(
+                      create: (context) => GymsBloc(
+                            problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
+                          )),
                   BlocProvider<FilteredProblemsBloc>(
                       lazy: false,
                       create: (context) => FilteredProblemsBloc(
                           problemsBloc: BlocProvider.of<ProblemsBloc>(context))),
                   BlocProvider<HomeBloc>(
                     create: (context) => HomeBloc(
-                        problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
-                        userBloc: BlocProvider.of<UserBloc>(context),
-                        problemBloc: BlocProvider.of<ProblemBloc>(context),
-                        problemsBloc: BlocProvider.of<ProblemsBloc>(context))
-                      ..add(InitializeHomeScreenEvent()),
+                      problemsRepository: RepositoryProvider.of<ProblemsRepository>(context),
+                      userBloc: BlocProvider.of<UserBloc>(context),
+                      problemBloc: BlocProvider.of<ProblemBloc>(context),
+                      problemsBloc: BlocProvider.of<ProblemsBloc>(context),
+                      gymsBloc: BlocProvider.of<GymsBloc>(context),
+                    )..add(InitializeHomeScreenEvent()),
                   ),
                 ], child: HomePage());
               } else {

@@ -20,4 +20,14 @@ class Gym {
       //shapes = json['floormap'];
     );
   }
+
+  static List<Gym> listFromJson(Map<String, dynamic> json) {
+    List<Gym> gymlist = List();
+    if (json != null) {
+      json.forEach((key, value) {
+        gymlist.add(Gym.fromJson(value));
+      });
+    }
+    return gymlist;
+  }
 }

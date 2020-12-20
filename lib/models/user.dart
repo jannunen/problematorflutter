@@ -40,6 +40,17 @@ class User extends Equatable {
   @override
   List<Object> get props => [email, id, name, photo, gymid];
 
+  // Restrict copyWith currently ONLY to gymid change
+  User copyWith({gymid}) => User(
+        email: email ?? this.email,
+        id: id ?? this.id,
+        uid: uid ?? this.uid,
+        name: name ?? this.name,
+        photo: photo ?? this.photo,
+        gymid: gymid ?? this.gymid,
+        jwt: jwt ?? this.jwt,
+      );
+
   static User fromJson(Map<String, dynamic> json) {
     return User(
       email: json['email'] ?? null,
