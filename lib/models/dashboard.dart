@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:problemator/models/gym.dart';
 import 'package:problemator/models/models.dart';
 
 class Dashboard {
@@ -7,12 +8,12 @@ class Dashboard {
   Mysettings mysettings;
   List<Locations> locations;
   Climber climber;
-  Locinfo locinfo;
   Climbinfo climbinfo;
   List<CompetitionInfo> upcoming;
   List<CompetitionInfo> ongoing;
   PointModifiers pointModifiers;
   */
+  Gym gym;
   List<Tick> ticksToday;
   Spread spread;
   HashMap<String, Grade> grades;

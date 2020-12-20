@@ -54,3 +54,11 @@ class UpdateProblems extends FilteredProblemsEvent {
 
   String toString() => 'UpdateProblems {problems: $problems}';
 }
+
+class ErrorLoadingProblems extends FilteredProblemsEvent {
+  String error;
+  ErrorLoadingProblems(this.error);
+
+  @override
+  List<Object> get props => [error];
+}

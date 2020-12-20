@@ -14,6 +14,7 @@ class FilteredProblemsState extends Equatable {
   final RouteSortOption sort;
   final List<String> selectedRouteAttributes;
   final List<GradeSortScoreSpan> gradeFilters;
+  final String error;
 
   const FilteredProblemsState({
     this.status,
@@ -23,6 +24,7 @@ class FilteredProblemsState extends Equatable {
     this.sort,
     this.selectedRouteAttributes,
     this.gradeFilters,
+    this.error,
   });
 
   @override
@@ -33,12 +35,13 @@ class FilteredProblemsState extends Equatable {
         status,
         sort,
         selectedRouteAttributes,
-        gradeFilters
+        gradeFilters,
+        error
       ];
 
   @override
   String toString() =>
-      'FilteredProblemsLoaded { filteredProblems: $filteredProblems,  visibilityFilter : $activeFilter, selectedWalls : $selectedWalls, sort : $sort,status: $status, selectedRouteAttributes: $selectedRouteAttributes, gradeFilter: $gradeFilters}';
+      'FilteredProblemsLoaded { filteredProblems: $filteredProblems,  visibilityFilter : $activeFilter, selectedWalls : $selectedWalls, sort : $sort,status: $status, selectedRouteAttributes: $selectedRouteAttributes, gradeFilter: $gradeFilters, error: $error}';
 
   FilteredProblemsState copyWith({
     List<Problem> filteredProblems,
@@ -48,6 +51,7 @@ class FilteredProblemsState extends Equatable {
     RouteSortOption sort,
     List<String> selectedRouteAttributes,
     List<GradeSortScoreSpan> gradeFilters,
+    String error,
   }) {
     return FilteredProblemsState(
       filteredProblems: filteredProblems ?? this.filteredProblems,
@@ -57,6 +61,7 @@ class FilteredProblemsState extends Equatable {
       sort: sort ?? this.sort,
       selectedRouteAttributes: selectedRouteAttributes ?? this.selectedRouteAttributes,
       gradeFilters: gradeFilters ?? this.gradeFilters,
+      error: error ?? this.error,
     );
   }
 }

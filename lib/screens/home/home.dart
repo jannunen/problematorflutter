@@ -8,12 +8,14 @@ import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/models/models.dart';
+import 'package:problemator/screens/choose_gym.dart';
 import 'package:problemator/screens/gym/gym.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
 import 'package:problemator/widgets/image_map.dart';
 import 'package:problemator/widgets/imagemap/image_map_coordinate.dart';
 import 'package:problemator/widgets/imagemap/image_map_shape.dart';
+import 'package:problemator/widgets/problemator_button.dart';
 import 'package:problemator/widgets/problems/add_problem.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';
 import 'package:problemator/widgets/problems/show_problem.dart';
@@ -34,35 +36,42 @@ class HomePage extends StatelessWidget {
     _problemsRepository.setApiKey(user.jwt);
     // TODO: FIX
     _problemsRepository.setGym("1");
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      drawer: DrawerMenu(),
-      appBar: AppBar(
-        title: const Text('Home'),
-        actions: <Widget>[
-          IconButton(
-            key: const Key('homePage_logout_iconButton'),
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () =>
-                context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested()),
-          )
-        ],
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state.user.gymid == null) {
+          showModalBottomSheet(builder: _showChooseGymDialog(context, state));
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        drawer: DrawerMenu(),
+        appBar: AppBar(
+          title: const Text('Home'),
+          actions: <Widget>[
+            IconButton(
+              key: const Key('homePage_logout_iconButton'),
+              icon: const Icon(Icons.exit_to_app),
+              onPressed: () =>
+                  context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested()),
+            )
+          ],
+        ),
+        body: BlocBuilder(
+            cubit: BlocProvider.of<HomeBloc>(context),
+            builder: (context, state) {
+              if (state is HomeLoading) {
+                return CircularProgressIndicator();
+              } else if (state is HomeLoaded) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(child: _buildMainViewAsList(context, state, user)),
+                  ],
+                );
+              }
+              return Container(child: Text("Unknown state" + state.toString()));
+            }),
       ),
-      body: BlocBuilder(
-          cubit: BlocProvider.of<HomeBloc>(context),
-          builder: (context, state) {
-            if (state is HomeLoading) {
-              return CircularProgressIndicator();
-            } else if (state is HomeLoaded) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(child: _buildMainViewAsList(context, state, user)),
-                ],
-              );
-            }
-            return Container(child: Text("Unknown state" + state.toString()));
-          }),
     );
   }
 
@@ -251,6 +260,15 @@ class HomePage extends StatelessWidget {
                 style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
             Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
             Text(user.name ?? '', style: textTheme.headline5),
+            Row(
+              children: [
+                Text("Current gym: "),
+                RaisedButton(
+                  child: Text(user.gymid?.toString() ?? "Not selected, click to select"),
+                  onPressed: () => Navigator.of(context).push<void>(ChooseGym.route()),
+                ),
+              ],
+            ),
             const SizedBox(height: 4.0),
             _buildTodayArea(context, homeState.dashboard),
             _buildFloorMap(context, homeState.dashboard),
@@ -258,6 +276,21 @@ class HomePage extends StatelessWidget {
         );
       } else if (state.status == FilteredProblemsStatus.loading) {
         return Container(padding: new EdgeInsets.all(17), child: Text("Loading problems"));
+      } else if (state.status == FilteredProblemsStatus.error) {
+        return Container(
+            padding: new EdgeInsets.all(17),
+            child: Column(
+              children: [
+                Text("Error loading problems: " + state.error),
+                ProblematorButton(
+                    child: Text(
+                      "Login again",
+                    ),
+                    onPressed: () {
+                      context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested());
+                    })
+              ],
+            ));
       } else {
         return Text("Weird state " + state.toString());
       }
@@ -287,6 +320,14 @@ class HomePage extends StatelessWidget {
           trailing: _buildTileTrailing(context, problem),
         ),
       ),
+    );
+  }
+
+  _showChooseGymDialog(BuildContext context, AuthenticationState state) {
+    return Container(
+      child: Column(children: [
+        Text("Please select a gym before you continue"),
+      ]),
     );
   }
 }

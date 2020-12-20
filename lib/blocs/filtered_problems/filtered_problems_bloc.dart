@@ -25,6 +25,8 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     _problemsBloc.listen((state) {
       if (state is ProblemsLoaded) {
         add(UpdateProblems((problemsBloc.state as ProblemsLoaded).problems));
+      } else if (state is ProblemsErrorLoading) {
+        add(ErrorLoadingProblems(state.error));
       }
     });
   }
@@ -36,6 +38,8 @@ class FilteredProblemsBloc extends Bloc<FilteredProblemsEvent, FilteredProblemsS
     } else if (event is UpdateProblems) {
       yield (state.copyWith(
           filteredProblems: event.problems, status: FilteredProblemsStatus.loaded));
+    } else if (event is ErrorLoadingProblems) {
+      yield (state.copyWith(status: FilteredProblemsStatus.error, error: event.error));
     }
   }
 

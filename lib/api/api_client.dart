@@ -33,7 +33,8 @@ class ApiClient {
   }
 
   Future<Dashboard> fetchDashboard() async {
-    final response = await _helper.get("dashinfo/?react=true&api-auth-token=$_apiKey");
+    final response =
+        await _helper.get("dashinfo/?react=true&api-auth-token=$_apiKey&gymid=$_gymid");
     Dashboard dashboard = Dashboard.fromJson(response);
     return dashboard;
   }
@@ -44,7 +45,7 @@ class ApiClient {
         "&password=" +
         password +
         "&react=true&api-auth-token=$_apiKey");
-    if (response.containsKey('error') && response['error'] == 'true') {
+    if (response.containsKey('error') && response['error']) {
       throw new Exception(response['message']);
     }
     response['email'] = email;

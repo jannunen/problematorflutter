@@ -50,8 +50,8 @@ class _GymPage extends State<GymPage> {
     final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
     ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
     _problemsRepository.setApiKey(user.jwt);
-    // TODO: FIX
-    _problemsRepository.setGym("1");
+    // TBD: FIX
+    _problemsRepository.setGym("3");
     return Scaffold(
       resizeToAvoidBottomInset: true,
       drawer: DrawerMenu(),
