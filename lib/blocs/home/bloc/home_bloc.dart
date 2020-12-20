@@ -30,7 +30,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         super(HomeInitial()) {
     _userBloc.listen((user) {
       // IF user is NOT empty, load the home page.
-      this._problemsRepository.apiKey = user.jwt;
+      //this._problemsRepository.apiKey = user.jwt;
       add(InitializeHomeScreenEvent());
     });
     _problemsBloc.listen((ProblemsState state) async {

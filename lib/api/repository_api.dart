@@ -18,9 +18,11 @@ class ProblemsRepository {
       if (user != User.empty) {
         this.apiKey = user.jwt;
         _apiClient.setToken(user.jwt);
+        _apiClient.setGym(user.gymid);
       }
     });
   }
+  /*
   void setApiKey(String key) {
     this.apiKey = key;
     this._apiClient.setApiKey(key);
@@ -29,6 +31,7 @@ class ProblemsRepository {
   void setGym(String gymid) {
     this._apiClient.setGym(gymid);
   }
+  */
 
   Future<ProblemList> fetchProblems() async {
     return await _apiClient.getProblemList();

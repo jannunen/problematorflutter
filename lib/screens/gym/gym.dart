@@ -48,10 +48,10 @@ class _GymPage extends State<GymPage> {
     ColorScheme colorScheme = theme.colorScheme;
 
     final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
-    ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
-    _problemsRepository.setApiKey(user.jwt);
+    //ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
+    //_problemsRepository.setApiKey(user.jwt);
     // TBD: FIX
-    _problemsRepository.setGym("3");
+    //_problemsRepository.setGym("3");
     return Scaffold(
       resizeToAvoidBottomInset: true,
       drawer: DrawerMenu(),

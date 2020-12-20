@@ -43,6 +43,7 @@ class _AppState extends State<App> {
   final ApiClient apiClient = ApiClient();
   AuthenticationRepository authenticationRepository;
   AuthenticationBloc _authenticationBloc;
+  ProblemsRepository _problemsRepository;
   ConfigBloc configBloc;
 
   @override
@@ -52,6 +53,7 @@ class _AppState extends State<App> {
     _authenticationBloc =
         AuthenticationBloc(authenticationRepository: authenticationRepository, userBloc: userBloc);
     //_authenticationBloc.add(AuthenticationUserChanged(User.empty));
+    _problemsRepository = ProblemsRepository(apiClient: apiClient, userBloc: userBloc);
     configBloc = ConfigBloc(authenticationBloc: _authenticationBloc, userBloc: userBloc);
     configBloc.add(RestartAppEvent());
   }
@@ -73,8 +75,7 @@ class _AppState extends State<App> {
           RepositoryProvider<AuthenticationRepository>(
               create: (context) => authenticationRepository),
           RepositoryProvider<UserRepository>(create: (context) => userRepository),
-          RepositoryProvider<ProblemsRepository>(
-              create: (context) => ProblemsRepository(apiClient: apiClient, userBloc: userBloc)),
+          RepositoryProvider<ProblemsRepository>(create: (context) => _problemsRepository),
         ],
         child: MultiBlocProvider(
           providers: [

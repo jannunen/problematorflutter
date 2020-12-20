@@ -49,7 +49,9 @@ class ChooseGym extends StatelessWidget {
                     );
                   },
                   onSuggestionSelected: (suggestion) {
-                    context.read<UserBloc>().add(UserEvent(user.copyWith(gymid: suggestion.id)));
+                    context
+                        .read<UserBloc>()
+                        .add(UserEvent(user.copyWith(gymid: suggestion.id, gym: suggestion)));
                     Navigator.pop(context);
                   },
                 );

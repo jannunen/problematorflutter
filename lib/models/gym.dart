@@ -30,4 +30,14 @@ class Gym {
     }
     return gymlist;
   }
+
+  Map<String, dynamic> toJson() => toMap();
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'country': country,
+    };
+  }
 }

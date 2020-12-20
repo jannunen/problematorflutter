@@ -33,10 +33,10 @@ class HomePage extends StatelessWidget {
     ColorScheme colorScheme = theme.colorScheme;
 
     final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
-    ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
-    _problemsRepository.setApiKey(user.jwt);
+    //ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
+    //_problemsRepository.setApiKey(user.jwt);
     // TODO: FIX
-    _problemsRepository.setGym("1");
+    ///_problemsRepository.setGym("1");
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state.user.gymid == null) {
@@ -265,7 +265,7 @@ class HomePage extends StatelessWidget {
               children: [
                 Text("Current gym: "),
                 RaisedButton(
-                  child: Text(user.gymid?.toString() ?? "Not selected, click to select"),
+                  child: Text(user.gym != null ? user.gym.name : "Not selected, click to select"),
                   onPressed: () => Navigator.of(context).push<void>(
                     MaterialPageRoute(
                       builder: (dialogContext) {

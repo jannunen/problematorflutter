@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'gym.dart';
+
 /// {@template user}
 /// User model
 ///
@@ -16,10 +18,13 @@ class User extends Equatable {
     this.jwt,
     this.gymid,
     this.message,
+    this.gym,
   });
 
   /// The current user's email address.
   final String email;
+
+  final Gym gym;
 
   /// The current user's id.
   final String id;
@@ -35,13 +40,13 @@ class User extends Equatable {
   final String photo;
 
   /// Empty user which represents an unauthenticated user.
-  static const empty = User(email: '', id: '', name: null, photo: null, gymid: null);
+  static const empty = User(email: '', id: '', name: null, photo: null, gymid: null, gym: null);
 
   @override
-  List<Object> get props => [email, id, name, photo, gymid];
+  List<Object> get props => [email, id, name, photo, gymid, gym];
 
-  // Restrict copyWith currently ONLY to gymid change
-  User copyWith({gymid}) => User(
+  // Restrict copyWith currently ONLY to gymid  and gym change
+  User copyWith({gymid, gym}) => User(
         email: email ?? this.email,
         id: id ?? this.id,
         uid: uid ?? this.uid,
@@ -49,6 +54,7 @@ class User extends Equatable {
         photo: photo ?? this.photo,
         gymid: gymid ?? this.gymid,
         jwt: jwt ?? this.jwt,
+        gym: gym ?? this.gym,
       );
 
   static User fromJson(Map<String, dynamic> json) {
@@ -59,6 +65,7 @@ class User extends Equatable {
       message: json['message'] ?? null,
       jwt: json['JWT'] ?? null,
       gymid: json['gymid'] ?? null,
+      gym: json['gym'] != null ? Gym.fromJson(json['gym']) : null,
     );
   }
 
@@ -72,6 +79,7 @@ class User extends Equatable {
       'message': message,
       'JWT': jwt,
       'gymid': gymid,
+      'gym': gym.toMap()
     };
   }
 }
