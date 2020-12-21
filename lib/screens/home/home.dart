@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:problemator/api/repository_api.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
-import 'package:problemator/blocs/filtered_problems/filtered_problems_event.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/blocs/gyms/bloc/gyms_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
-import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/screens/choose_gym.dart';
-import 'package:problemator/screens/gym/gym.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
-import 'package:problemator/widgets/image_map.dart';
-import 'package:problemator/widgets/imagemap/image_map_coordinate.dart';
-import 'package:problemator/widgets/imagemap/image_map_shape.dart';
+import 'package:problemator/widgets/floor_map.dart';
 import 'package:problemator/widgets/problemator_button.dart';
 import 'package:problemator/widgets/problems/add_problem.dart';
 import 'package:problemator/widgets/problems/problem_color_indicator.dart';
@@ -33,46 +27,35 @@ class HomePage extends StatelessWidget {
     ColorScheme colorScheme = theme.colorScheme;
 
     final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
-    //ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
-    //_problemsRepository.setApiKey(user.jwt);
-    // TODO: FIX
-    ///_problemsRepository.setGym("1");
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
-      listener: (context, state) {
-        if (state.user.gymid == null) {
-          showModalBottomSheet(builder: _showChooseGymDialog(context, state));
-        }
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        drawer: DrawerMenu(),
-        appBar: AppBar(
-          title: const Text('Home'),
-          actions: <Widget>[
-            IconButton(
-              key: const Key('homePage_logout_iconButton'),
-              icon: const Icon(Icons.exit_to_app),
-              onPressed: () =>
-                  context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested()),
-            )
-          ],
-        ),
-        body: BlocBuilder(
-            cubit: BlocProvider.of<HomeBloc>(context),
-            builder: (context, state) {
-              if (state is HomeLoading) {
-                return CircularProgressIndicator();
-              } else if (state is HomeLoaded) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(child: _buildMainViewAsList(context, state, user)),
-                  ],
-                );
-              }
-              return Container(child: Text("Unknown state" + state.toString()));
-            }),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      drawer: DrawerMenu(),
+      appBar: AppBar(
+        title: const Text('Home'),
+        actions: <Widget>[
+          IconButton(
+            key: const Key('homePage_logout_iconButton'),
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () =>
+                context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested()),
+          )
+        ],
       ),
+      body: BlocBuilder(
+          cubit: BlocProvider.of<HomeBloc>(context),
+          builder: (context, state) {
+            if (state is HomeLoading) {
+              return CircularProgressIndicator();
+            } else if (state is HomeLoaded) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(child: _buildMainViewAsList(context, state, user)),
+                ],
+              );
+            }
+            return Container(child: Text("Unknown state" + state.toString()));
+          }),
     );
   }
 
@@ -127,70 +110,6 @@ class HomePage extends StatelessWidget {
           return BlocProvider<HomeBloc>.value(
               value: BlocProvider.of<HomeBloc>(context), child: AddProblemForm());
         });
-  }
-
-  Widget _buildFloorMap(BuildContext context, Dashboard dashboard) {
-    final textTheme = Theme.of(context).textTheme;
-    ThemeData theme = Theme.of(context);
-    ColorScheme colorScheme = theme.colorScheme;
-    List<ImageMapShape> shapes = [
-      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall A", id: 30, points: [
-        ImageMapCoordinate(48.14, 78.91),
-        ImageMapCoordinate(47.36, 64.19),
-        ImageMapCoordinate(38.28, 65.36),
-        ImageMapCoordinate(38.67, 78.91),
-      ]),
-      ImageMapShape(description: 'Wall B has diipadaapa', title: "Wall B", id: 709, points: [
-        ImageMapCoordinate(11.43, 79.04),
-        ImageMapCoordinate(21.19, 65.49),
-        ImageMapCoordinate(37.5, 64.97),
-        ImageMapCoordinate(37.11, 79.17),
-      ]),
-      ImageMapShape(description: 'Wall C has diipadaapa', title: "Wall C", id: 710, points: [
-        ImageMapCoordinate(10.55, 78.91),
-        ImageMapCoordinate(10.55, 54.56),
-        ImageMapCoordinate(19.63, 54.56),
-        ImageMapCoordinate(20.9, 64.71),
-      ]),
-      ImageMapShape(description: 'Wall D has diipadaapa', title: "Wall D", id: 33, points: [
-        ImageMapCoordinate(11.04, 37.89),
-        ImageMapCoordinate(11.33, 24.22),
-        ImageMapCoordinate(41.02, 24.74),
-        ImageMapCoordinate(36.52, 37.63),
-      ]),
-      ImageMapShape(description: 'Wall E has diipadaapa', title: "Wall E", id: 34, points: [
-        ImageMapCoordinate(41.15, 24.74),
-        ImageMapCoordinate(42.19, 33.46),
-        ImageMapCoordinate(46, 37.89),
-        ImageMapCoordinate(54.88, 40.63),
-        ImageMapCoordinate(61.13, 37.76),
-        ImageMapCoordinate(62.6, 31.38),
-        ImageMapCoordinate(62.11, 23.96),
-      ]),
-    ];
-
-    return Container(
-      color: colorScheme.gymFloorPlanBackroundColor,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ImageMap(shapes, onTap: (event) {
-          print("Selected wall(s): " + event.toString());
-          BlocProvider.of<FilteredProblemsBloc>(context).add(UpdateFilter(selectedWalls: event));
-
-          // Navigate to  gym view.
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (dialogContext) {
-              return MultiBlocProvider(providers: [
-                BlocProvider<FilteredProblemsBloc>.value(
-                    value: BlocProvider.of<FilteredProblemsBloc>(context)),
-                BlocProvider<ProblemBloc>.value(value: BlocProvider.of<ProblemBloc>(context)),
-                BlocProvider<HomeBloc>.value(value: BlocProvider.of<HomeBloc>(context)),
-              ], child: GymPage());
-            }),
-          );
-        }),
-      ),
-    );
   }
 
   Widget _buildMyLogs(BuildContext context, Dashboard dashboard) {
@@ -280,7 +199,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 4.0),
             _buildTodayArea(context, homeState.dashboard),
-            _buildFloorMap(context, homeState.dashboard),
+            FloorMap(dashboard: homeState.dashboard),
           ],
         );
       } else if (state.status == FilteredProblemsStatus.loading) {

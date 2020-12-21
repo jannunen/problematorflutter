@@ -11,6 +11,7 @@ import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/blocs/problems/problems_bloc.dart';
 import 'package:problemator/blocs/problems/problems_state.dart';
+import 'package:problemator/models/gym.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/models/route_sort_options.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
@@ -48,10 +49,8 @@ class _GymPage extends State<GymPage> {
     ColorScheme colorScheme = theme.colorScheme;
 
     final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
-    //ProblemsRepository _problemsRepository = RepositoryProvider.of<ProblemsRepository>(context);
-    //_problemsRepository.setApiKey(user.jwt);
-    // TBD: FIX
-    //_problemsRepository.setGym("3");
+    final Gym gym = context.select((HomeBloc bloc) => bloc.state.dashboard.gym);
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       drawer: DrawerMenu(),
@@ -75,7 +74,7 @@ class _GymPage extends State<GymPage> {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(child: _buildGymPage(context, state, user)),
+                  Expanded(child: _buildGymPage(context, state, user, gym)),
                 ],
               );
             }
@@ -84,45 +83,10 @@ class _GymPage extends State<GymPage> {
     );
   }
 
-  Widget _buildFloorMap(BuildContext context) {
+  Widget _buildFloorMap(BuildContext context, Gym gym) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
-    List<ImageMapShape> shapes = [
-      ImageMapShape(description: 'Wall A has diipadaapa', title: "Wall A", id: 30, points: [
-        ImageMapCoordinate(48.14, 78.91),
-        ImageMapCoordinate(47.36, 64.19),
-        ImageMapCoordinate(38.28, 65.36),
-        ImageMapCoordinate(38.67, 78.91),
-      ]),
-      ImageMapShape(description: 'Wall B has diipadaapa', title: "Wall B", id: 709, points: [
-        ImageMapCoordinate(11.43, 79.04),
-        ImageMapCoordinate(21.19, 65.49),
-        ImageMapCoordinate(37.5, 64.97),
-        ImageMapCoordinate(37.11, 79.17),
-      ]),
-      ImageMapShape(description: 'Wall C has diipadaapa', title: "Wall C", id: 710, points: [
-        ImageMapCoordinate(10.55, 78.91),
-        ImageMapCoordinate(10.55, 54.56),
-        ImageMapCoordinate(19.63, 54.56),
-        ImageMapCoordinate(20.9, 64.71),
-      ]),
-      ImageMapShape(description: 'Wall D has diipadaapa', title: "Wall D", id: 33, points: [
-        ImageMapCoordinate(11.04, 37.89),
-        ImageMapCoordinate(11.33, 24.22),
-        ImageMapCoordinate(41.02, 24.74),
-        ImageMapCoordinate(36.52, 37.63),
-      ]),
-      ImageMapShape(description: 'Wall E has diipadaapa', title: "Wall E", id: 34, points: [
-        ImageMapCoordinate(41.15, 24.74),
-        ImageMapCoordinate(42.19, 33.46),
-        ImageMapCoordinate(46, 37.89),
-        ImageMapCoordinate(54.88, 40.63),
-        ImageMapCoordinate(61.13, 37.76),
-        ImageMapCoordinate(62.6, 31.38),
-        ImageMapCoordinate(62.11, 23.96),
-      ]),
-    ];
 
     return ExpansionTile(
         title: Text("Floor plan / Sectors"),
@@ -133,7 +97,8 @@ class _GymPage extends State<GymPage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ImageMap(
-                shapes,
+                image: Image.network(gym.floorPlanURL),
+                shapes: gym.shapes,
                 onTap: (event) {
                   BlocProvider.of<FilteredProblemsBloc>(context)
                       .add(UpdateFilter(selectedWalls: event));
@@ -145,7 +110,7 @@ class _GymPage extends State<GymPage> {
   }
 
   Widget _buildGymPage(
-      BuildContext context, FilteredProblemsState filteredProblemsState, User user) {
+      BuildContext context, FilteredProblemsState filteredProblemsState, User user, Gym gym) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
@@ -184,7 +149,7 @@ class _GymPage extends State<GymPage> {
                     const SizedBox(height: 4.0),
                     _buildRouteFilters(context, state),
                     _buildCompletionStatus(context, state),
-                    _buildFloorMap(context),
+                    _buildFloorMap(context, gym),
                     _buildFilters(context, state),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,

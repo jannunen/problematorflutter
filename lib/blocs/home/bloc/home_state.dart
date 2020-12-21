@@ -6,7 +6,7 @@ abstract class HomeState extends Equatable {
   const HomeState({this.dashboard});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [dashboard];
 }
 
 class HomeInitial extends HomeState {}

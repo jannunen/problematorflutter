@@ -1,9 +1,10 @@
 import 'dart:collection';
 
+import 'package:equatable/equatable.dart';
 import 'package:problemator/models/gym.dart';
 import 'package:problemator/models/models.dart';
 
-class Dashboard {
+class Dashboard implements Equatable {
   /*
   Mysettings mysettings;
   List<Locations> locations;
@@ -13,32 +14,26 @@ class Dashboard {
   List<CompetitionInfo> ongoing;
   PointModifiers pointModifiers;
   */
-  Gym gym;
-  List<Tick> ticksToday;
-  Spread spread;
-  HashMap<String, Grade> grades;
-  List<Problem> problems;
+  final Gym gym;
+  final List<Tick> ticksToday;
+  final Spread spread;
+  final HashMap<String, Grade> grades;
+  final List<Problem> problems;
 
   Dashboard({
     this.ticksToday,
     this.spread,
     this.problems,
     this.grades,
-    /*
-        this.mysettings,
-      this.locations,
-      this.climber,
-      this.locinfo,
-      this.climbinfo,
-      this.grades,
-      this.upcoming,
-      this.ongoing,
-      this.pointModifiers
-      */
+    this.gym,
   });
-  Dashboard.fromJson(Map<String, dynamic> json) {
-    grades = new HashMap<String, Grade>();
-    problems = new List<Problem>();
+
+  static Dashboard fromJson(Map<String, dynamic> json) {
+    HashMap<String, Grade> grades = new HashMap<String, Grade>();
+    Gym gymi;
+    List<Problem> problems = new List<Problem>();
+    List<Tick> ticksToday = new List<Tick>();
+
     if (json['problems'] != null) {
       json['problems'].forEach((v) {
         problems.add(Problem.fromJson(v));
@@ -66,14 +61,24 @@ class Dashboard {
         );
       });
     }
+    if (json['gym'] != null) {
+      gymi = Gym.fromJson(json['gym']);
+    }
+    return Dashboard(grades: grades, problems: problems, ticksToday: ticksToday, gym: gymi);
   }
 
-  Dashboard copyWith({ticksToday, spreak, problems, grades}) => Dashboard(
+  Dashboard copyWith({ticksToday, problems, grades, gym}) => Dashboard(
         ticksToday: ticksToday ?? this.ticksToday,
-        spread: spread ?? this.spread,
         problems: problems ?? this.problems,
         grades: grades ?? this.grades,
+        gym: gym ?? this.gym,
       );
+
+  @override
+  List<Object> get props => [grades, problems, ticksToday, gym];
+
+  @override
+  bool get stringify => true;
 
 /*
   Dashboard.fromJson(Map<String, dynamic> json) {

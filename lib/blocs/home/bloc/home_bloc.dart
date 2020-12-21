@@ -30,7 +30,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         super(HomeInitial()) {
     _userBloc.listen((user) {
       // IF user is NOT empty, load the home page.
-      //this._problemsRepository.apiKey = user.jwt;
       add(InitializeHomeScreenEvent());
     });
     _problemsBloc.listen((ProblemsState state) async {
@@ -43,22 +42,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (state is TickAdded) {
         // upadte fdfashhobhoihasd
         final Dashboard dashboard = (this.state as HomeLoaded).dashboard;
-        Dashboard updatedDashboard = dashboard.copyWith();
 
         final String problemid = state.addedTick.problemid;
         final Problem updatedProblem = await _problemsRepository.fetchProblem(problemid, false);
+        List problems = dashboard.problems;
         // get updated problem info and incorporate that into the dashboard.
         //Problem updatedProblem = state.problem;
-        List<Problem> problems = updatedDashboard.problems;
         // Find which problems..
-        int index =
-            problems.indexWhere((Problem problem) => problem.problemid == updatedProblem.problemid);
+        int index = dashboard.problems
+            .indexWhere((Problem problem) => problem.problemid == updatedProblem.problemid);
 
         if (index != -1) {
           // Problem found, update problem
           problems[index] = updatedProblem;
         }
-        updatedDashboard.problems = problems;
+        Dashboard updatedDashboard = dashboard.copyWith(problems: problems);
         add(UpdateDashboard(updatedDashboard));
       }
     });

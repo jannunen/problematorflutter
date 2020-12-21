@@ -18,4 +18,25 @@ class ImageMapShape {
     double div = (percentage / 100 * realSize);
     return div.roundToDouble();
   }
+
+  static ImageMapShape fromJson(id, json) {
+    return ImageMapShape(
+      description: json['description'],
+      id: id,
+      title: json['title'],
+      points: pointsFromJson(json['points']),
+    );
+  }
+
+  static pointsFromJson(json) {
+    List<ImageMapCoordinate> points = [];
+    if (json != null) {
+      json.forEach((value) {
+        if (value != null) {
+          points.add(ImageMapCoordinate.fromJson(value));
+        }
+      });
+      return points;
+    }
+  }
 }

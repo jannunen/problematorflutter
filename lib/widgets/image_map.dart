@@ -2,10 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:poly/poly.dart';
-import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
-import 'package:problemator/blocs/filtered_problems/filtered_problems_event.dart';
 import 'package:problemator/widgets/imagemap/canvas_object.dart';
 import 'package:problemator/widgets/imagemap/image_map_shape.dart';
 
@@ -14,19 +11,21 @@ import 'imagemap/canvas_controller.dart';
 class ImageMap extends StatefulWidget {
   final List<ImageMapShape> shapes;
   final Function onTap;
-  ImageMap(this.shapes, {this.onTap});
+  final Image image;
+  ImageMap({this.image, this.shapes, this.onTap});
 
   @override
-  State<StatefulWidget> createState() => _ImageMap(this.shapes, onTap: this.onTap);
+  State<StatefulWidget> createState() =>
+      _ImageMap(image: this.image, shapes: this.shapes, onTap: this.onTap);
 }
 
 class _ImageMap extends State<ImageMap> {
   final List<ImageMapShape> shapes;
   final _controller = CanvasController();
-  final Image image = Image(image: AssetImage('assets/images/floorplans/floorplan_1.png'));
+  final Image image;
   final Function onTap;
 
-  _ImageMap(this.shapes, {this.onTap}) {
+  _ImageMap({this.image, this.shapes, this.onTap}) {
     shapes.forEach((shape) {
       _controller.addObject(CanvasObject(
         dx: 0,

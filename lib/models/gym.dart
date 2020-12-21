@@ -17,7 +17,7 @@ class Gym {
       country: json['country'],
       floorPlanURL: json['floorplan'],
       floorPlanExists: json['floorplanexists'],
-      //shapes = json['floormap'];
+      shapes: _buildImageMapShapes(json['floormaps']),
     );
   }
 
@@ -39,5 +39,19 @@ class Gym {
       'name': name,
       'country': country,
     };
+  }
+
+  static _buildImageMapShapes(Map<String, dynamic> json) {
+    List<ImageMapShape> shapes = [];
+    if (json != null) {
+      json.forEach((key, value) {
+        // Go through array of different floor image maps (default is the first)
+        // value has a list of walls (A,B,C...,Z) which contain a Map of points
+        value.forEach((aWall) {
+          shapes.add(ImageMapShape.fromJson(int.tryParse(key), aWall));
+        });
+      });
+      return shapes;
+    }
   }
 }
