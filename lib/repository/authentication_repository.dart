@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:problemator/api/api_client.dart';
 import 'package:problemator/blocs/user/bloc/user_bloc.dart';
 import 'package:problemator/models/models.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 import 'package:problemator/repository/user_repository.dart';
 
@@ -18,7 +16,6 @@ class LogInWithEmailAndPasswordFailure implements Exception {
 }
 
 /// Thrown during the sign in with google process if a failure occurs.
-class LogInWithGoogleFailure implements Exception {}
 
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure implements Exception {}
@@ -29,17 +26,12 @@ class LogOutFailure implements Exception {}
 class AuthenticationRepository {
   /// {@macro authentication_repository}
   AuthenticationRepository({
-    firebase_auth.FirebaseAuth firebaseAuth,
-    GoogleSignIn googleSignIn,
     ApiClient apiClient,
     UserBloc userBloc,
-  })  : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
+  })  :
         _apiClient = apiClient ?? ApiClient(),
         _userBloc = userBloc {}
 
-  final firebase_auth.FirebaseAuth _firebaseAuth;
-  final GoogleSignIn _googleSignIn;
   final ApiClient _apiClient;
   UserBloc _userBloc;
 
@@ -52,29 +44,9 @@ class AuthenticationRepository {
   }) async {
     assert(email != null && password != null);
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+
     } on Exception {
       throw SignUpFailure();
-    }
-  }
-
-  /// Starts the Sign In with Google Flow.
-  ///
-  /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithGoogle() async {
-    try {
-      final googleUser = await _googleSignIn.signIn();
-      final googleAuth = await googleUser.authentication;
-      final credential = firebase_auth.GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      await _firebaseAuth.signInWithCredential(credential);
-    } on Exception {
-      throw LogInWithGoogleFailure();
     }
   }
 
@@ -107,19 +79,11 @@ class AuthenticationRepository {
   Future<void> logOut() async {
     try {
       await Future.wait([
-        //_firebaseAuth.signOut(),
-        //_googleSignIn.signOut(),
         _apiClient.logout(),
       ]);
       _userBloc.add(UserEvent(User.empty));
     } on Exception {
       throw LogOutFailure();
     }
-  }
-}
-
-extension on firebase_auth.User {
-  User get toUser {
-    return User(id: uid, email: email, name: displayName, photo: photoURL);
   }
 }

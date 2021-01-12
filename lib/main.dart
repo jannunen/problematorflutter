@@ -20,14 +20,12 @@ import 'blocs/authentication/bloc/authentication_bloc.dart';
 import 'blocs/blocs.dart';
 import 'blocs/simple_bloc_delegate.dart';
 import './main.i18n.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import 'blocs/user/bloc/user_bloc.dart';
 import 'models/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   Bloc.observer = SimpleBlocObserver();
   SharedObjects.prefs = await CachedSharedPreferences.getInstance();
   runApp(App());
