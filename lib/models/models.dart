@@ -12,3 +12,4 @@ export 'confirmed_password.dart';
 export 'email.dart';
 export 'config.dart';
 export 'grade.dart';
+export 'group.dart';
