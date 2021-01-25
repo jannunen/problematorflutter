@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+/*import 'package:equatable/equatable.dart';
 import 'package:problemator/models/group.dart';
 
 abstract class GroupsEvent extends Equatable {
@@ -46,7 +46,7 @@ class GroupDeleted extends GroupsEvent {
   String toString() => 'GroupDeleted { group: $group }';
 }
 
-class ToggleAllGroups extends GroupsEvent {}
+class GetAllGroups extends GroupsEvent {}
 
 class ErrorLoadingGroups extends GroupsEvent {
   String error;
@@ -54,4 +54,4 @@ class ErrorLoadingGroups extends GroupsEvent {
 
   @override
   List<Object> get props => [error];
-}
+} */
