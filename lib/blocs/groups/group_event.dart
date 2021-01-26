@@ -1,4 +1,4 @@
-/*import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:problemator/models/group.dart';
 
 abstract class GroupsEvent extends Equatable {
@@ -54,4 +54,4 @@ class ErrorLoadingGroups extends GroupsEvent {
 
   @override
   List<Object> get props => [error];
-} */
+} 

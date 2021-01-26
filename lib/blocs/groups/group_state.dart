@@ -1,5 +1,4 @@
-
-/*import 'package:problemator/models/group.dart';
+import 'package:problemator/models/group.dart';
 import 'package:equatable/equatable.dart';
 
 enum GroupsStatus { loading, loaded, error }
@@ -37,4 +36,3 @@ class GroupsState extends Equatable {
     );
   }
 }
-*/
