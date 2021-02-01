@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/api/api_client.dart';
@@ -25,6 +26,8 @@ import 'blocs/user/bloc/user_bloc.dart';
 import 'models/user.dart';
 
 void main() async {
+  // allow all certificates because HandshakeException 
+  HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
   SharedObjects.prefs = await CachedSharedPreferences.getInstance();
@@ -131,5 +134,14 @@ class _AppState extends State<App> {
             }),
           ),
         ));
+  }
+}
+
+// allow all certificates because HandshakeException 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
