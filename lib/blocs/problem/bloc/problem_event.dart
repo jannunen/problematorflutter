@@ -22,3 +22,10 @@ class AddTick extends ProblemEvent {
   @override
   List<Object> get props => ['tick'];
 }
+class LikeProblem extends ProblemEvent {
+  final Problem problem;
+  LikeProblem(this.problem);
+
+  @override
+  List<Object> get props => [problem];
+}

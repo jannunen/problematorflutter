@@ -47,7 +47,7 @@ class ApiHelper {
   }
 
   Future<dynamic> put(String url, dynamic body) async {
-    print('Api Put, url $url');
+    print('Api Put, url $url, BODY: $body' );
     var responseJson;
     try {
       final response = await http.put(_baseUrl + url, body: body);

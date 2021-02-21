@@ -146,6 +146,13 @@ class Problem extends Equatable {
         ticked: ticked);
   }
 
+toMap() {
+    return {
+      'cLike': this.cLike.toString(),
+      'id': this.id
+    };
+  }
+
   static Problem fromJson(Map<String, dynamic> json) {
     Problem prob = new Problem(
       attributes: json['attributes'] ?? [],

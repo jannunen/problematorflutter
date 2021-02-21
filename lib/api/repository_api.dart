@@ -60,4 +60,8 @@ class ProblemsRepository {
   Future<List<Gym>> fetchGyms(bool useCache) async {
     return await _apiClient.fetchGyms(useCache);
   }
+
+  Future<Problem> likeProblem(Problem problem) async {
+    return await _apiClient.likeProblem(problem);
+  }
 }

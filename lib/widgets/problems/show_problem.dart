@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/blocs/problem/problem_bloc.dart';
+import 'package:problemator/blocs/problems/problems_state.dart';
 import 'package:problemator/core/screen_helpers.dart';
 import 'package:problemator/models/problem.dart';
 import 'package:problemator/widgets/problems/bottom_sheet_add_tick.dart';
@@ -19,11 +20,14 @@ class ShowProblem extends StatefulWidget {
 class _ShowProblem extends State<ShowProblem> {
   final String id;
   Problem problem;
+  bool isLiked = false;
+  int likes = 0;
   _ShowProblem({this.id});
   @override
   void initState() {
     // Call for additional info for the problem.
     context.read<ProblemBloc>().add(LoadProblemExtraInfo(id));
+   // context.read<ProblemBloc>().add(LikeProblem(problem));
     super.initState();
   }
 
@@ -33,7 +37,7 @@ class _ShowProblem extends State<ShowProblem> {
 
     this.problem = context.select((FilteredProblemsBloc b) =>
         b.state.filteredProblems.firstWhere((element) => element.id == id));
-    // Find the problem from bloc and sta
+    // Find the problem from bloc and state
     return Scaffold(
       appBar: AppBar(
         title: _buildTitle(problem),
@@ -110,11 +114,29 @@ class _ShowProblem extends State<ShowProblem> {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+    Problem problemWithLike;
     return Container(
         child: Row(children: [
-      Icon(
-        Icons.favorite,
-        color: colorScheme.accentColor,
+      IconButton(
+        icon: Icon(Icons.favorite),
+        color: (isLiked ? Colors.red : colorScheme.accentColor),
+        onPressed: () => {
+          setState(() {
+            isLiked = !isLiked;
+            int allLikes = this.problem.cLike;
+            print(allLikes);
+            if(isLiked) {
+              likes = allLikes + 1;
+            } else {
+              likes = allLikes;
+            }
+
+        /*  context.read<ProblemBloc>().add(AddTick(tick: tick)); */
+          }),
+          problemWithLike = Problem(id: id, cLike: likes),
+          print(likes),
+          context.read<ProblemBloc>().add(LikeProblem(problemWithLike))
+        },
       ),
       SizedBox(
         width: 4,
@@ -184,7 +206,9 @@ class _ShowProblem extends State<ShowProblem> {
   }
 
   Widget _buildBottomSheet(BuildContext context) {
-    return BlocBuilder<ProblemBloc, ProblemState>(builder: (context, state) {
+    return BlocBuilder<ProblemBloc, ProblemState>(
+      //cubit: BlocProvider.of<ProblemBloc>(context),
+      builder: (context, state) {
       if (state is ProblemExtraInfoLoaded) {
         return BottomSheetAddTick(
           problemExtraInfo: state.problemExtraInfo,
