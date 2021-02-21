@@ -6,6 +6,7 @@ import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart
 import 'package:problemator/blocs/gyms/bloc/gyms_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/models/models.dart';
+import 'package:problemator/models/wall.dart';
 import 'package:problemator/screens/choose_gym.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
@@ -52,6 +53,16 @@ class HomePage extends StatelessWidget {
                 children: <Widget>[
                   Expanded(child: _buildMainViewAsList(context, state, user)),
                 ],
+              );
+            } else if (state is HomeInitial) {
+              return Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Please wait, loading dashboard...",
+                        style: Theme.of(context).textTheme.headline1),
+                  ],
+                ),
               );
             }
             return Container(child: Text("Unknown state" + state.toString()));
@@ -200,6 +211,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 4.0),
             _buildTodayArea(context, homeState.dashboard),
             FloorMap(dashboard: homeState.dashboard),
+            _buildWallList(homeState.dashboard.gym.walls),
           ],
         );
       } else if (state.status == FilteredProblemsStatus.loading) {
@@ -257,6 +269,10 @@ class HomePage extends StatelessWidget {
         Text("Please select a gym before you continue"),
       ]),
     );
+  }
+
+  Widget _buildWallList(List<Wall> walls) {
+    return Text("wall list tbd");
   }
 }
 

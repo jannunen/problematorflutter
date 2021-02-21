@@ -79,7 +79,7 @@ class User extends Equatable {
       'message': message,
       'JWT': jwt,
       'gymid': gymid,
-      'gym': gym.toMap()
+      'gym': gym?.toMap()
     };
   }
 }

@@ -1,3 +1,4 @@
+import 'package:problemator/models/wall.dart';
 import 'package:problemator/widgets/imagemap/image_map_shape.dart';
 
 class Gym {
@@ -7,8 +8,16 @@ class Gym {
   final bool floorPlanExists;
   final String floorPlanURL;
   final List<ImageMapShape> shapes;
+  final List<Wall> walls;
 
-  Gym({this.id, this.name, this.country, this.floorPlanExists, this.floorPlanURL, this.shapes});
+  Gym(
+      {this.id,
+      this.name,
+      this.country,
+      this.floorPlanExists = false,
+      this.floorPlanURL,
+      this.shapes,
+      this.walls});
 
   static Gym fromJson(Map<String, dynamic> json) {
     return Gym(
@@ -18,7 +27,18 @@ class Gym {
       floorPlanURL: json['floorplan'],
       floorPlanExists: json['floorplanexists'],
       shapes: _buildImageMapShapes(json['floormaps']),
+      walls: _buildWalls(json['walls']),
     );
+  }
+
+  static List<Wall> _buildWalls(List<dynamic> json) {
+    List<Wall> walls = new List();
+    if (json != null) {
+      json.forEach((value) {
+        walls.add(Wall.fromJson(value));
+      });
+    }
+    return walls;
   }
 
   static List<Gym> listFromJson(Map<String, dynamic> json) {
@@ -47,9 +67,11 @@ class Gym {
       json.forEach((key, value) {
         // Go through array of different floor image maps (default is the first)
         // value has a list of walls (A,B,C...,Z) which contain a Map of points
-        value.forEach((aWall) {
-          shapes.add(ImageMapShape.fromJson(int.tryParse(key), aWall));
-        });
+        if (value != null) {
+          value.forEach((aWall) {
+            shapes.add(ImageMapShape.fromJson(int.tryParse(key), aWall));
+          });
+        }
       });
       return shapes;
     }
