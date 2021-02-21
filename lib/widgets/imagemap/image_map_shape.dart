@@ -6,9 +6,10 @@ class ImageMapShape {
   final String title;
   final String description;
   final int id;
+  final int floormapId;
   final List<ImageMapCoordinate> points;
 
-  ImageMapShape({this.title, this.description, this.points, this.id});
+  ImageMapShape({this.title, this.description, this.points, this.id, this.floormapId});
 
   translatePoints(List<Point> points, double width, double height) {
     return points.map((e) => Point(_scalePoint(e.x, width), _scalePoint(e.y, height))).toList();
@@ -22,7 +23,8 @@ class ImageMapShape {
   static ImageMapShape fromJson(id, json) {
     return ImageMapShape(
       description: json['description'],
-      id: id,
+      id: json['id'],
+      floormapId: id,
       title: json['title'],
       points: pointsFromJson(json['points']),
     );
