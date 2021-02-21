@@ -2,7 +2,9 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
+import 'package:problemator/blocs/problem/problem_bloc.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/core/screen_helpers.dart';
 import 'package:problemator/models/problem.dart';
@@ -98,8 +100,12 @@ class _AddProblemForm extends State<AddProblemForm> {
         //Navigator.of(context).pop();
         Navigator.of(context).push(
           MaterialPageRoute(builder: (dialogContext) {
-            return BlocProvider.value(
-                value: BlocProvider.of<HomeBloc>(context), child: ShowProblem(id: item.id));
+            return MultiBlocProvider(providers: [
+              BlocProvider<FilteredProblemsBloc>.value(
+                  value: BlocProvider.of<FilteredProblemsBloc>(context)),
+              BlocProvider<ProblemBloc>.value(value: BlocProvider.of<ProblemBloc>(context)),
+              BlocProvider<HomeBloc>.value(value: BlocProvider.of<HomeBloc>(context)),
+            ], child: ShowProblem(id: item.id));
           }),
         );
 
