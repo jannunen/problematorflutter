@@ -30,7 +30,7 @@ class ApiHelper {
   }
 
   Future<dynamic> post(String url, dynamic body) async {
-    print('Api POST, url $_baseUrl' + '$url');
+    print('Api POST, url $_baseUrl' + '$url body: $body');
     var responseJson;
     try {
       final response = await http.post(_baseUrl + url, body: body);
@@ -42,12 +42,12 @@ class ApiHelper {
       print(error);
       throw FetchDataException('Error in post (' + error.toString() + ')');
     }
-    print('api post DONE.');
+    print('api post DONE. $responseJson');
     return responseJson;
   }
 
   Future<dynamic> put(String url, dynamic body) async {
-    print('Api Put, url $url');
+    print('Api Put, url $url, BODY: $body' );
     var responseJson;
     try {
       final response = await http.put(_baseUrl + url, body: body);
@@ -56,7 +56,6 @@ class ApiHelper {
       print('No net');
       throw FetchDataException('No Internet connection');
     }
-    print('api put.');
     print(responseJson.toString());
     return responseJson;
   }

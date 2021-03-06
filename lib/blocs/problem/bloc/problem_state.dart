@@ -43,3 +43,23 @@ class TickAddFailed extends ProblemExtraInfoLoaded {
   @override
   List<Object> get props => [error];
 }
+
+class LikingProblem extends ProblemState {
+  @override
+  List<Object> get props => ['LikingProblem'];
+}
+
+class LikedProblem extends ProblemState{
+  final Problem problem;
+  LikedProblem({this.problem});
+  @override
+  List<Object> get props => ['addedLike'];
+}
+
+class LikeProblemFailed extends ProblemState {
+  final String error;
+  LikeProblemFailed(this.error);
+
+  @override
+  List<Object> get props => [error];
+}

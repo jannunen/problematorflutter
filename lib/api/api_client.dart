@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:problemator/api/api_helper.dart';
 import 'package:problemator/models/gym.dart';
 import 'package:problemator/models/models.dart';
@@ -21,21 +23,22 @@ class ApiClient {
   }
 
   Future<ProblemList> getProblemList() async {
-    final response = await _helper.get("problems/?react=true&api-auth-token=$_apiKey&loc=$_gymid",
+    final response = await _helper.get(
+        "problems/?react=true&api-auth-token=$_apiKey&loc=$_gymid",
         useCache: false);
     return ProblemList.fromJson(response);
   }
 
   Future<ProblemExtraInfo> fetchProblemDetails(String problemid) async {
-    final response =
-        await _helper.get("problem/?id=" + problemid + "&react=true&api-auth-token=$_apiKey");
+    final response = await _helper.get(
+        "problem/?id=" + problemid + "&react=true&api-auth-token=$_apiKey");
     ProblemExtraInfo problem = ProblemExtraInfo.fromJson(response['problem']);
     return problem;
   }
 
   Future<Dashboard> fetchDashboard() async {
-    final response =
-        await _helper.get("dashinfo/?react=true&api-auth-token=$_apiKey&gymid=$_gymid");
+    final response = await _helper
+        .get("dashinfo/?react=true&api-auth-token=$_apiKey&gymid=$_gymid");
     Dashboard dashboard = Dashboard.fromJson(response);
     return dashboard;
   }
@@ -56,7 +59,8 @@ class ApiClient {
   }
 
   Future<User> logout() async {
-    final response = await _helper.get("logout/?react=true&api-auth-token=$_apiKey");
+    final response =
+        await _helper.get("logout/?react=true&api-auth-token=$_apiKey");
     if (response.containsKey('error') && response['error'] == 'true') {
       throw new Exception(response['message']);
     }
@@ -68,9 +72,13 @@ class ApiClient {
   }
 
   Future<TickResponse> addTick(Tick tick) async {
-    Map<String, String> postData = tick.toPostMap(true);
-    final response = await _helper.post("savetick/?react=true&api-auth-token=$_apiKey", postData);
-    if (response.containsKey('error') && (response['error'] == 'true' || response['error'])) {
+    Map<String, dynamic> postData = tick.toPostMap(true);
+    var jsonPostData = jsonEncode(postData);
+    print('POSTDATA: $jsonPostData');
+    final response = await _helper.post(
+        "savepretick/?react=true&api-auth-token=$_apiKey", jsonPostData);
+    if (response.containsKey('error') &&
+        (response['error'] == 'true' || response['error'])) {
       throw new Exception(response['message']);
     }
     TickResponse backTick = TickResponse.fromJson(response);
@@ -84,9 +92,19 @@ class ApiClient {
     return Problem.fromJson(response);
   }
 
+  Future<Problem> likeProblem(Problem problem) async {
+    Map<String, String> putData = problem.toMap();
+    final response = await _helper.put(
+        "saveopinion/?id=" + problem.id + "&react=true&api-auth-token=$_apiKey",
+        putData
+        );
+    return Problem.fromJson(response);
+  }
+
   Future<List<Gym>> fetchGyms(bool useCache) async {
-    final response =
-        await _helper.get("get_gyms/&react=true&api-auth-token=$_apiKey", useCache: useCache);
+    final response = await _helper.get(
+        "get_gyms/&react=true&api-auth-token=$_apiKey",
+        useCache: useCache);
     return Gym.listFromJson(response);
   }
 }

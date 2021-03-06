@@ -20,26 +20,29 @@ class DrawerMenu extends StatelessWidget {
           // Add a ListView to the drawer. This ensures the user can scroll
           // through the options in the drawer if there isn't enough vertical
           // space to fit everything.
-          child: Container(
-        color: Theme.of(context).backgroundColor,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: ListView(
+        //color: Theme.of(context).backgroundColor,
+        //child: Column(
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          padding: EdgeInsets.zero,
           children: [
             ListView.builder(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 itemCount: _listItems.length,
                 itemBuilder: (BuildContext context, int index) => BlocBuilder<TabBloc, AppTab>(
-                      builder: (BuildContext context, AppTab tab) =>
-                          _buildItem(context, _listItems[index], tab),
+                      builder: (BuildContext context, AppTab tab) { 
+                      return  _buildItem(context, _listItems[index], tab);
+                      }
                     )),
           ],
         ),
-      ));
+      //)
+      );
 }
 
 Widget _buildItem(BuildContext context, _NavigationItem data, AppTab tab) => data.header
-    // if the item is a header return the header widget
+     // if the item is a header return the header widget
     ? _makeHeaderItem()
     // otherwise build and return the default list item
     : _makeListItem(context, data, tab);

@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:problemator/api/repository_api.dart';
+import 'package:problemator/blocs/problem/problem_bloc.dart';
 import 'package:problemator/models/models.dart';
 import 'package:problemator/models/problem_extra_info.dart';
 import 'package:problemator/models/responses/tick_response.dart';
@@ -36,6 +38,15 @@ class ProblemBloc extends Bloc<ProblemEvent, ProblemState> {
             problem: tickResponse.problem));
       } catch (e) {
         yield (TickAddFailed(e.toString(), problemExtraInfo));
+      }
+    } else if (event is LikeProblem) {
+      print(event.problem);
+      final Problem problem = await problemsRepository.likeProblem(event.problem);
+      yield (LikingProblem());
+      try {
+        yield (LikedProblem());
+      } catch (e) {
+        yield (LikeProblemFailed(e.toString()));
       }
     }
   }
