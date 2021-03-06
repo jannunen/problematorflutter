@@ -30,7 +30,7 @@ class ApiHelper {
   }
 
   Future<dynamic> post(String url, dynamic body) async {
-    print('Api POST, url $_baseUrl' + '$url');
+    print('Api POST, url $_baseUrl' + '$url body: $body');
     var responseJson;
     try {
       final response = await http.post(_baseUrl + url, body: body);
@@ -42,7 +42,7 @@ class ApiHelper {
       print(error);
       throw FetchDataException('Error in post (' + error.toString() + ')');
     }
-    print('api post DONE.');
+    print('api post DONE. $responseJson');
     return responseJson;
   }
 

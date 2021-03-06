@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
@@ -37,6 +39,7 @@ class _ShowProblem extends State<ShowProblem> {
 
     this.problem = context.select((FilteredProblemsBloc b) =>
         b.state.filteredProblems.firstWhere((element) => element.id == id));
+    print('Onko: ${this.problem.mytickcount} TÄÄ:');
     // Find the problem from bloc and state
     return Scaffold(
       appBar: AppBar(

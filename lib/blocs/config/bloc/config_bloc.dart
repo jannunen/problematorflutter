@@ -59,7 +59,7 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     String token = SharedObjects.prefs.getString('auth_token');
     bool darkMode = SharedObjects.prefs.getBool('darkMode') ?? true;
     // If we have a valid user, notify userbloc...
-    if (user != null && user != User.empty) {
+    if (token != null && user != null && user != User.empty) {
       userBloc.add(UserEvent(user));
     }
     return Config(user: user, token: token, darkMode: darkMode);
@@ -74,7 +74,11 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
     } else {
       SharedObjects.prefs.setString('user', null);
     }
+
     SharedObjects.prefs.setString('auth_token', config.token);
+    if (user.jwt != null) {
+      SharedObjects.prefs.setString('auth_token', user.jwt);
+    }
     SharedObjects.prefs.setBool('darkMode', config.darkMode);
   }
 }

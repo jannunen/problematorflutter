@@ -21,8 +21,19 @@ class FloorMap extends StatelessWidget {
     ColorScheme colorScheme = theme.colorScheme;
 
     Image image;
-    if (this.dashboard.gym != null && dashboard.gym.floorPlanExists) {
+    if (this.dashboard.gym != null &&
+        dashboard.gym.floorPlanExists != null &&
+        dashboard.gym.floorPlanExists) {
       image = Image.network(this.dashboard.gym.floorPlanURL);
+    }
+    if (this.dashboard.gym.id == null) {
+      return Container(
+          child: Column(
+        children: [
+          SizedBox(height: 20),
+          Center(child: Text("Gym not selected")),
+        ],
+      ));
     }
     if (this.dashboard.gym == null) {
       return Container(

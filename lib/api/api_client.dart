@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:problemator/api/api_helper.dart';
 import 'package:problemator/models/gym.dart';
 import 'package:problemator/models/models.dart';
@@ -70,9 +72,11 @@ class ApiClient {
   }
 
   Future<TickResponse> addTick(Tick tick) async {
-    Map<String, String> postData = tick.toPostMap(true);
+    Map<String, dynamic> postData = tick.toPostMap(true);
+    var jsonPostData = jsonEncode(postData);
+    print('POSTDATA: $jsonPostData');
     final response = await _helper.post(
-        "savetick/?react=true&api-auth-token=$_apiKey", postData);
+        "savepretick/?react=true&api-auth-token=$_apiKey", jsonPostData);
     if (response.containsKey('error') &&
         (response['error'] == 'true' || response['error'])) {
       throw new Exception(response['message']);

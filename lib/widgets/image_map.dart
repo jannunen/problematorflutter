@@ -26,15 +26,17 @@ class _ImageMap extends State<ImageMap> {
   final Function onTap;
 
   _ImageMap({this.image, this.shapes, this.onTap}) {
-    shapes.forEach((shape) {
-      _controller.addObject(CanvasObject(
-        dx: 0,
-        dy: 0,
-        width: 370,
-        height: 300,
-        child: shape,
-      ));
-    });
+    if (shapes != null) {
+      shapes.forEach((shape) {
+        _controller.addObject(CanvasObject(
+          dx: 0,
+          dy: 0,
+          width: 370,
+          height: 300,
+          child: shape,
+        ));
+      });
+    }
   }
 
   @override
@@ -55,10 +57,7 @@ class _ImageMap extends State<ImageMap> {
         stream: _controller.stream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Scaffold(
-              appBar: AppBar(),
-              body: Center(child: CircularProgressIndicator()),
-            );
+            return Center(child: CircularProgressIndicator());
           }
           final instance = snapshot.data;
           //print(instance.selectedObjectsIndices);

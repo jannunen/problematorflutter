@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_typeahead/cupertino_flutter_typeahead.dart';
 import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_state.dart';
 import 'package:problemator/blocs/gyms/bloc/gyms_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/models/models.dart';
+import 'package:problemator/models/wall.dart';
 import 'package:problemator/screens/choose_gym.dart';
 import 'package:problemator/ui/theme/problemator_theme.dart';
 import 'package:problemator/widgets/drawer.dart';
@@ -36,8 +38,9 @@ class HomePage extends StatelessWidget {
           IconButton(
             key: const Key('homePage_logout_iconButton'),
             icon: const Icon(Icons.exit_to_app),
-            onPressed: () =>
-                context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested()),
+            onPressed: () => context
+                .read<AuthenticationBloc>()
+                .add(AuthenticationLogoutRequested()),
           )
         ],
       ),
@@ -52,6 +55,16 @@ class HomePage extends StatelessWidget {
                 children: <Widget>[
                   Expanded(child: _buildMainViewAsList(context, state, user)),
                 ],
+              );
+            } else if (state is HomeInitial) {
+              return Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Please wait, loading dashboard...",
+                        style: Theme.of(context).textTheme.headline1),
+                  ],
+                ),
               );
             }
             return Container(child: Text("Unknown state" + state.toString()));
@@ -108,7 +121,8 @@ class HomePage extends StatelessWidget {
           // DO NOT name this parameter to context.
           // Then the correct context cannot be found and the bloc chain breaks.
           return BlocProvider<HomeBloc>.value(
-              value: BlocProvider.of<HomeBloc>(context), child: AddProblemForm());
+              value: BlocProvider.of<HomeBloc>(context),
+              child: AddProblemForm());
         });
   }
 
@@ -127,7 +141,8 @@ class HomePage extends StatelessWidget {
           children: [
             SizedBox(height: 8.0),
             Text("My logs",
-                style: textTheme.headline5.copyWith(color: colorScheme.myLogsHeaderTextColor)),
+                style: textTheme.headline5
+                    .copyWith(color: colorScheme.myLogsHeaderTextColor)),
             // Go for left column having the big number icons and the
             // right side for the bar chart
             Row(
@@ -149,9 +164,11 @@ class HomePage extends StatelessWidget {
     return Container(
         child: Column(
       children: [
-        Text("9", style: textTheme.headline1.copyWith(fontWeight: FontWeight.normal)),
+        Text("9",
+            style: textTheme.headline1.copyWith(fontWeight: FontWeight.normal)),
         Text("sessions"),
-        Text("37", style: textTheme.headline1.copyWith(fontWeight: FontWeight.normal)),
+        Text("37",
+            style: textTheme.headline1.copyWith(fontWeight: FontWeight.normal)),
         Text("routes"),
       ],
     ));
@@ -167,30 +184,37 @@ class HomePage extends StatelessWidget {
     ));
   }
 
-  Widget _buildMainViewAsList(BuildContext context, HomeState homeState, User user) {
+  Widget _buildMainViewAsList(
+      BuildContext context, HomeState homeState, User user) {
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
 
-    return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(builder: (context, state) {
+    return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(
+        builder: (context, state) {
+      //print(homeState.dashboard.problems.map((e) => e.problemid));
       if (state.status == FilteredProblemsStatus.loaded) {
         return ListView(
           children: [
             Text("Climber's log",
-                style: theme.textTheme.headline5.copyWith(fontWeight: FontWeight.bold)),
+                style: theme.textTheme.headline5
+                    .copyWith(fontWeight: FontWeight.bold)),
             Text(user.email, style: textTheme.headline6.copyWith(fontSize: 14)),
             Text(user.name ?? '', style: textTheme.headline5),
             Row(
               children: [
                 Text("Current gym: "),
                 RaisedButton(
-                  child: Text(user.gym != null ? user.gym.name : "Not selected, click to select"),
+                  child: Text(user.gym != null
+                      ? user.gym.name
+                      : "Not selected, click to select"),
                   onPressed: () => Navigator.of(context).push<void>(
                     MaterialPageRoute(
                       builder: (dialogContext) {
                         return Scaffold(
                             body: BlocProvider<GymsBloc>.value(
-                                value: BlocProvider.of<GymsBloc>(context), child: ChooseGym()));
+                                value: BlocProvider.of<GymsBloc>(context),
+                                child: ChooseGym()));
                       },
                     ),
                   ),
@@ -200,10 +224,13 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 4.0),
             _buildTodayArea(context, homeState.dashboard),
             FloorMap(dashboard: homeState.dashboard),
+            _buildWallList(
+                homeState.dashboard.gym.walls, homeState.dashboard.problems)
           ],
         );
       } else if (state.status == FilteredProblemsStatus.loading) {
-        return Container(padding: new EdgeInsets.all(17), child: Text("Loading problems"));
+        return Container(
+            padding: new EdgeInsets.all(17), child: Text("Loading problems"));
       } else if (state.status == FilteredProblemsStatus.error) {
         return Container(
             padding: new EdgeInsets.all(17),
@@ -215,7 +242,9 @@ class HomePage extends StatelessWidget {
                       "Login again",
                     ),
                     onPressed: () {
-                      context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested());
+                      context
+                          .read<AuthenticationBloc>()
+                          .add(AuthenticationLogoutRequested());
                     })
               ],
             ));
@@ -226,6 +255,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildProblemTile(BuildContext context, Problem problem) {
+    print('PROBLEM TÄSSÄ: $problem');
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
@@ -238,11 +268,13 @@ class HomePage extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (dialogContext) {
                 return BlocProvider.value(
-                    value: BlocProvider.of<HomeBloc>(context), child: ShowProblem(id: problem.id));
+                    value: BlocProvider.of<HomeBloc>(context),
+                    child: ShowProblem(id: problem.id));
               }),
             );
           },
-          contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: _buildTileLeading(context, problem),
           title: _buildTileMain(context, problem),
           trailing: _buildTileTrailing(context, problem),
@@ -258,45 +290,64 @@ class HomePage extends StatelessWidget {
       ]),
     );
   }
-}
 
-Widget _buildTileTrailing(BuildContext context, Problem problem) {
-  return Text(problem.addedrelative ?? "No data");
-}
+  Widget _buildWallList(List<Wall> walls, List<Problem> problems) {
+    return Text("tere");
+ //   List<Widget> list = new List<Widget>();
+   
+  /*  for (var i in walls) {
+      list.add(Container(
+        color: Colors.blue,
+        height: 100,*/
+         //return ListView.builder(itemBuilder: (context, index) {
+          // return _buildProblemTile(context, problems[index]);
+          //return Text('${e.gradename}    ${i.walldesc}');
+        //});
+    
+    //return Center(child: new Column(children: list));
+  }
 
-_buildTileMain(BuildContext context, Problem problem) {
-  final textTheme = Theme.of(context).textTheme;
-  ThemeData theme = Theme.of(context);
-  ColorScheme colorScheme = theme.colorScheme;
-  return Row(mainAxisSize: MainAxisSize.min, children: [
-    SizedBox(width: 50, child: Text(problem.gradename, style: textTheme.headline1)),
-    _buildProblemLikes(context, problem),
-  ]);
-}
+  Widget _buildTileTrailing(BuildContext context, Problem problem) {
+    return Text(problem.addedrelative ?? "No data");
+  }
 
-Widget _buildProblemLikes(BuildContext context, Problem problem) {
-  final textTheme = Theme.of(context).textTheme;
-  ThemeData theme = Theme.of(context);
-  ColorScheme colorScheme = theme.colorScheme;
-  return Padding(
-    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-    child: Row(
-      children: [
-        Icon(Icons.favorite, size: 16, color: Colors.red[400]),
-        SizedBox(width: 4),
-        Text(problem.cLike.toString(), style: textTheme.headline3),
-      ],
-    ),
-  );
-}
+  _buildTileMain(BuildContext context, Problem problem) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      SizedBox(
+          width: 50,
+          child: Text(problem.gradename, style: textTheme.headline1)),
+      _buildProblemLikes(context, problem),
+    ]);
+  }
 
-Widget _buildTileLeading(BuildContext context, Problem problem) {
-  final textTheme = Theme.of(context).textTheme;
-  ThemeData theme = Theme.of(context);
-  ColorScheme colorScheme = theme.colorScheme;
-  return Row(mainAxisSize: MainAxisSize.min, children: [
-    ProblemColorIndicator(htmlcolour: problem.htmlcolour, width: 24, height: 24),
-    SizedBox(width: 4),
-    Text(problem.tagshort ?? "No colour", style: textTheme.headline2)
-  ]);
+  Widget _buildProblemLikes(BuildContext context, Problem problem) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: Row(
+        children: [
+          Icon(Icons.favorite, size: 16, color: Colors.red[400]),
+          SizedBox(width: 4),
+          Text(problem.cLike.toString(), style: textTheme.headline3),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTileLeading(BuildContext context, Problem problem) {
+    final textTheme = Theme.of(context).textTheme;
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      ProblemColorIndicator(
+          htmlcolour: problem.htmlcolour, width: 24, height: 24),
+      SizedBox(width: 4),
+      Text(problem.tagshort ?? "No colour", style: textTheme.headline2)
+    ]);
+  }
 }

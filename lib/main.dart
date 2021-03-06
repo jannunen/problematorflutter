@@ -7,6 +7,7 @@ import 'package:problemator/blocs/authentication/authentication_bloc.dart';
 import 'package:problemator/blocs/config/bloc/config_bloc.dart';
 import 'package:problemator/blocs/filtered_problems/filtered_problems_bloc.dart';
 import 'package:problemator/blocs/gyms/bloc/gyms_bloc.dart';
+import 'package:problemator/blocs/tab/tab_bloc.dart';
 import 'package:problemator/blocs/home/bloc/home_bloc.dart';
 import 'package:problemator/blocs/problem/bloc/problem_bloc.dart';
 import 'package:problemator/repository/authentication_repository.dart';
@@ -46,6 +47,7 @@ class _AppState extends State<App> {
   AuthenticationBloc _authenticationBloc;
   ProblemsRepository _problemsRepository;
   ConfigBloc configBloc;
+  TabBloc tabBloc;
 
   @override
   void initState() {
@@ -91,6 +93,7 @@ class _AppState extends State<App> {
                 create: (context) => ProblemsBloc(
                     problemBloc: BlocProvider.of<ProblemBloc>(context),
                     problemsRepository: RepositoryProvider.of<ProblemsRepository>(context))),
+            BlocProvider<TabBloc>(create: (_) => tabBloc)
           ],
           child: MaterialApp(
             title: "Problemator".i18n,
