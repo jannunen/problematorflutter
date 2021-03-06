@@ -39,7 +39,6 @@ class _ShowProblem extends State<ShowProblem> {
 
     this.problem = context.select((FilteredProblemsBloc b) =>
         b.state.filteredProblems.firstWhere((element) => element.id == id));
-    print('Onko: ${this.problem.mytickcount} TÄÄ:');
     // Find the problem from bloc and state
     return Scaffold(
       appBar: AppBar(
@@ -127,7 +126,6 @@ class _ShowProblem extends State<ShowProblem> {
           setState(() {
             isLiked = !isLiked;
             int allLikes = this.problem.cLike;
-            print(allLikes);
             if(isLiked) {
               likes = allLikes + 1;
             } else {
@@ -137,7 +135,6 @@ class _ShowProblem extends State<ShowProblem> {
         /*  context.read<ProblemBloc>().add(AddTick(tick: tick)); */
           }),
           problemWithLike = Problem(id: id, cLike: likes),
-          print(likes),
           context.read<ProblemBloc>().add(LikeProblem(problemWithLike))
         },
       ),

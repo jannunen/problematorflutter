@@ -290,19 +290,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildWallList(List<Wall> walls, List<Problem> problems) {
-    return Text("tere");
- //   List<Widget> list = new List<Widget>();
-   
-  /*  for (var i in walls) {
-      list.add(Container(
-        color: Colors.blue,
-        height: 100,*/
-         //return ListView.builder(itemBuilder: (context, index) {
-          // return _buildProblemTile(context, problems[index]);
-          //return Text('${e.gradename}    ${i.walldesc}');
-        //});
-    
-    //return Center(child: new Column(children: list));
+    return Text("wall list tbd");
   }
 
   Widget _buildTileTrailing(BuildContext context, Problem problem) {

@@ -32,7 +32,6 @@ class DrawerMenu extends StatelessWidget {
                 itemCount: _listItems.length,
                 itemBuilder: (BuildContext context, int index) => BlocBuilder<TabBloc, AppTab>(
                       builder: (BuildContext context, AppTab tab) { 
-                        print('MIKÄS TÄNÄM ON ???: ');
                       return  _buildItem(context, _listItems[index], tab);
                       }
                     )),
@@ -42,13 +41,12 @@ class DrawerMenu extends StatelessWidget {
       );
 }
 
-Widget _buildItem(BuildContext context, _NavigationItem data, AppTab tab) {
-  print('DATA.HEADER ${data.header}');
-    // if the item is a header return the header widget
-      return _makeHeaderItem();
+Widget _buildItem(BuildContext context, _NavigationItem data, AppTab tab) => data.header
+     // if the item is a header return the header widget
+    ? _makeHeaderItem()
     // otherwise build and return the default list item
-    // _makeListItem(context, data, tab);
-}
+    : _makeListItem(context, data, tab);
+
 Widget _makeHeaderItem() => UserAccountsDrawerHeader(
       accountName: Text("accname", style: TextStyle(color: Colors.white)),
       accountEmail: Text("accemail", style: TextStyle(color: Colors.white)),
