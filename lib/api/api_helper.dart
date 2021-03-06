@@ -56,7 +56,6 @@ class ApiHelper {
       print('No net');
       throw FetchDataException('No Internet connection');
     }
-    print('api put.');
     print(responseJson.toString());
     return responseJson;
   }

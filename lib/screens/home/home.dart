@@ -192,7 +192,6 @@ class HomePage extends StatelessWidget {
 
     return BlocBuilder<FilteredProblemsBloc, FilteredProblemsState>(
         builder: (context, state) {
-      //print(homeState.dashboard.problems.map((e) => e.problemid));
       if (state.status == FilteredProblemsStatus.loaded) {
         return ListView(
           children: [
@@ -255,7 +254,6 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildProblemTile(BuildContext context, Problem problem) {
-    print('PROBLEM TÄSSÄ: $problem');
     final textTheme = Theme.of(context).textTheme;
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
